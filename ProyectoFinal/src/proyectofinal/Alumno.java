@@ -7,4 +7,7 @@ package proyectofinal;
  */
 public class Alumno extends Usuario {
     
+    //Atributos:
+    //TODO ENUM TIPO DE EJERCICIO PARA TABLAS
+    
 }

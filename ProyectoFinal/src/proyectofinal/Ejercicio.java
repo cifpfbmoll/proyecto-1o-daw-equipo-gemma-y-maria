@@ -7,4 +7,15 @@ package proyectofinal;
  */
 public class Ejercicio {
     
+    //Atributos:
+    private int codigo;
+    private String nombre;
+    private String descripcion;
+    //TODO: TIPO ENUM
+    
+    //Constructores:
+    //TODO
+    
+    //Métodos:
+    //TODO
 }
