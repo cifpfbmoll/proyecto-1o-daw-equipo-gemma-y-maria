@@ -26,11 +26,12 @@ public class Menu {
         // TODO completar
         //Estre try tiene autoclose de manera que la conexión se cierra sola
         try (Connection con = obtenerConexion()) {
-            boolean usuarioValido = false;
+            String usuario = "";
             do {
-                usuarioValido = menuLogIn();
-            } while (usuarioValido == false);
+                usuario = menuLogIn();
+            } while (usuario.equals(""));
             //TODO: si el usuario es instance of entrenador, menuEntrenador. Else menuAlumno
+            
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -39,7 +40,7 @@ public class Menu {
     /**
      * Pide usuario y contraseña y los confirma.
      */
-    public static boolean menuLogIn() {
+    public static String menuLogIn() {
         String usuario = "";
         do {
             System.out.println("Introduce usuario: ");
@@ -49,9 +50,19 @@ public class Menu {
         String contrasena = lector.nextLine();
         if (!comprobarValidez(contrasena)) {
             System.out.println("La contraseña no es válida para este usuario.");
-            return false;
+            return "";
         }
-        return true;
+        return usuario;
+    }
+    
+    public static void menuEntrenador() {
+        System.out.println("Bienvenido, entrenador.\n¿Qué quieres hacer?");
+        //TODO
+    }
+    
+    public static void menuAlumno() {
+        System.out.println("Bienvenido, alumno.\n¿Qué quieres hacer?");
+        //TODO
     }
     
     /**
