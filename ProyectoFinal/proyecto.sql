@@ -91,12 +91,12 @@ INSERT INTO USUARIO (id, password, discriminador, nombre, apellido1, apellido2, 
 (012, 'usuario012', 'alumno', 'Sara', 'Lance', 'Canary', '33333334C', 'saralance@gmail.com', 600000012, 'Time Ship Road 33 s/n Time City  KA13 8XQ' ),
 (013, 'usuario013', 'alumno', 'Kate', 'Kane', 'Batwoman', '44444445D', 'katekane@gmail.com', 600000013, 'Wayne Enterprises Ave. s/n Gotham City  KM13 80Q' ),
 (014, 'usuario014', 'alumno', 'Helena', 'Bertinelli', 'Huntress', '55555556E', 'helenaberti@gmail.com', 600000014, 'Mansion Bertinelli Road s/n Starling City  KT33 8XQ' ),
-(015, 'usuario015', 'alumno', 'Diana', 'Prince', 'Wonder', '66666667F', 'dianaprince@gmail.com', 600000007, 'The Sea s/n Water City  KT10 8UY' ),
-(016, 'usuario016', 'alumno', 'Arthur', 'Curry', 'Aquaman', '77777778G', 'arthurcurry@gmail.com', 600000007, 'Mansion Wayne Road s/n Gotham City  KT13 7YY' ),
-(017, 'usuario017', 'alumno', 'Alfred', 'Pennyworth', 'Butler', '88888889H', 'alfredpenny@gmail.com', 600000007, 'Mansion Wayne Road s/n Gotham City  KT13 8PPQ' ), 
-(018, 'usuario018', 'alumno', 'Victor', 'Stone', 'Cyborg', '99999990I', 'victorstone@gmail.com', 600000007, 'Technology Ave. s/n Gotham City  KK13 8XQ' ),
-(019, 'usuario019', 'alumno', 'John', 'Constantine', 'Witcher', '11111113A', 'johnconstantine@gmail.com', 600000007, 'Hellskitchen 23 Starling City  IT13 8XQ' ),
-(020, 'usuario020', 'alumno', 'Rachel', 'Roth', 'Raven', '22222224B', 'rachelroth@gmail.com', 600000007, 'The darkest avenur 99 Chicago City  KT00 8XQ' );
+(015, 'usuario015', 'alumno', 'Diana', 'Prince', 'Wonder', '66666667F', 'dianaprince@gmail.com', 600000015, 'The Sea s/n Water City  KT10 8UY' ),
+(016, 'usuario016', 'alumno', 'Arthur', 'Curry', 'Aquaman', '77777778G', 'arthurcurry@gmail.com', 600000016, 'Mansion Wayne Road s/n Gotham City  KT13 7YY' ),
+(017, 'usuario017', 'alumno', 'Alfred', 'Pennyworth', 'Butler', '88888889H', 'alfredpenny@gmail.com', 600000017, 'Mansion Wayne Road s/n Gotham City  KT13 8PPQ' ), 
+(018, 'usuario018', 'alumno', 'Victor', 'Stone', 'Cyborg', '99999990I', 'victorstone@gmail.com', 600000018, 'Technology Ave. s/n Gotham City  KK13 8XQ' ),
+(019, 'usuario019', 'alumno', 'John', 'Constantine', 'Witcher', '11111113A', 'johnconstantine@gmail.com', 600000019, 'Hellskitchen 23 Starling City  IT13 8XQ' ),
+(020, 'usuario020', 'alumno', 'Rachel', 'Roth', 'Raven', '22222224B', 'rachelroth@gmail.com', 600000020, 'The darkest avenur 99 Chicago City  KT00 8XQ' );
 
 
 INSERT INTO EJERCICIO (ex_code, nombre, descripcion) VALUES
