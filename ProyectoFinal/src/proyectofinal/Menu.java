@@ -93,6 +93,11 @@ public class Menu {
      */
     public static void menuEntrenador(String id) {
         System.out.println("Bienvenido, entrenador.\n¿Qué quieres hacer?");
+        System.out.println("  1- crear nuevo programa de entrenamiento");
+        System.out.println("  2- imprimir un programa de entrenamiento existente");
+        System.out.println("  3- como alumno, consultar un programa de entrenamiento existente");
+        System.out.println("  4- como alumno, solicitar un nuevo programa de entrenamiento");
+        System.out.println("  5- como alumno, imprimir un programa de entrenamiento personal existente");
         //TODO
     }
 
@@ -102,6 +107,9 @@ public class Menu {
      */
     public static void menuAlumno(String id) {
         System.out.println("Bienvenido, alumno.\n¿Qué quieres hacer?");
+        System.out.println("  1- consultar un programa de entrenamiento existente");
+        System.out.println("  2- solicitar un nuevo programa de entrenamiento");
+        System.out.println("  3- imprimir un programa de entrenamiento personal existente");
         //TODO
     }
 
