@@ -1,5 +1,8 @@
 package proyectofinal;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  * Subclase de Usuario para los usuarios tipo 'entrenador'
  * @author Gemma Díez Cabeza & María Rabanales González
@@ -15,14 +18,34 @@ public class Entrenador extends Usuario {
     public Entrenador() {
     }
 
-    public Entrenador(int programasPreparados, String id, String password, String nombre, String apellido1, String apellido2, String dni, String email, int telefono) {
-        super(id, password, nombre, apellido1, apellido2, dni, email, telefono);
+    public Entrenador(int programasPreparados, int id, String password, String nombre, String apellido1, String apellido2, String dni, String email, int telefono, String direccion) {
+        super(id, password, nombre, apellido1, apellido2, dni, email, telefono, direccion);
         this.programasPreparados = programasPreparados;
     }
     
     //Métodos:
+    /**
+     * Crea un objeto de tipo entrenador a partir de su id
+     * @param id identificador del usuario tipo entrenador
+     * @return Entrenador objeto tipo entrenador
+     */
+    public static Entrenador crearObjetoEntrenador(String dni) throws SQLException{
+        Entrenador entrenador = new Entrenador();
+        ResultSet lineaEntrenador = Usuario.buscarUsuarioPorId(id);
+        lineaEntrenador.next();
+        entrenador.setId(id);
+        entrenador.setNombre(lineaEntrenador.getString("nombre"));
+        entrenador.setApellido1(lineaEntrenador.getString("apellido1"));
+        entrenador.setApellido2(lineaEntrenador.getString("apellido2"));
+        entrenador.setDni(lineaEntrenador.getString("DNI"));
+        entrenador.setEmail(lineaEntrenador.getString("email"));
+        entrenador.setTelefono(lineaEntrenador.getInt("telefono"));
+        entrenador.setDireccion(lineaEntrenador.getString("direccion"));
+        lineaEntrenador.close();
+        return entrenador;
+    }
+    
     //Getters y setters:
-
     public int getProgramasPreparados() {
         return programasPreparados;
     }
@@ -30,9 +53,5 @@ public class Entrenador extends Usuario {
     public void setProgramasPreparados(int programasPreparados) {
         this.programasPreparados = programasPreparados;
     }
-    
-
-    
-    
     
 }

@@ -1,5 +1,9 @@
 package proyectofinal;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  * Superclase abstracta con los atributos básicos de cualquier usuario (sea entrenador o alumno= que se conecta a la aplicación.
  * @author Gemma Díez Cabeza & María Rabanales González
@@ -8,7 +12,7 @@ package proyectofinal;
 public abstract class Usuario {
     
     //Atributos:
-    private String id;
+    private int id;
     private String password;
     private String nombre;
     private String apellido1;
@@ -16,12 +20,13 @@ public abstract class Usuario {
     private String dni;     //TODO preparar validación para num/letra
     private String email;
     private int telefono;
+    private String direccion;
     
     //Constructores:
     public Usuario() {
     }
 
-    public Usuario(String id, String password, String nombre, String apellido1, String apellido2, String dni, String email, int telefono) {
+    public Usuario(int id, String password, String nombre, String apellido1, String apellido2, String dni, String email, int telefono, String direccion) {
         this.id = id;
         this.password = password;
         this.nombre = nombre;
@@ -30,15 +35,26 @@ public abstract class Usuario {
         this.dni = dni;
         this.email = email;
         this.telefono = telefono;
+        this.direccion = direccion;
     }
     
     //Métodos:
+    public static ResultSet buscarUsuarioPorId(int id) throws SQLException{
+        String query = "SELECT * FROM usuario WHERE id = ?;";
+        PreparedStatement prepStat = Menu.con.prepareStatement(query);
+        prepStat.setInt(1, id);
+        ResultSet queryResult = prepStat.executeQuery();
+        //queryResult no se debe cerrar aquí sino en el método que lo llama
+        prepStat.close();
+        return queryResult;
+    }
+    
     //Getters y setters:
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -97,7 +113,14 @@ public abstract class Usuario {
     public void setTelefono(int telefono) {
         this.telefono = telefono;
     }
-    
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
     
     
     

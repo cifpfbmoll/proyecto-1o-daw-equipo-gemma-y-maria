@@ -49,6 +49,7 @@ public class Menu {
 
     /**
      * Pide usuario y contraseña y los confirma.
+     *
      * @return identificador del usuario
      */
     public static String menuLogIn() {
@@ -68,6 +69,7 @@ public class Menu {
 
     /**
      * Comprueba qué tipo de usuario es.
+     *
      * @param id identificador de usuario
      * @return true si es entrenador, false si es alumno
      */
@@ -89,32 +91,80 @@ public class Menu {
 
     /**
      * Opciones de menú específicas para entrenadores.
+     *
      * @param id identificador de usuario
      */
-    public static void menuEntrenador(String id) {
+    public static void menuEntrenador(String id) throws SQLException{
         System.out.println("Bienvenido, entrenador.\n¿Qué quieres hacer?");
-        System.out.println("  1- crear nuevo programa de entrenamiento");
-        System.out.println("  2- imprimir un programa de entrenamiento existente");
-        System.out.println("  3- como alumno, consultar un programa de entrenamiento existente");
-        System.out.println("  4- como alumno, solicitar un nuevo programa de entrenamiento");
-        System.out.println("  5- como alumno, imprimir un programa de entrenamiento personal existente");
-        //TODO
+        System.out.println("  1- crear programa de entrenamiento");
+        System.out.println("  2- consultar un programa de entrenamiento existente");
+        System.out.println("  3- imprimir un programa de entrenamiento existente");
+        System.out.println("  4- como alumno, consultar un programa de entrenamiento existente");
+        System.out.println("  5- como alumno, solicitar un nuevo programa de entrenamiento");
+        System.out.println("  6- como alumno, imprimir un programa de entrenamiento personal existente");
+        System.out.println("  7- registrar a un nuevo alumno");
+        System.out.println("Introduce el número de tu selección:");
+        String opcion = lector.nextLine();
+
+        switch (opcion) {
+            case "1":
+                Entrenamiento.crearEntrenamiento(id);
+                break;
+            case "2":
+                Entrenamiento.consultarEntrenamientoPorEntrenador(id);
+                break;
+            case "3":
+                //TODO
+                break;
+            case "4":
+                Entrenamiento.consultarEntrenamientoPorAlumno(id);
+                break;
+            case "5":
+                //TODO
+                break;
+            case "6":
+                //TODO
+                break;
+            case "7":
+                //TODO
+                break;
+            default:
+                System.out.println("La opción seleccionada no existe.");
+        }
     }
 
     /**
-     * Opciones de menú específicas para alumnos; un enrtenador puede ser alumno de otros entrenadores..
+     * Opciones de menú específicas para alumnos; un entrenador puede ser alumno
+     * de otros entrenadores..
+     *
      * @param id identificador de usuario
      */
-    public static void menuAlumno(String id) {
+    public static void menuAlumno(String id) throws SQLException{
         System.out.println("Bienvenido, alumno.\n¿Qué quieres hacer?");
         System.out.println("  1- consultar un programa de entrenamiento existente");
         System.out.println("  2- solicitar un nuevo programa de entrenamiento");
         System.out.println("  3- imprimir un programa de entrenamiento personal existente");
-        //TODO
+        System.out.println("Introduce el número de tu selección:");
+        String opcion = lector.nextLine();
+
+        switch (opcion) {
+            case "1":
+                Entrenamiento.consultarEntrenamientoPorAlumno(id);
+                break;
+            case "2":
+                //TODO
+                break;
+            case "3":
+                //TODO
+                break;
+            default:
+                System.out.println("La opción seleccionada no existe.");
+        }
     }
 
     /**
      * Comprueba si el valor que se pasa existe en tablas.
+     *
      * @param texto cuya validez y/o existencia en tablas se desea comprobar
      * @return verdadero si está en tablas
      */
