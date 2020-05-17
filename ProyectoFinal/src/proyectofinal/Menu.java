@@ -52,15 +52,20 @@ public class Menu {
      *
      * @return identificador del usuario
      */
-    public static String menuLogIn() {
+    public static String menuLogIn() throws SQLException {
         String usuario = "";
+        String contrasena = "";
         do {
             System.out.println("Introduce DNI del usuario: ");
             usuario = lector.nextLine();
-        } while (!comprobarValidez(usuario, "dni"));
+            contrasena = comprobarUsuario(usuario);
+            if (contrasena == "error") {
+                System.out.println("Este usuario no existe.");
+            }
+        } while (contrasena.equals("error"));
         System.out.println("Introduce contraseña: ");
-        String contrasena = lector.nextLine();
-        if (!comprobarValidez(contrasena, "password")) {
+        String password = lector.nextLine();
+        if (!password.equals(contrasena)) {
             System.out.println("La contraseña no es válida para este usuario.");
             return "";
         }
@@ -168,11 +173,25 @@ public class Menu {
      * @param texto cuya validez y/o existencia en tablas se desea comprobar
      * @return verdadero si está en tablas
      */
-    public static boolean comprobarValidez(String texto, String columna) {
-        boolean textoValido = false;
-        //TODO comparar con bbdd
-        return textoValido;
+    public static String comprobarUsuario(String texto) throws SQLException{
+        String password = "error";
+        String query = "SELECT password FROM entrenamiento WHERE DNI = ?;";
+        PreparedStatement prepStat = Menu.con.prepareStatement(query);
+        prepStat.setString(1, texto);
+        ResultSet queryResult = prepStat.executeQuery();
+        //Como no tenemos método isEmpty, la solución es:
+        if (queryResult.next() != false) {
+            password = queryResult.getString("password");
+        }
+        //lógica de esto: si existe un resultado de esta búsqueda, entonces existe la entrada: es válida
+        if (queryResult != null) {
+            queryResult.close();
+        }
+        prepStat.close();
+        //aprovecho para obtener la contraseña y así no tengo que hacer la búsqueda mil veces
+        return password;
     }
+    
 
     /**
      * Obtiene la conexión con la base de datos.
