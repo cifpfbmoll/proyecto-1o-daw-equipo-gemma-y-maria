@@ -6,6 +6,13 @@ package proyectofinal;
  * @version 20.05.10.am
  */
 public enum TipoEjercicio {
-    YOGA,
-    FITBOXING
+    CARDIO,
+    GYMNASTICS,
+    HYPERTROPHY,
+    MOBILITY,
+    REHABILITATION,
+    RUNNING_TECHNIQUE,
+    STRONGMAN,
+    WEIGHT_LIFTING,
+    YOGA
 }

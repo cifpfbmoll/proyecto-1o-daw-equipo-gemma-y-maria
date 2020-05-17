@@ -14,8 +14,14 @@ public class Ejercicio {
     //TODO: TIPO ENUM
     
     //Constructores:
+    public Ejercicio() {
+    }
+    
+    
     //TODO
     
     //Métodos:
     //TODO
+
+    
 }
