@@ -55,12 +55,12 @@ public class Menu {
     public static String menuLogIn() {
         String usuario = "";
         do {
-            System.out.println("Introduce usuario: ");
+            System.out.println("Introduce DNI del usuario: ");
             usuario = lector.nextLine();
-        } while (!comprobarValidez(usuario));
+        } while (!comprobarValidez(usuario, "dni"));
         System.out.println("Introduce contraseña: ");
         String contrasena = lector.nextLine();
-        if (!comprobarValidez(contrasena)) {
+        if (!comprobarValidez(contrasena, "password")) {
             System.out.println("La contraseña no es válida para este usuario.");
             return "";
         }
@@ -168,7 +168,7 @@ public class Menu {
      * @param texto cuya validez y/o existencia en tablas se desea comprobar
      * @return verdadero si está en tablas
      */
-    public static boolean comprobarValidez(String texto) {
+    public static boolean comprobarValidez(String texto, String columna) {
         boolean textoValido = false;
         //TODO comparar con bbdd
         return textoValido;

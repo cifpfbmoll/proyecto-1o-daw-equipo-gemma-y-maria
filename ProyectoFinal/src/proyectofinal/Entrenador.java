@@ -18,8 +18,8 @@ public class Entrenador extends Usuario {
     public Entrenador() {
     }
 
-    public Entrenador(int programasPreparados, int id, String password, String nombre, String apellido1, String apellido2, String dni, String email, int telefono, String direccion) {
-        super(id, password, nombre, apellido1, apellido2, dni, email, telefono, direccion);
+    public Entrenador(int programasPreparados, String password, String nombre, String apellido1, String apellido2, String dni, String email, int telefono, String direccion) {
+        super(password, nombre, apellido1, apellido2, dni, email, telefono, direccion);
         this.programasPreparados = programasPreparados;
     }
     
@@ -31,16 +31,17 @@ public class Entrenador extends Usuario {
      */
     public static Entrenador crearObjetoEntrenador(String dni) throws SQLException{
         Entrenador entrenador = new Entrenador();
-        ResultSet lineaEntrenador = Usuario.buscarUsuarioPorId(id);
+        ResultSet lineaEntrenador = Usuario.buscarUsuarioPorDni(dni);
         lineaEntrenador.next();
-        entrenador.setId(id);
+        entrenador.setDni(dni);
         entrenador.setNombre(lineaEntrenador.getString("nombre"));
         entrenador.setApellido1(lineaEntrenador.getString("apellido1"));
         entrenador.setApellido2(lineaEntrenador.getString("apellido2"));
-        entrenador.setDni(lineaEntrenador.getString("DNI"));
         entrenador.setEmail(lineaEntrenador.getString("email"));
         entrenador.setTelefono(lineaEntrenador.getInt("telefono"));
         entrenador.setDireccion(lineaEntrenador.getString("direccion"));
+        //TODO programas preparados
+        
         lineaEntrenador.close();
         return entrenador;
     }

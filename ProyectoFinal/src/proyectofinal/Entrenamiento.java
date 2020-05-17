@@ -107,7 +107,7 @@ public class Entrenamiento {
         ResultSet queryResult = prepStat.executeQuery();
         queryResult.next();
         programa.setCodigo(codigo);
-        programa.setEntrenador(crearObjetoEntrenador(queryResult.getString("entrenador")));
+        programa.setEntrenador(Entrenador.crearObjetoEntrenador(queryResult.getString("entrenador")));
         //TODO comletar
 
         if (queryResult != null) {

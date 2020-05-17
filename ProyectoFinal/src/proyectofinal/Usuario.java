@@ -12,7 +12,6 @@ import java.sql.SQLException;
 public abstract class Usuario {
     
     //Atributos:
-    private int id;
     private String password;
     private String nombre;
     private String apellido1;
@@ -26,8 +25,7 @@ public abstract class Usuario {
     public Usuario() {
     }
 
-    public Usuario(int id, String password, String nombre, String apellido1, String apellido2, String dni, String email, int telefono, String direccion) {
-        this.id = id;
+    public Usuario(String password, String nombre, String apellido1, String apellido2, String dni, String email, int telefono, String direccion) {
         this.password = password;
         this.nombre = nombre;
         this.apellido1 = apellido1;
@@ -39,10 +37,10 @@ public abstract class Usuario {
     }
     
     //Métodos:
-    public static ResultSet buscarUsuarioPorId(int id) throws SQLException{
-        String query = "SELECT * FROM usuario WHERE id = ?;";
+    public static ResultSet buscarUsuarioPorDni(String dni) throws SQLException{
+        String query = "SELECT * FROM usuario WHERE DNI = ?;";
         PreparedStatement prepStat = Menu.con.prepareStatement(query);
-        prepStat.setInt(1, id);
+        prepStat.setString(1, dni);
         ResultSet queryResult = prepStat.executeQuery();
         //queryResult no se debe cerrar aquí sino en el método que lo llama
         prepStat.close();
@@ -50,14 +48,6 @@ public abstract class Usuario {
     }
     
     //Getters y setters:
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getPassword() {
         return password;
     }
