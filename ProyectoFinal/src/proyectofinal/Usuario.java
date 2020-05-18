@@ -5,27 +5,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Superclase abstracta con los atributos básicos de cualquier usuario (sea entrenador o alumno= que se conecta a la aplicación.
+ * Superclase abstracta con los atributos básicos de cualquier usuario (sea
+ * entrenador o alumno) que se conecta a la aplicación.
+ *
  * @author Gemma Díez Cabeza & María Rabanales González
  * @version 20.05.10.am
  */
 public abstract class Usuario {
-    
+
     //Atributos:
+    private String dni;     //TODO preparar validación para num/letra
     private String password;
     private String nombre;
     private String apellido1;
     private String apellido2;
-    private String dni;     //TODO preparar validación para num/letra
     private String email;
     private int telefono;
     private String direccion;
-    
+
     //Constructores:
     public Usuario() {
     }
 
-    public Usuario(String password, String nombre, String apellido1, String apellido2, String dni, String email, int telefono, String direccion) {
+    public Usuario(String dni, String password, String nombre, String apellido1, String apellido2, String email, int telefono, String direccion) {
         this.password = password;
         this.nombre = nombre;
         this.apellido1 = apellido1;
@@ -35,9 +37,15 @@ public abstract class Usuario {
         this.telefono = telefono;
         this.direccion = direccion;
     }
-    
+
     //Métodos:
-    public static ResultSet buscarUsuarioPorDni(String dni) throws SQLException{
+    /**
+     * Permite encontrar un usuario en base a su DNI.
+     * @param dni
+     * @return queryResult (tipoResultSet)
+     * @throws SQLException 
+     */
+    public static ResultSet buscarUsuarioPorDni(String dni) throws SQLException {
         String query = "SELECT * FROM usuario WHERE DNI = ?;";
         PreparedStatement prepStat = Menu.con.prepareStatement(query);
         prepStat.setString(1, dni);
@@ -47,6 +55,29 @@ public abstract class Usuario {
         return queryResult;
     }
     
+    public void crearNuevoUsuario() {
+        System.out.println("  -dni:");
+        String userDni = Menu.lector.nextLine();
+        this.setDni(userDni);
+        System.out.println("  -contraseña:");
+        String userPw = Menu.lector.nextLine();
+        this.setPassword(userPw);
+        //TODO: confirmarContraseña()
+        System.out.println("  -nombre:");
+        String userNombre = Menu.lector.nextLine();
+        this.setNombre(userNombre);
+        System.out.println("  -primer apellido:");
+        String userApellido1 = Menu.lector.nextLine();
+        this.setApellido1(userApellido1);
+        System.out.println("  -segundo apellido:");
+        String userApellido2 = Menu.lector.nextLine();
+        this.setApellido2(userApellido2);
+        System.out.println("  -e-mail:");
+        String userEmail = Menu.lector.nextLine();
+        this.setEmail(userEmail);
+        //TODO acabar de completar
+    }
+
     //Getters y setters:
     public String getPassword() {
         return password;
@@ -111,7 +142,5 @@ public abstract class Usuario {
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
-    
-    
-    
+
 }

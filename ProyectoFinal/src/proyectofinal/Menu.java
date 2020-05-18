@@ -21,8 +21,7 @@ public class Menu {
     //Conexión es algo que querremos usar en prácticamente todos los métodos, lo que es la definición de una variable global
 
     /**
-     * Método main: inicia la conexión con la base de datos y llama al menú
-     * principal
+     * Método main: inicia la conexión con la base de datos y llama al menú principal
      *
      * @param args para main
      */
@@ -59,7 +58,7 @@ public class Menu {
             System.out.println("Introduce DNI del usuario: ");
             usuario = lector.nextLine();
             contrasena = comprobarUsuario(usuario);
-            if (contrasena == "error") {
+            if (contrasena.equals("error")) {
                 System.out.println("Este usuario no existe.");
             }
         } while (contrasena.equals("error"));
@@ -80,7 +79,7 @@ public class Menu {
      */
     public static boolean comprobarEntrenador(String id) throws SQLException {
         boolean esEntrenador = false;
-        String query = "SELECT discriminador FROM usuario WHERE ID = ?;";
+        String query = "SELECT discriminador FROM usuario WHERE DNI = ?;";
         PreparedStatement prepStat = con.prepareStatement(query);
         prepStat.setString(1, id);
         ResultSet queryResult = prepStat.executeQuery();
@@ -110,6 +109,7 @@ public class Menu {
             System.out.println("  5- como alumno, solicitar un nuevo programa de entrenamiento");
             System.out.println("  6- como alumno, imprimir un programa de entrenamiento personal existente");
             System.out.println("  7- registrar a un nuevo alumno");
+            //TODO mejora final: admin q cree entrenadores tambien
             System.out.println("  0- salir");
             System.out.println("Introduce el número de tu selección:");
             String opcion = lector.nextLine();
@@ -134,7 +134,9 @@ public class Menu {
                     //TODO
                     break;
                 case "7":
-                    //TODO
+                    Alumno alu = new Alumno();
+                    alu.crearNuevoAlumno();
+                    alu.introducirNuevoAlumno();
                     break;
                 case "0":
                     salir = true;
@@ -188,10 +190,9 @@ public class Menu {
      * @param texto cuya validez y/o existencia en tablas se desea comprobar
      * @return verdadero si está en tablas
      */
-    public static String comprobarUsuario(String texto) throws SQLException{
     public static String comprobarUsuario(String texto) throws SQLException {
         String password = "error";
-        String query = "SELECT password FROM entrenamiento WHERE DNI = ?;";
+        String query = "SELECT password FROM usuario WHERE DNI = ?;";
         PreparedStatement prepStat = Menu.con.prepareStatement(query);
         prepStat.setString(1, texto);
         ResultSet queryResult = prepStat.executeQuery();
@@ -207,7 +208,6 @@ public class Menu {
         //aprovecho para obtener la contraseña y así no tengo que hacer la búsqueda mil veces
         return password;
     }
-    
 
     /**
      * Obtiene la conexión con la base de datos.
