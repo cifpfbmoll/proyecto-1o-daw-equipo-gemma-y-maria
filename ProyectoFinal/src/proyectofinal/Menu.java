@@ -188,6 +188,7 @@ public class Menu {
      * @param texto cuya validez y/o existencia en tablas se desea comprobar
      * @return verdadero si está en tablas
      */
+    public static String comprobarUsuario(String texto) throws SQLException{
     public static String comprobarUsuario(String texto) throws SQLException {
         String password = "error";
         String query = "SELECT password FROM entrenamiento WHERE DNI = ?;";
@@ -206,6 +207,7 @@ public class Menu {
         //aprovecho para obtener la contraseña y así no tengo que hacer la búsqueda mil veces
         return password;
     }
+    
 
     /**
      * Obtiene la conexión con la base de datos.
