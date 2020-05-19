@@ -66,13 +66,15 @@ public class Entrenamiento {
 
     public static void consultarEntrenamiento(String idEntrenador, String idAlumno) throws SQLException {
         //TODO: cambiar el select para que de también el nombre de alumno a través de su id
-        String query = "SELECT train_code, fecha_creacion FROM entrenamiento ";
-        PreparedStatement prepStat = Menu.con.prepareStatement(query);
+        String query = "SELECT train_code, fecha_creacion FROM ENTRENAMIENTO ";
+        PreparedStatement prepStat = null ;
         if (idAlumno == null) {
-            query += "WHERE id_entrenador = ?;";
+            query += "WHERE dni_entrenador = ?;";
+             prepStat = Menu.con.prepareStatement(query);
             prepStat.setString(1, idEntrenador);
         } else if (idEntrenador == null) {
-            query += "WHERE id_alumno = ?;";
+            query += "WHERE dni_alumno = ?;";
+            prepStat = Menu.con.prepareStatement(query);
             prepStat.setString(1, idAlumno);
         }
         ResultSet queryResult = prepStat.executeQuery();
@@ -80,7 +82,7 @@ public class Entrenamiento {
         System.out.println("Entrenamientos encontrados:");
         while (queryResult.next()) {
             codigosEncontrados.add(queryResult.getInt("train_code"));
-            System.out.println("  código " + queryResult.getInt("train_code") + "; fecha de creación: ");
+            System.out.println("  código " + queryResult.getInt("train_code") + "; fecha de creación: " + queryResult.getDate("fecha_creacion"));
             //TODO añadir la conversion a fecha            
         }
         if (queryResult != null) {
@@ -101,7 +103,7 @@ public class Entrenamiento {
     public static Entrenamiento crearObjetoEntrenamiento(int codigo) throws SQLException {
         Entrenamiento programa = new Entrenamiento();
         //falta fecha
-        String query = "SELECT * FROM entrenamiento WHERE e.train_code = ?;";
+        String query = "SELECT * FROM ENTRENAMIENTO WHERE train_code = ?;";
         PreparedStatement prepStat = Menu.con.prepareStatement(query);
         prepStat.setInt(1, codigo);
         ResultSet queryResult = prepStat.executeQuery();
@@ -121,7 +123,7 @@ public class Entrenamiento {
         System.out.println("Información del programa de entrenamiento:");
         System.out.println("  -código: " + this.getCodigo());
         System.out.println("  -entrenador: ");
-        System.out.println("  -alumno: " );
+        System.out.println("  -alumno: ");
         System.out.println("  -fecha de creación: " + this.getFecha());
     }
 
@@ -165,5 +167,5 @@ public class Entrenamiento {
     public void setListaEjercicios(ArrayList<Ejercicio> listaEjercicios) {
         this.listaEjercicios = listaEjercicios;
     }
-    
+
 }
