@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Clase para el menú y desarrollo principal de la aplicación con método main.
@@ -21,11 +23,17 @@ public class Menu {
     //Conexión es algo que querremos usar en prácticamente todos los métodos, lo que es la definición de una variable global
 
     /**
-     * Método main: inicia la conexión con la base de datos y llama al menú principal
+     * Método main: inicia la conexión con la base de datos y llama al menú
+     * principal
      *
      * @param args para main
      */
     public static void main(String[] args) {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
         //La conexión tiene autoclose: con y con2 son el mismo objeto desde dos puntos diferentes.
         //Si se quiere con como variable estática no se puede iniciar en el try().
         try (Connection con2 = obtenerConexion()) {
@@ -79,7 +87,7 @@ public class Menu {
      */
     public static boolean comprobarEntrenador(String id) throws SQLException {
         boolean esEntrenador = false;
-        String query = "SELECT discriminador FROM usuario WHERE DNI = ?;";
+        String query = "SELECT discriminador FROM USUARIO WHERE DNI = ?;";
         PreparedStatement prepStat = con.prepareStatement(query);
         prepStat.setString(1, id);
         ResultSet queryResult = prepStat.executeQuery();
@@ -192,7 +200,7 @@ public class Menu {
      */
     public static String comprobarUsuario(String texto) throws SQLException {
         String password = "error";
-        String query = "SELECT password FROM usuario WHERE DNI = ?;";
+        String query = "SELECT password FROM USUARIO WHERE DNI = ?;";
         PreparedStatement prepStat = Menu.con.prepareStatement(query);
         prepStat.setString(1, texto);
         ResultSet queryResult = prepStat.executeQuery();
