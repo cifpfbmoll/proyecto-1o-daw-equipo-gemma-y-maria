@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.EnumSet;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -177,7 +178,7 @@ public class Menu {
                     Entrenamiento.consultarEntrenamientoPorAlumno(id);
                     break;
                 case "2":
-                    //TODO
+                    solicitarEntrenamiento(id);
                     break;
                 case "3":
                     //TODO
@@ -215,6 +216,46 @@ public class Menu {
         prepStat.close();
         //aprovecho para obtener la contraseña y así no tengo que hacer la búsqueda mil veces
         return password;
+    }
+
+    //TODO plantear si es mejor pasar esto a usuario
+    public static void solicitarEntrenamiento(String id) throws SQLException{
+        System.out.println("¿Qué tipo de entrenamiento quieres solicitar?");
+        for (int i = 0; i < TipoEjercicio.values().length; i++) {
+            EnumSet.allOf(TipoEjercicio.class)
+                    .forEach(tipo -> System.out.println("  -" + tipo + ":" + tipo.getTextoTipoEjercicio()));
+        }
+        System.out.println("Introduce el código de la opción elegida:");
+        String opcionTipo = lector.nextLine();
+        while (!TipoEjercicio.comprobarTipo(opcionTipo)) {
+            System.out.println("Error en la selección.");
+            System.out.println("Introduce de nuevo el código de la opción elegida:");
+            opcionTipo = lector.nextLine();
+        }
+        guardarSolicitudEntrenamiento(id, opcionTipo);
+    }
+
+    public static void guardarSolicitudEntrenamiento(String id, String tipo) throws SQLException {
+        boolean estadoAC = Menu.con.getAutoCommit();
+        //TODO confirmar q no ha solicitado un programa anteriormente
+        try {
+            Menu.con.setAutoCommit(false);
+            String query = "UPDATE usuario SET tipo_prog_solicitado = ? where DNI = ?;";
+            //TODO completar con el resto de campos
+            PreparedStatement prepStat = Menu.con.prepareStatement(query);
+            prepStat.setString(1, tipo);
+            prepStat.setString(2, id);
+            prepStat.execute();
+            Menu.con.commit();
+            System.out.println("Solicitud de programa de entrenamiento realizada.");
+            prepStat.close();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            System.out.println("Error en la solicitud.");
+            Menu.con.rollback();
+        } finally {
+            Menu.con.setAutoCommit(estadoAC);
+        }
     }
 
     /**

@@ -12,7 +12,8 @@ CREATE TABLE USUARIO (
   email varchar(50) DEFAULT NULL,
   telefono int DEFAULT NULL,
   direccion text DEFAULT NULL,
-  num_prog_prep int DEFAULT NULL
+  num_prog_prep int DEFAULT NULL,
+  tipo_prog_solicitado varchar(3) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS EJERCICIO;
@@ -51,27 +52,20 @@ CREATE TABLE LINEA_ENTRENAMIENTO (
   tiempo_min int(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-DROP TABLE IF EXISTS TIPO_BUSCADO;
-CREATE TABLE TIPO_BUSCADO (
-  usuario varchar(9) NOT NULL, 
-  tipo_ejercicio varchar(4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-ALTER TABLE USUARIO
-  ADD PRIMARY KEY (DNI);
+ALTER TABLE TIPO
+  ADD PRIMARY KEY (tipo_code);
 
 ALTER TABLE EJERCICIO
   ADD PRIMARY KEY (ex_code);
 
-ALTER TABLE TIPO
-  ADD PRIMARY KEY (tipo_code);
+ALTER TABLE USUARIO
+  ADD PRIMARY KEY (DNI),
+  ADD CONSTRAINT tipo_prog_fk1 FOREIGN KEY (tipo_prog_solicitado) REFERENCES TIPO (tipo_code);
 
 ALTER TABLE ENTRENAMIENTO
   ADD PRIMARY KEY (train_code),
   ADD CONSTRAINT train_ex_fk1 FOREIGN KEY (dni_entrenador) REFERENCES USUARIO (DNI),
   ADD CONSTRAINT train_ex_fk2 FOREIGN KEY (dni_alumno) REFERENCES USUARIO (DNI);
-
 
 ALTER TABLE TIPO_EJERCICIO
   ADD PRIMARY KEY (ej_code,tipo),
@@ -83,32 +77,38 @@ ALTER TABLE LINEA_ENTRENAMIENTO
   ADD CONSTRAINT line_ex_fk1 FOREIGN KEY (codigo_entreno) REFERENCES ENTRENAMIENTO (train_code),
   ADD CONSTRAINT line_ex_fk2 FOREIGN KEY (codigo_ejercicio) REFERENCES EJERCICIO (ex_code);
 
-ALTER TABLE TIPO_BUSCADO
-  ADD PRIMARY KEY (usuario, tipo_ejercicio),
-  ADD CONSTRAINT tipo_b_fk1 FOREIGN KEY (usuario) REFERENCES USUARIO (DNI),
-  ADD CONSTRAINT tipo_b_fk2 FOREIGN KEY (tipo_ejercicio) REFERENCES TIPO (tipo_code);
+INSERT INTO TIPO (tipo_code, nombre) VALUES
+('WF', 'WEIGHT_LIFTING'),
+('YG', 'YOGA'),
+('RH', 'REHABILITATION'),
+('GM', 'GYMNASTICS'),
+('ST', 'STRONGMAN'),
+('MB', 'MOBILITY'),
+('RT', 'RUNNING_TECHNIQUE'),
+('HT', 'HYPERTROPHY'),
+('CD', 'CARDIO');
 
-INSERT INTO USUARIO (DNI, password, discriminador, nombre, apellido1, apellido2, email, telefono, direccion, num_prog_prep) VALUES
-('11111111A', 'usuario001', 'entrenador', 'Oswald', 'Cobblepot', 'Penguin', 'oswaldc@gmail.com', 600000001, 'Pingu Ave. 66 Gotham City  KT13 8XQ', 10 ),
-('22222222B', 'usuario002', 'entrenador', 'Harley', 'Queen', 'Joker', 'harleyqk@gmail.com', 600000002, 'Madness St. 24 Kansas  KT13 8XL', 10 ),
-('33333333C', 'usuario003', 'entrenador', 'Edward', 'Nygma', 'Enigma', 'edwardnygma@gmail.com', 600000003, 'The Riddler St. 48 Gotham City  KH13 8XQ', 10 ),
-('44444444D', 'usuario004', 'entrenador', 'Alexander', 'Luthor', null, 'lexluthor@gmail.com', 600000004, 'Kryptonite Road 67 Metropolis  KT13 9XQ', 10 ),
-('55555555E', 'usuario005', 'entrenador', 'Alice', 'Kane', 'Beth', 'alicekane@gmail.com', 600000005, 'Mansion Wayne Road s/n Gotham City  KT13 8PQ', 10 ),
-('66666666F', 'usuario006', 'alumno', 'Selina', 'Kyle', 'Catwoman', 'catwoman@gmail.com', 600000006, 'The little Rabbit St. 44 Gotham City  KH13 8XQ', 10),
-('77777777G', 'usuario007', 'alumno', 'Bruce', 'Wayne', 'Batman', 'brucewayne@gmail.com', 600000007, 'Mansion Wayne Road s/n Gotham City  KT13 8XQ', null ),
-('88888888H', 'usuario008', 'alumno', 'Clark', 'Kent', 'Superman', 'clarkkent@gmail.com', 600000008, 'Long Field St. 24 Kansas  KT13 8XL', null ),
-('99999999I', 'usuario009', 'alumno', 'Kara', 'Danvers', 'Supergirl', 'karadanvers@gmail.com', 600000009, 'The CatCo s/n Central City  KT00 8XQ', null ),
-('00000000J', 'usuario010', 'alumno', 'Barry', 'Allen', 'Flash', 'barryallen@gmail.com', 600000010, 'Running Home St. 99 Star City  KT13 5XQ', null ),
-('11111111K', 'usuario011', 'alumno', 'Oliver', 'Queen', 'Arrow', 'oliverqueen@gmail.com', 600000011, 'Mansion Queen Road s/n Starling City  KT13 8IQ', null ),
-('22222222L', 'usuario012', 'alumno', 'Sara', 'Lance', 'Canary', 'saralance@gmail.com', 600000012, 'Time Ship Road 33 s/n Time City  KA13 8XQ', null ),
-('33333333M', 'usuario013', 'alumno', 'Kate', 'Kane', 'Batwoman', 'katekane@gmail.com', 600000013, 'Wayne Enterprises Ave. s/n Gotham City  KM13 80Q', null ),
-('44444444N', 'usuario014', 'alumno', 'Helena', 'Bertinelli', 'Huntress', 'helenaberti@gmail.com', 600000014, 'Mansion Bertinelli Road s/n Starling City  KT33 8XQ', null ),
-('55555555O', 'usuario015', 'alumno', 'Diana', 'Prince', 'Wonder', 'dianaprince@gmail.com', 600000015, 'The Sea s/n Water City  KT10 8UY', null ),
-('66666666P', 'usuario016', 'alumno', 'Arthur', 'Curry', 'Aquaman', 'arthurcurry@gmail.com', 600000016, 'Mansion Wayne Road s/n Gotham City  KT13 7YY', null ),
-('77777777Q', 'usuario017', 'alumno', 'Alfred', 'Pennyworth', 'Butler', 'alfredpenny@gmail.com', 600000017, 'Mansion Wayne Road s/n Gotham City  KT13 8PPQ', null ), 
-('88888888R', 'usuario018', 'alumno', 'Victor', 'Stone', 'Cyborg', 'victorstone@gmail.com', 600000018, 'Technology Ave. s/n Gotham City  KK13 8XQ', null ),
-('99999999S', 'usuario019', 'alumno', 'John', 'Constantine', 'Witcher', 'johnconstantine@gmail.com', 600000019, 'Hellskitchen 23 Starling City  IT13 8XQ', null ),
-('00000000T', 'usuario020', 'alumno', 'Rachel', 'Roth', 'Raven', 'rachelroth@gmail.com', 600000020, 'The darkest avenur 99 Chicago City  KT00 8XQ', null );
+INSERT INTO USUARIO (DNI, password, discriminador, nombre, apellido1, apellido2, email, telefono, direccion, num_prog_prep, tipo_prog_solicitado) VALUES
+('11111111A', 'usuario001', 'entrenador', 'Oswald', 'Cobblepot', 'Penguin', 'oswaldc@gmail.com', 600000001, 'Pingu Ave. 66 Gotham City  KT13 8XQ', 10, null ),
+('22222222B', 'usuario002', 'entrenador', 'Harley', 'Queen', 'Joker', 'harleyqk@gmail.com', 600000002, 'Madness St. 24 Kansas  KT13 8XL', 10, null ),
+('33333333C', 'usuario003', 'entrenador', 'Edward', 'Nygma', 'Enigma', 'edwardnygma@gmail.com', 600000003, 'The Riddler St. 48 Gotham City  KH13 8XQ', 10, null ),
+('44444444D', 'usuario004', 'entrenador', 'Alexander', 'Luthor', null, 'lexluthor@gmail.com', 600000004, 'Kryptonite Road 67 Metropolis  KT13 9XQ', 10, 'WF' ),
+('55555555E', 'usuario005', 'entrenador', 'Alice', 'Kane', 'Beth', 'alicekane@gmail.com', 600000005, 'Mansion Wayne Road s/n Gotham City  KT13 8PQ', 10, null ),
+('66666666F', 'usuario006', 'alumno', 'Selina', 'Kyle', 'Catwoman', 'catwoman@gmail.com', 600000006, 'The little Rabbit St. 44 Gotham City  KH13 8XQ', 10, 'YG'),
+('77777777G', 'usuario007', 'alumno', 'Bruce', 'Wayne', 'Batman', 'brucewayne@gmail.com', 600000007, 'Mansion Wayne Road s/n Gotham City  KT13 8XQ', null, 'RH' ),
+('88888888H', 'usuario008', 'alumno', 'Clark', 'Kent', 'Superman', 'clarkkent@gmail.com', 600000008, 'Long Field St. 24 Kansas  KT13 8XL', null, null ),
+('99999999I', 'usuario009', 'alumno', 'Kara', 'Danvers', 'Supergirl', 'karadanvers@gmail.com', 600000009, 'The CatCo s/n Central City  KT00 8XQ', null, 'WF' ),
+('00000000J', 'usuario010', 'alumno', 'Barry', 'Allen', 'Flash', 'barryallen@gmail.com', 600000010, 'Running Home St. 99 Star City  KT13 5XQ', null, 'HT' ),
+('11111111K', 'usuario011', 'alumno', 'Oliver', 'Queen', 'Arrow', 'oliverqueen@gmail.com', 600000011, 'Mansion Queen Road s/n Starling City  KT13 8IQ', null, 'RT' ),
+('22222222L', 'usuario012', 'alumno', 'Sara', 'Lance', 'Canary', 'saralance@gmail.com', 600000012, 'Time Ship Road 33 s/n Time City  KA13 8XQ', null, null ),
+('33333333M', 'usuario013', 'alumno', 'Kate', 'Kane', 'Batwoman', 'katekane@gmail.com', 600000013, 'Wayne Enterprises Ave. s/n Gotham City  KM13 80Q', null, null ),
+('44444444N', 'usuario014', 'alumno', 'Helena', 'Bertinelli', 'Huntress', 'helenaberti@gmail.com', 600000014, 'Mansion Bertinelli Road s/n Starling City  KT33 8XQ', null, 'GM' ),
+('55555555O', 'usuario015', 'alumno', 'Diana', 'Prince', 'Wonder', 'dianaprince@gmail.com', 600000015, 'The Sea s/n Water City  KT10 8UY', null, 'CD' ),
+('66666666P', 'usuario016', 'alumno', 'Arthur', 'Curry', 'Aquaman', 'arthurcurry@gmail.com', 600000016, 'Mansion Wayne Road s/n Gotham City  KT13 7YY', null, null ),
+('77777777Q', 'usuario017', 'alumno', 'Alfred', 'Pennyworth', 'Butler', 'alfredpenny@gmail.com', 600000017, 'Mansion Wayne Road s/n Gotham City  KT13 8PPQ', null, 'HT' ), 
+('88888888R', 'usuario018', 'alumno', 'Victor', 'Stone', 'Cyborg', 'victorstone@gmail.com', 600000018, 'Technology Ave. s/n Gotham City  KK13 8XQ', null, null ),
+('99999999S', 'usuario019', 'alumno', 'John', 'Constantine', 'Witcher', 'johnconstantine@gmail.com', 600000019, 'Hellskitchen 23 Starling City  IT13 8XQ', null, 'RT' ),
+('00000000T', 'usuario020', 'alumno', 'Rachel', 'Roth', 'Raven', 'rachelroth@gmail.com', 600000020, 'The darkest avenur 99 Chicago City  KT00 8XQ', null, 'YG' );
 
 
 INSERT INTO EJERCICIO (ex_code, nombre, descripcion) VALUES
@@ -141,17 +141,6 @@ INSERT INTO EJERCICIO (ex_code, nombre, descripcion) VALUES
 ('HB', 'HIPS MONILITY', 'Rotación de caderas desde el suelo levantando rodillas'),
 ('HW', 'HANDSTAND WALK', 'Caminar haciendo el pino'),
 ('DP', 'DOG POSITION', 'V invertida con sólo manos y pies de apoyo.');
-
-INSERT INTO TIPO (tipo_code, nombre) VALUES
-('WF', 'WEIGHT_LIFTING'),
-('YG', 'YOGA'),
-('RH', 'REHABILITATION'),
-('GM', 'GYMNASTICS'),
-('ST', 'STRONGMAN'),
-('MB', 'MOBILITY'),
-('RT', 'RUNNING_TECHNIQUE'),
-('HT', 'HYPERTROPHY'),
-('CD', 'CARDIO');
 
 INSERT INTO TIPO_EJERCICIO (ej_code, tipo) VALUES
 ('DL', 'WF'),
@@ -252,36 +241,3 @@ INSERT INTO LINEA_ENTRENAMIENTO (codigo_entreno, codigo_ejercicio, repeticiones,
 (15, 'RW', 20, null),
 (15, 'KF', null, null),
 (15, 'FS', 20, null);
-
-INSERT INTO TIPO_BUSCADO (usuario, tipo_ejercicio) VALUES
-  ('66666666F', 'GM'),
-  ('77777777G', 'GM'),
-  ('77777777G', 'YG'),
-  ('88888888H', 'WF'),
-  ('99999999I', 'CD'),
-  ('99999999I', 'GM'),
-  ('00000000J', 'RH'),
-  ('11111111K', 'HT'),
-  ('22222222L', 'HT'),
-  ('22222222L', 'GM'),
-  ('33333333M', 'HT'),
-  ('33333333M', 'GM'),
-  ('33333333M', 'CD'),  
-  ('44444444N', 'ST'),
-  ('55555555O', 'WF'),
-  ('55555555O', 'RH'),
-  ('66666666P', 'MB'),
-  ('66666666P', 'CD'),
-  ('66666666P', 'ST'),
-  ('77777777Q', 'YG'),
-  ('77777777Q', 'GM'),
-  ('77777777Q', 'MB'),
-  ('88888888R', 'MB'),
-  ('88888888R', 'WF'),
-  ('88888888R', 'ST'),
-  ('99999999S', 'GM'),
-  ('99999999S', 'MB'),
-  ('99999999S', 'RT'),
-  ('00000000T', 'CD'),
-  ('00000000T', 'RH'),
-  ('00000000T', 'HT');

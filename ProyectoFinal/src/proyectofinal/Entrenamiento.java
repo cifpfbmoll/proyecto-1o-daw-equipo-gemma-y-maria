@@ -37,6 +37,7 @@ public class Entrenamiento {
      * @param id identificador del entrenador que crea el programa
      */
     public static void crearEntrenamiento(String id) {
+        //TODO buscar las solicitudes de entrenamiento
         System.out.println("¿Qué tipo de entrenamiento quieres crear?");
         System.out.println("  1- crear programa nuevo");
         System.out.println("  2- copiar programa existente");
@@ -110,7 +111,7 @@ public class Entrenamiento {
         queryResult.next();
         programa.setCodigo(codigo);
         programa.setEntrenador(Entrenador.crearObjetoEntrenador(queryResult.getString("entrenador")));
-        //TODO comletar
+        //TODO completar
 
         if (queryResult != null) {
             queryResult.close();
