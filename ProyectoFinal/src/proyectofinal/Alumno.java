@@ -80,6 +80,7 @@ public class Alumno extends Usuario {
         lineaAlumno.close();
         return alumno;
     }
+    
     //Getters y setters:
 
     public TipoEjercicio getTipoEjercicio() {

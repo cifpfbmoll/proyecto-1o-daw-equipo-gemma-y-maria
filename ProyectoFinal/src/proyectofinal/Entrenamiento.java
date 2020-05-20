@@ -36,8 +36,12 @@ public class Entrenamiento {
      *
      * @param id identificador del entrenador que crea el programa
      */
-    public static void crearEntrenamiento(String id) {
-        //TODO buscar las solicitudes de entrenamiento
+    public static void menuCrearEntrenamiento(String id) throws SQLException{
+        Menu.verSolicitudesEntrenamiento();
+        System.out.println("Introduce el DNI del alumno para el que quieres preparar un entrenamiento:");
+        String opcionDNI = Menu.lector.nextLine();
+        //TODO: comprobar que este dni coincide con los de la base de datos y que necesita entrenamiento
+        System.out.println("");
         System.out.println("¿Qué tipo de entrenamiento quieres crear?");
         System.out.println("  1- crear programa nuevo");
         System.out.println("  2- copiar programa existente");
@@ -45,7 +49,7 @@ public class Entrenamiento {
 
         switch (opcionCrear) {
             case "1":
-                Entrenamiento.crearEntrenamiento(id);
+                //TODO
                 break;
             case "2":
                 //TODO
@@ -71,7 +75,7 @@ public class Entrenamiento {
         PreparedStatement prepStat = null ;
         if (idAlumno == null) {
             query += "WHERE dni_entrenador = ?;";
-             prepStat = Menu.con.prepareStatement(query);
+            prepStat = Menu.con.prepareStatement(query);
             prepStat.setString(1, idEntrenador);
         } else if (idEntrenador == null) {
             query += "WHERE dni_alumno = ?;";

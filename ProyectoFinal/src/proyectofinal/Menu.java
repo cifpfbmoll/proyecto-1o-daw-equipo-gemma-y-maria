@@ -125,7 +125,7 @@ public class Menu {
 
             switch (opcion) {
                 case "1":
-                    Entrenamiento.crearEntrenamiento(id);
+                    Entrenamiento.menuCrearEntrenamiento(id);
                     break;
                 case "2":
                     Entrenamiento.consultarEntrenamientoPorEntrenador(id);
@@ -137,7 +137,7 @@ public class Menu {
                     Entrenamiento.consultarEntrenamientoPorAlumno(id);
                     break;
                 case "5":
-                    //TODO
+                    solicitarEntrenamiento(id);
                     break;
                 case "6":
                     //TODO
@@ -219,7 +219,7 @@ public class Menu {
     }
 
     //TODO plantear si es mejor pasar esto a usuario
-    public static void solicitarEntrenamiento(String id) throws SQLException{
+    public static void solicitarEntrenamiento(String id) throws SQLException {
         System.out.println("¿Qué tipo de entrenamiento quieres solicitar?");
         for (int i = 0; i < TipoEjercicio.values().length; i++) {
             EnumSet.allOf(TipoEjercicio.class)
@@ -241,7 +241,6 @@ public class Menu {
         try {
             Menu.con.setAutoCommit(false);
             String query = "UPDATE usuario SET tipo_prog_solicitado = ? where DNI = ?;";
-            //TODO completar con el resto de campos
             PreparedStatement prepStat = Menu.con.prepareStatement(query);
             prepStat.setString(1, tipo);
             prepStat.setString(2, id);
@@ -256,6 +255,21 @@ public class Menu {
         } finally {
             Menu.con.setAutoCommit(estadoAC);
         }
+    }
+
+    public static void verSolicitudesEntrenamiento() throws SQLException {
+        //realmente para esto no hace falta que sea preparedstatement porque no le meto valores... TODO cambiar por statement normal
+        String query = "SELECT DNI, nombre, apellido1, apellido2, tipo_prog_solicitado FROM usuario WHERE tipo_prog_solicitado is not NULL;";
+        PreparedStatement prepStat = Menu.con.prepareStatement(query);
+        ResultSet queryResult = prepStat.executeQuery();
+        System.out.println("Entrenamientos solicitados actualmente:");
+        while (queryResult.next()) {
+            //TODO asociar el tipo con el enum
+            System.out.println("  -tipo " + queryResult.getString("tipo_prog_solicitado") + " para alumno " + queryResult.getString("nombre") + " " 
+                    + queryResult.getString("apellido1") + " " + queryResult.getString("apellido2") + " (con DNI " + queryResult.getString("DNI") + ")");           
+        }
+        queryResult.close();
+        prepStat.close();
     }
 
     /**
