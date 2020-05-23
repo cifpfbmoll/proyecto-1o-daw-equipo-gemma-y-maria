@@ -49,7 +49,7 @@ public class Entrenamiento {
 
         switch (opcionCrear) {
             case "1":
-                //TODO
+                //Conectar
                 break;
             case "2":
                 //TODO
@@ -130,6 +130,29 @@ public class Entrenamiento {
         System.out.println("  -entrenador: ");
         System.out.println("  -alumno: ");
         System.out.println("  -fecha de creación: " + this.getFecha());
+    }
+    
+     public void crearNuevoEntrenamiento() throws SQLException {
+        boolean estadoAC = Menu.con.getAutoCommit();
+        try {
+            Menu.con.setAutoCommit(false);
+            String query = "INSERT INTO ENTRENAMIENTO (train_code, dni_entrenador, dni_alumno, fecha_creacion) VALUES (?, ?, ?, ?);";
+            PreparedStatement prepStat = Menu.con.prepareStatement(query);
+            prepStat.setInt(1, this.getCodigo());
+            prepStat.setString(2, this.getEntrenador().getDni());
+            prepStat.setString(3, this.getAlumno().getDni());
+            prepStat.setString(4, this.getFecha());
+            prepStat.execute();
+            Menu.con.commit();
+            System.out.println("Nuevo entrenamiento (" + this.getCodigo() + " " + this.getEntrenador().getDni() + " " + this.getAlumno().getDni()+" " +this.getFecha()+" introducido correctamente.");
+            prepStat.close();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            System.out.println("Error en la introducción del entrenamiento.");
+            Menu.con.rollback();
+        } finally {
+            Menu.con.setAutoCommit(estadoAC);
+        }
     }
 
     //Getters y setters:
