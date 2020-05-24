@@ -1,0 +1,34 @@
+CONSULTA DE ENTRENAMIENTO:
+__________________________________________________________________________________
+Fecha de creación: 2020-05-10
+Preparado por el entrenador Oswald Cobblepot Penguin
+  (teléfono de contacto: 600000001; mail de contacto: oswaldc@gmail.com)
+Para el alumno Selina Kyle Catwoman
+  (teléfono de contacto: 600000006; mail de contacto: catwoman@gmail.com)
+__________________________________________________________________________________
+Tabla de ejercicios:
+
+1: 
+   PULL UPS (código PU )
+   Dominadas en el rack o en las anillas
+   Repeticiones: 10
+   Tiempo mínimo: 4
+
+2: 
+   KEEPING (código KP )
+   Balanceo con los hombros colgado de la barra
+   Repeticiones: 20
+   Tiempo mínimo: 0
+
+3: 
+   WARRIOR POSITION (código GP )
+   Pierna izquierda en tensión, peso en pierna derecha; brazos estirados
+   Repeticiones: 20
+   Tiempo mínimo: 0
+
+4: 
+   HANDSTAND WALK (código HW )
+   Caminar haciendo el pino
+   Repeticiones: 20
+   Tiempo mínimo: 0
+__________________________________________________________________________________

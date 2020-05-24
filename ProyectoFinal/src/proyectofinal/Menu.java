@@ -131,7 +131,7 @@ public class Menu {
                     Entrenamiento.consultarEntrenamientoPorEntrenador(id);
                     break;
                 case "3":
-                    //TODO
+                    Entrenamiento.archivarEntrenamientoDesdeTablaPorEntrenador(id);
                     break;
                 case "4":
                     Entrenamiento.consultarEntrenamientoPorAlumno(id);
@@ -140,7 +140,7 @@ public class Menu {
                     solicitarEntrenamiento(id);
                     break;
                 case "6":
-                    //TODO
+                    Entrenamiento.archivarEntrenamientoDesdeTablaPorAlumno(id);
                     break;
                 case "7":
                     Alumno alu = new Alumno();
@@ -181,7 +181,7 @@ public class Menu {
                     solicitarEntrenamiento(id);
                     break;
                 case "3":
-                    //TODO
+                    Entrenamiento.archivarEntrenamientoDesdeTablaPorAlumno(id);
                     break;
                 case "0":
                     salir = true;
