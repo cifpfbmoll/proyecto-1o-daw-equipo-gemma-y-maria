@@ -32,3 +32,26 @@ Tabla de ejercicios:
    Repeticiones: 20
    Tiempo mínimo: 0
 __________________________________________________________________________________
+
+CONSULTA DE ENTRENAMIENTO:
+__________________________________________________________________________________
+Fecha de creación: 2020-05-11
+Preparado por el entrenador Oswald Cobblepot Penguin
+  (teléfono de contacto: 600000001; mail de contacto: oswaldc@gmail.com)
+Para el alumno Oliver Queen Arrow
+  (teléfono de contacto: 600000011; mail de contacto: oliverqueen@gmail.com)
+__________________________________________________________________________________
+Tabla de ejercicios:
+
+1: 
+   BACK SQUAD (código BS )
+   Sentadilla con barra olímpica colocada detrás del cuello
+   Repeticiones: 25
+   Tiempo mínimo: 0
+
+2: 
+   PULL UPS (código PU )
+   Dominadas en el rack o en las anillas
+   Repeticiones: 25
+   Tiempo mínimo: 0
+__________________________________________________________________________________

@@ -210,9 +210,7 @@ public class Menu {
             password = queryResult.getString("password");
         }
         //lógica de esto: si existe un resultado de esta búsqueda, entonces existe la entrada: es válida
-        if (queryResult != null) {
-            queryResult.close();
-        }
+        queryResult.close();
         prepStat.close();
         //aprovecho para obtener la contraseña y así no tengo que hacer la búsqueda mil veces
         return password;
