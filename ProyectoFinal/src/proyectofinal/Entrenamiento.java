@@ -94,8 +94,7 @@ public class Entrenamiento {
         System.out.println("Entrenamientos encontrados:");
         while (queryResult.next()) {
             codigosEncontrados.add(queryResult.getInt("train_code"));
-            System.out.println("  código " + queryResult.getInt("train_code") + "; fecha de creación: " + queryResult.getDate("fecha_creacion"));
-            //TODO añadir la conversion a fecha            
+            System.out.println("  código " + queryResult.getInt("train_code") + "; fecha de creación: " + queryResult.getString("fecha_creacion"));          
         }
         if (queryResult != null) {
             queryResult.close();
