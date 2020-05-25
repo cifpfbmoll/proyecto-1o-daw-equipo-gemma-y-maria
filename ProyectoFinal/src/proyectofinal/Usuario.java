@@ -41,9 +41,10 @@ public abstract class Usuario {
     //Métodos:
     /**
      * Permite encontrar un usuario en base a su DNI.
+     *
      * @param dni
      * @return queryResult (tipoResultSet)
-     * @throws SQLException 
+     * @throws SQLException
      */
     public static ResultSet buscarUsuarioPorDni(String dni) throws SQLException {
         String query = "SELECT * FROM usuario WHERE DNI = ?;";
@@ -54,7 +55,7 @@ public abstract class Usuario {
         prepStat.close();
         return queryResult;
     }
-    
+
     public void crearNuevoUsuario() {
         System.out.println("  -dni:");
         String userDni = Menu.lector.nextLine();

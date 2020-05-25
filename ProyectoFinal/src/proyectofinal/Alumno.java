@@ -25,6 +25,39 @@ public class Alumno extends Usuario {
     }
 
     //Métodos:
+    /**
+     * Crea un objeto tipo Alumno desde valores obtenidos en tablas.<br> Se
+     * utiliza para varias funciones.
+     *
+     * @param id DNI del alumno
+     * @return objeto tipo Alumno
+     * @throws SQLException
+     */
+    public static Alumno generarAlumnoDesdeTabla(String id) throws SQLException {
+        Alumno user = new Alumno();
+        String queryUsuario = "SELECT * FROM usuario WHERE DNI = ?;";
+        PreparedStatement prepStat = Menu.con.prepareStatement(queryUsuario);
+        prepStat.setString(1, id);
+        ResultSet results = prepStat.executeQuery();
+        results.next();
+        user.setDni(id);
+        user.setNombre(results.getString("nombre"));
+        user.setPassword(results.getString("password"));
+        user.setApellido1(results.getString("apellido1"));
+        user.setApellido2(results.getString("apellido2"));
+        user.setEmail(results.getString("email"));
+        user.setTelefono(results.getInt("telefono"));
+        user.setDireccion(results.getString("direccion"));
+        String tipoDeEjercicio = results.getString("tipo_prog_solicitado");
+        if (tipoDeEjercicio != null) {
+            user.setTipoEjercicio(TipoEjercicio.valueOf(tipoDeEjercicio));
+        }
+        results.close();
+        prepStat.close();
+        //Nota: casi todo lo anterior se podría generalizar en usuario. Mejorar si hay tiempo.
+        return user;
+    }
+
     public void crearNuevoAlumno() {
         System.out.println("Introduce los siguientes datos del nuevo alumno:");
         super.crearNuevoUsuario();
@@ -80,9 +113,8 @@ public class Alumno extends Usuario {
         lineaAlumno.close();
         return alumno;
     }
-    
-    //Getters y setters:
 
+    //Getters y setters:
     public TipoEjercicio getTipoEjercicio() {
         return tipoEjercicio;
     }

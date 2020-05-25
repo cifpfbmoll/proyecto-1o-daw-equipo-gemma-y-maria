@@ -24,7 +24,7 @@ public class Entrenamiento {
     private Entrenador entrenador;
     private Alumno alumno;
     private String fecha;
-    private ArrayList<Ejercicio> listaEjercicios;
+    private ArrayList<LineaEntrenamiento> listaEjercicios;
 
     //Constructores:
     /**
@@ -32,7 +32,15 @@ public class Entrenamiento {
      */
     public Entrenamiento() {
     }
-    //TODO demás constructores
+
+    public Entrenamiento(int codigo, Entrenador entrenador, Alumno alumno, String fecha, ArrayList<LineaEntrenamiento> listaEjercicios) {
+        this.codigo = codigo;
+        this.entrenador = entrenador;
+        this.alumno = alumno;
+        this.fecha = fecha;
+        this.listaEjercicios = listaEjercicios;
+    }
+    
 
     //Métodos:
     /**
@@ -87,6 +95,10 @@ public class Entrenamiento {
         //TODO: tiempos, repeticiones
     }
 
+    public static void copiarEntrenamiento() throws SQLException{
+        //TODO maria. usar generarObjetoEntrenamientoDesdeTabla
+    }
+    
     //El método de consultas tiene dos parámetros; paso como null, valor imposible en id, el que NO quiero usar como base
     //Para facilitar la lectura y las llamadas es más apropiado separarlo así.
     public static void consultarEntrenamientoPorEntrenador(String id) throws SQLException {
@@ -136,13 +148,9 @@ public class Entrenamiento {
     }
 
     /**
-     * Toma un entrenamiento de tablas y lo guarda en un archivo txt.
+     * Toma un entrenamiento de tablas y lo guarda en un archivo txt personalizado para cada programa.
      */
     public static void archivarEntrenamientoDesdeTabla(String idEntrenador, String idAlumno, String operacion) throws SQLException {
-        if (operacion.equals("imprimir")) {
-            System.out.println("Por ahora, el entrenamiento se guardará en el archivo 'entrenamiento.txt' de la carpeta del proyecto.");
-        }
-        //TODO que cada entrenamiento se guarde en su propio archivos
         int codigo = consultarCodigoEntrenamiento(idEntrenador, idAlumno);
 
         String queryEntrenamiento = "SELECT dni_entrenador, dni_alumno, fecha_creacion FROM entrenamiento WHERE train_code = ?;";
@@ -161,29 +169,8 @@ public class Entrenamiento {
         resultsEntrenamiento.close();
         prepStatEntrenamiento.close();
 
-        PreparedStatement prepStatEntrenador = Menu.con.prepareStatement(queryEntrenador);
-        prepStatEntrenador.setString(1, idEntrenador);
-        ResultSet resultsEntrenador = prepStatEntrenador.executeQuery();
-        resultsEntrenador.next();
-        String nombreEntrenador = resultsEntrenador.getString("nombre");
-        nombreEntrenador += " " + resultsEntrenador.getString("apellido1");
-        nombreEntrenador += " " + resultsEntrenador.getString("apellido2");
-        int telefonoEntrenador = resultsEntrenador.getInt("telefono");
-        String mailEntrenador = resultsEntrenador.getString("email");
-        resultsEntrenador.close();
-        prepStatEntrenador.close();
-
-        PreparedStatement prepStatAlumno = Menu.con.prepareStatement(queryAlumno);
-        prepStatAlumno.setString(1, idAlumno);
-        ResultSet resultsAlumno = prepStatAlumno.executeQuery();
-        resultsAlumno.next();
-        String nombreAlumno = resultsAlumno.getString("nombre");
-        nombreAlumno += " " + resultsAlumno.getString("apellido1");
-        nombreAlumno += " " + resultsAlumno.getString("apellido2");
-        int telefonoAlumno = resultsAlumno.getInt("telefono");
-        String mailAlumno = resultsAlumno.getString("email");
-        resultsAlumno.close();
-        prepStatAlumno.close();
+        Entrenador entrenador = Entrenador.generarEntrenadorDesdeTabla(idEntrenador);
+        Alumno alumno = Alumno.generarAlumnoDesdeTabla(idAlumno);
 
         ArrayList<String[]> ejercicios = new ArrayList<>();
         PreparedStatement prepStatLineaEntrenamiento = Menu.con.prepareStatement(queryLineaEntrenamiento);
@@ -204,12 +191,14 @@ public class Entrenamiento {
 
         //TODO separar en funciones atomizadas
         if (operacion.equals("imprimir")) {
-            try (BufferedWriter writerMejorado = new BufferedWriter(new FileWriter("entrenamiento.txt", true))) {
+            String archivo = crearArchivoEntrenamiento(codigo);
+            try (BufferedWriter writerMejorado = new BufferedWriter(new FileWriter(archivo, false))) {
                 writerMejorado.write("CONSULTA DE ENTRENAMIENTO:\n__________________________________________________________________________________\n");
                 writerMejorado.write("Fecha de creación: " + fechaCreacion + "\n");    //TODO: añadir fecha de creacion
-                writerMejorado.write("Preparado por el entrenador " + nombreEntrenador + "\n  (teléfono de contacto: " + telefonoEntrenador + "; mail de contacto: " + mailEntrenador + ")\n");
-                //TODO añadir total de entrenamientos preparados
-                writerMejorado.write("Para el alumno " + nombreAlumno + "\n  (teléfono de contacto: " + telefonoAlumno + "; mail de contacto: " + mailAlumno + ")\n");
+                writerMejorado.write("Preparado por el entrenador " + entrenador.getNombre() + " " + entrenador.getApellido1() + " " + entrenador.getApellido2() + 
+                        "\n  (teléfono de contacto: " + entrenador.getTelefono() + "; mail de contacto: " + entrenador.getEmail() + ")\n");
+                writerMejorado.write("Para el alumno " + alumno.getNombre() + " " + alumno.getApellido1() + " " + alumno.getApellido2() + "\n  (teléfono de contacto: " + 
+                        alumno.getTelefono() + "; mail de contacto: " + alumno.getEmail() + ")\n");
                 writerMejorado.write("__________________________________________________________________________________\n");
                 writerMejorado.write("Tabla de ejercicios:\n");
                 for (int i = 0; i < ejercicios.size(); i++) {
@@ -231,8 +220,8 @@ public class Entrenamiento {
         } else {
             System.out.println("CONSULTA DE ENTRENAMIENTO:");
             System.out.println("Fecha de creación: " + fechaCreacion);
-            System.out.println("Preparado por el entrenador " + nombreEntrenador);
-            System.out.println("Para el alumno " + nombreAlumno);
+            System.out.println("Preparado por el entrenador " + entrenador.getNombre() + " " + entrenador.getApellido1() + " " + entrenador.getApellido2());
+            System.out.println("Para el alumno " + alumno.getNombre() + " " + alumno.getApellido1() + " " + alumno.getApellido2());
             System.out.println("Tabla de ejercicios:");
             for (int i = 0; i < ejercicios.size(); i++) {
                 System.out.println(i + 1 + ":");
@@ -251,6 +240,27 @@ public class Entrenamiento {
                 System.out.println("InterruptedException. Error al pausar la ejecución del código.");
             }
         }
+    }
+    
+    /**
+     * Genera un nombre único para cada programa de entrenamiento, partiendo de su código (PK)
+     * @param codigo
+     * @return nombre del archivo en que se guarda
+     */
+    public static String crearArchivoEntrenamiento(int codigo) {
+        String archivo = "Programa";
+        archivo += codigo;
+        archivo += ".txt";
+        return archivo;
+    }
+    
+    public static Entrenamiento generarObjetoEntrenamientoDesdeTabla(int codigo) throws SQLException {
+        Entrenamiento objetoEntrenamiento = new Entrenamiento();
+        String queryEntrenamiento = "SELECT * FROM entrenamiento WHERE train_code = ?;";
+        String queryLineaEntrenamiento = "SELECT * from linea_entrenamiento as L, ejercicio as E where L.codigo_entreno = ? and L.codigo_ejercicio = E.ex_code;";
+        
+        
+        return objetoEntrenamiento;
     }
 
     public static void archivarEntrenamientoDesdeTablaPorEntrenador(String id) throws SQLException {
@@ -294,11 +304,11 @@ public class Entrenamiento {
         this.fecha = fecha;
     }
 
-    public ArrayList<Ejercicio> getListaEjercicios() {
+    public ArrayList<LineaEntrenamiento> getListaEjercicios() {
         return listaEjercicios;
     }
 
-    public void setListaEjercicios(ArrayList<Ejercicio> listaEjercicios) {
+    public void setListaEjercicios(ArrayList<LineaEntrenamiento> listaEjercicios) {
         this.listaEjercicios = listaEjercicios;
     }
 
