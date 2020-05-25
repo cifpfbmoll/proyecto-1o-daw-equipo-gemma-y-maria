@@ -1,9 +1,11 @@
 package proyectofinal;
 
+import java.util.EnumSet;
 import java.util.stream.Stream;
 
 /**
  * Enumerador con los posibles tipos de ejercicios.
+ *
  * @author Gemma Díez Cabeza & María Rabanales González
  * @version 20.05.10.am
  */
@@ -17,9 +19,9 @@ public enum TipoEjercicio {
     ST("strongman"),
     WF("weight lifting"),
     YG("yoga");
-    
+
     private String textoTipoEjercicio;
-    
+
     TipoEjercicio(String textoTipoEjercicio) {
         this.textoTipoEjercicio = textoTipoEjercicio;
     }
@@ -31,13 +33,18 @@ public enum TipoEjercicio {
     public void setTextoTipoEjercicio(String textoTipoEjercicio) {
         this.textoTipoEjercicio = textoTipoEjercicio;
     }
-    
+
     public static boolean comprobarTipo(String texto) {
-        for (TipoEjercicio tipo : TipoEjercicio.values() ) {
+        for (TipoEjercicio tipo : TipoEjercicio.values()) {
             if (tipo.name().equals(texto)) {
                 return true;
             }
         }
         return false;
     }
+
+    public static void imprimirTipo() {
+        EnumSet.allOf(TipoEjercicio.class).forEach(tipo -> System.out.println("  -" + tipo + ":" + tipo.getTextoTipoEjercicio()));
+    }
+
 }

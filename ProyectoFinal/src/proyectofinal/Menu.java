@@ -118,6 +118,7 @@ public class Menu {
             System.out.println("  5- como alumno, solicitar un nuevo programa de entrenamiento");
             System.out.println("  6- como alumno, imprimir un programa de entrenamiento personal existente");
             System.out.println("  7- registrar a un nuevo alumno");
+            System.out.println("  8- registrar un nuevo ejercicio");
             //TODO mejora final: admin q cree entrenadores tambien
             System.out.println("  0- salir");
             System.out.println("Introduce el número de tu selección:");
@@ -131,7 +132,7 @@ public class Menu {
                     Entrenamiento.consultarEntrenamientoPorEntrenador(id);
                     break;
                 case "3":
-                    Entrenamiento.archivarEntrenamientoDesdeTablaPorEntrenador(id);
+                    Entrenamiento.imprimirEntrenamientoDesdeTablaPorEntrenador(id);
                     break;
                 case "4":
                     Entrenamiento.consultarEntrenamientoPorAlumno(id);
@@ -140,12 +141,15 @@ public class Menu {
                     solicitarEntrenamiento(id);
                     break;
                 case "6":
-                    Entrenamiento.archivarEntrenamientoDesdeTablaPorAlumno(id);
+                    Entrenamiento.imprimirEntrenamientoDesdeTablaPorAlumno(id);
                     break;
                 case "7":
                     Alumno alu = new Alumno();
                     alu.crearNuevoAlumno();
                     alu.introducirNuevoAlumno();
+                    break;
+                case "8":
+                    Ejercicio.crearNuevoEjercicio();
                     break;
                 case "0":
                     salir = true;
@@ -181,7 +185,7 @@ public class Menu {
                     solicitarEntrenamiento(id);
                     break;
                 case "3":
-                    Entrenamiento.archivarEntrenamientoDesdeTablaPorAlumno(id);
+                    Entrenamiento.imprimirEntrenamientoDesdeTablaPorAlumno(id);
                     break;
                 case "0":
                     salir = true;
@@ -219,10 +223,7 @@ public class Menu {
     //TODO plantear si es mejor pasar esto a usuario
     public static void solicitarEntrenamiento(String id) throws SQLException {
         System.out.println("¿Qué tipo de entrenamiento quieres solicitar?");
-        for (int i = 0; i < TipoEjercicio.values().length; i++) {
-            EnumSet.allOf(TipoEjercicio.class)
-                    .forEach(tipo -> System.out.println("  -" + tipo + ":" + tipo.getTextoTipoEjercicio()));
-        }
+        TipoEjercicio.imprimirTipo();
         System.out.println("Introduce el código de la opción elegida:");
         String opcionTipo = lector.nextLine();
         while (!TipoEjercicio.comprobarTipo(opcionTipo)) {
@@ -263,8 +264,8 @@ public class Menu {
         System.out.println("Entrenamientos solicitados actualmente:");
         while (queryResult.next()) {
             //TODO asociar el tipo con el enum
-            System.out.println("  -tipo " + queryResult.getString("tipo_prog_solicitado") + " para alumno " + queryResult.getString("nombre") + " " 
-                    + queryResult.getString("apellido1") + " " + queryResult.getString("apellido2") + " (con DNI " + queryResult.getString("DNI") + ")");           
+            System.out.println("  -tipo " + queryResult.getString("tipo_prog_solicitado") + " para alumno " + queryResult.getString("nombre") + " "
+                    + queryResult.getString("apellido1") + " " + queryResult.getString("apellido2") + " (con DNI " + queryResult.getString("DNI") + ")");
         }
         queryResult.close();
         prepStat.close();

@@ -40,7 +40,6 @@ public class Entrenamiento {
         this.fecha = fecha;
         this.listaEjercicios = listaEjercicios;
     }
-    
 
     //Métodos:
     /**
@@ -95,24 +94,23 @@ public class Entrenamiento {
         //TODO: tiempos, repeticiones
     }
 
-    public static void copiarEntrenamiento() throws SQLException{
+    public static void copiarEntrenamiento() throws SQLException {
         //TODO maria. usar generarObjetoEntrenamientoDesdeTabla
     }
-    
+
     //El método de consultas tiene dos parámetros; paso como null, valor imposible en id, el que NO quiero usar como base
     //Para facilitar la lectura y las llamadas es más apropiado separarlo así.
     public static void consultarEntrenamientoPorEntrenador(String id) throws SQLException {
-        archivarEntrenamientoDesdeTabla(id, null, "mostrar");
+        mostrarEntrenamientoDesdeTabla(id, null);
         //TODO rehacer
     }
 
     public static void consultarEntrenamientoPorAlumno(String id) throws SQLException {
-        archivarEntrenamientoDesdeTabla(null, id, "mostrar");
+        mostrarEntrenamientoDesdeTabla(null, id);
         //TODO como arriba
     }
 
     public static int consultarCodigoEntrenamiento(String idEntrenador, String idAlumno) throws SQLException {
-        //TODO: cambiar el select para que de también el nombre de alumno a través de su id
         int codigo = 0;             //TODO: si hago el bucle nunca devolverá esto
         String query = "SELECT train_code, fecha_creacion FROM ENTRENAMIENTO ";
         PreparedStatement prepStat = null;
@@ -148,102 +146,81 @@ public class Entrenamiento {
     }
 
     /**
-     * Toma un entrenamiento de tablas y lo guarda en un archivo txt personalizado para cada programa.
+     * Toma un entrenamiento de tablas y lo muestra por consola.
+     * @param idEntrenador DNI del entrenador
+     * @param idAlumno DNI del alumno
      */
-    public static void archivarEntrenamientoDesdeTabla(String idEntrenador, String idAlumno, String operacion) throws SQLException {
+    public static void mostrarEntrenamientoDesdeTabla(String idEntrenador, String idAlumno) throws SQLException {
         int codigo = consultarCodigoEntrenamiento(idEntrenador, idAlumno);
-
-        String queryEntrenamiento = "SELECT dni_entrenador, dni_alumno, fecha_creacion FROM entrenamiento WHERE train_code = ?;";
-        String queryEntrenador = "SELECT nombre, apellido1, apellido2, telefono, email FROM usuario WHERE DNI = ?;";
-        String queryAlumno = "SELECT nombre, apellido1, apellido2, telefono, email FROM usuario WHERE DNI = ?;";
-        String queryLineaEntrenamiento = "SELECT E.nombre, E.ex_code, E.descripcion, L.repeticiones, L.tiempo_min from linea_entrenamiento as L, ejercicio as E where L.codigo_entreno = ? and L.codigo_ejercicio = E.ex_code;";
-
-        PreparedStatement prepStatEntrenamiento = Menu.con.prepareStatement(queryEntrenamiento);
-        prepStatEntrenamiento.setInt(1, codigo);
-        ResultSet resultsEntrenamiento = prepStatEntrenamiento.executeQuery();
-        resultsEntrenamiento.next();
-        //Nota: esto me machaca los valores recibidos (uno será null, otro no), pero total los NOT NULL debieran coincidir.
-        idEntrenador = resultsEntrenamiento.getString("dni_entrenador");
-        idAlumno = resultsEntrenamiento.getString("dni_alumno");
-        String fechaCreacion = resultsEntrenamiento.getString("fecha_creacion");
-        resultsEntrenamiento.close();
-        prepStatEntrenamiento.close();
-
-        Entrenador entrenador = Entrenador.generarEntrenadorDesdeTabla(idEntrenador);
-        Alumno alumno = Alumno.generarAlumnoDesdeTabla(idAlumno);
-
-        ArrayList<String[]> ejercicios = new ArrayList<>();
-        PreparedStatement prepStatLineaEntrenamiento = Menu.con.prepareStatement(queryLineaEntrenamiento);
-        prepStatLineaEntrenamiento.setInt(1, codigo);
-        ResultSet resultsLineaEntrenamiento = prepStatLineaEntrenamiento.executeQuery();
-        while (resultsLineaEntrenamiento.next()) {
-            //TODO simplificar esto en menos líneas
-            String ejercicioNombre = resultsLineaEntrenamiento.getString("nombre");
-            String ejercicioCodigo = resultsLineaEntrenamiento.getString("ex_code");
-            String ejercicioDescripcion = resultsLineaEntrenamiento.getString("descripcion");
-            String ejercicioRepeticiones = Integer.toString(resultsLineaEntrenamiento.getInt("repeticiones"));
-            String ejercicioTiempo = Integer.toString(resultsLineaEntrenamiento.getInt("tiempo_min"));
-            String[] lineaEntrenamiento = {ejercicioNombre, ejercicioCodigo, ejercicioDescripcion, ejercicioRepeticiones, ejercicioTiempo};
-            ejercicios.add(lineaEntrenamiento);
+        Entrenamiento entreno = generarEntrenamientoDesdeTabla(codigo);
+        System.out.println("CONSULTA DE ENTRENAMIENTO:");
+        System.out.println("Fecha de creación: " + entreno.getFecha());
+        System.out.println("Preparado por el entrenador " + entreno.getEntrenador().getNombre() + " " + entreno.getEntrenador().getApellido1() + 
+                " " + entreno.getEntrenador().getApellido2());
+        System.out.println("Para el alumno " + entreno.getAlumno().getNombre() + " " + entreno.getAlumno().getApellido1() + " " + 
+                entreno.getAlumno().getApellido2());
+        System.out.println("Tabla de ejercicios:");
+        for (int i = 0; i < entreno.getListaEjercicios().size(); i++) {
+            System.out.println(i + 1 + ":");
+            System.out.println("   " + entreno.getListaEjercicios().get(i).getEjercicio().getNombre() + " (código " + 
+                    entreno.getListaEjercicios().get(i).getEjercicio().getCodigo() + ")\n");
+            System.out.println("   " + entreno.getListaEjercicios().get(i).getEjercicio().getDescripcion() + "\n");
+            if (entreno.getListaEjercicios().get(i).getRepeticiones() != 0) {           //El tipo primitivo nunca puede ser nulo, es 0 por defecto
+                System.out.println("   Repeticiones: " + entreno.getListaEjercicios().get(i).getRepeticiones() + "\n");
+            }
+            if (entreno.getListaEjercicios().get(i).getMinMinutos() != 0) {
+                System.out.println("   Tiempo mínimo: " + entreno.getListaEjercicios().get(i).getMinMinutos() + "\n");
+            }
         }
-        resultsLineaEntrenamiento.close();
-        prepStatLineaEntrenamiento.close();
-
-        //TODO separar en funciones atomizadas
-        if (operacion.equals("imprimir")) {
-            String archivo = crearArchivoEntrenamiento(codigo);
-            try (BufferedWriter writerMejorado = new BufferedWriter(new FileWriter(archivo, false))) {
-                writerMejorado.write("CONSULTA DE ENTRENAMIENTO:\n__________________________________________________________________________________\n");
-                writerMejorado.write("Fecha de creación: " + fechaCreacion + "\n");    //TODO: añadir fecha de creacion
-                writerMejorado.write("Preparado por el entrenador " + entrenador.getNombre() + " " + entrenador.getApellido1() + " " + entrenador.getApellido2() + 
-                        "\n  (teléfono de contacto: " + entrenador.getTelefono() + "; mail de contacto: " + entrenador.getEmail() + ")\n");
-                writerMejorado.write("Para el alumno " + alumno.getNombre() + " " + alumno.getApellido1() + " " + alumno.getApellido2() + "\n  (teléfono de contacto: " + 
-                        alumno.getTelefono() + "; mail de contacto: " + alumno.getEmail() + ")\n");
-                writerMejorado.write("__________________________________________________________________________________\n");
-                writerMejorado.write("Tabla de ejercicios:\n");
-                for (int i = 0; i < ejercicios.size(); i++) {
-                    writerMejorado.write("\n" + (i + 1) + ": \n");
-                    writerMejorado.write("   " + ejercicios.get(i)[0] + " (código " + ejercicios.get(i)[1] + " )\n");
-                    writerMejorado.write("   " + ejercicios.get(i)[2] + "\n");
-                    if (ejercicios.get(i)[3] != null) {
-                        writerMejorado.write("   Repeticiones: " + ejercicios.get(i)[3] + "\n");
-                    }
-                    if (ejercicios.get(i)[4] != null) {
-                        writerMejorado.write("   Tiempo mínimo: " + ejercicios.get(i)[4] + "\n");
-                    }
-                }
-                writerMejorado.write("__________________________________________________________________________________\n\n");
-                System.out.println("Impresión realizada. Consultar archivo.");
-            } catch (IOException eio) {
-                System.out.println("IOException. Error al leer el archivo errores.txt.");
-            }
-        } else {
-            System.out.println("CONSULTA DE ENTRENAMIENTO:");
-            System.out.println("Fecha de creación: " + fechaCreacion);
-            System.out.println("Preparado por el entrenador " + entrenador.getNombre() + " " + entrenador.getApellido1() + " " + entrenador.getApellido2());
-            System.out.println("Para el alumno " + alumno.getNombre() + " " + alumno.getApellido1() + " " + alumno.getApellido2());
-            System.out.println("Tabla de ejercicios:");
-            for (int i = 0; i < ejercicios.size(); i++) {
-                System.out.println(i + 1 + ":");
-                System.out.println("  " + ejercicios.get(i)[0] + " (código " + ejercicios.get(i)[1] + " )");
-                System.out.println("  " + ejercicios.get(i)[2]);
-                if (ejercicios.get(i)[3] != null) {
-                    System.out.println("  Repeticiones: " + ejercicios.get(i)[3]);
-                }
-                if (ejercicios.get(i)[4] != null) {
-                    System.out.println("  Tiempo mínimo: " + ejercicios.get(i)[4]);
-                }
-            }
-            try {
-                TimeUnit.SECONDS.sleep(6);             //Para pausar la ejecución del código 6 segundos.
-            } catch (InterruptedException IE) {
-                System.out.println("InterruptedException. Error al pausar la ejecución del código.");
-            }
+        try {
+            TimeUnit.SECONDS.sleep(6);             //Para pausar la ejecución del código 6 segundos.
+        } catch (InterruptedException IE) {
+            System.out.println("InterruptedException. Error al pausar la ejecución del código.");
         }
     }
-    
+
     /**
-     * Genera un nombre único para cada programa de entrenamiento, partiendo de su código (PK)
+     * Toma un entrenamiento de tablas y lo guarda en un archivo de texto personalizado para cada programa.
+     * @param idEntrenador DNI del entrenador
+     * @param idAlumno DNI del alumno
+     */
+    public static void imprimirEntrenamientoDesdeTabla(String idEntrenador, String idAlumno) throws SQLException {
+        int codigo = consultarCodigoEntrenamiento(idEntrenador, idAlumno);
+        Entrenamiento entreno = generarEntrenamientoDesdeTabla(codigo);
+
+        String archivo = crearArchivoEntrenamiento(codigo);
+        try (BufferedWriter writerMejorado = new BufferedWriter(new FileWriter(archivo, false))) {
+            writerMejorado.write("CONSULTA DE ENTRENAMIENTO:\n__________________________________________________________________________________\n");
+            writerMejorado.write("Fecha de creación: " + entreno.getFecha() + "\n");    //TODO: añadir fecha de creacion
+            writerMejorado.write("Preparado por el entrenador " + entreno.getEntrenador().getNombre() + " " + entreno.getEntrenador().getApellido1() + " "
+                    + entreno.getEntrenador().getApellido2() + "\n  (teléfono de contacto: " + entreno.getEntrenador().getTelefono() + "; mail de contacto: "
+                    + entreno.getEntrenador().getEmail() + ")\n");
+            writerMejorado.write("Para el alumno " + entreno.getAlumno().getNombre() + " " + entreno.getAlumno().getApellido1() + " "
+                    + entreno.getAlumno().getApellido2() + "\n  (teléfono de contacto: " + entreno.getAlumno().getTelefono() + "; mail de contacto: "
+                    + entreno.getAlumno().getEmail() + ")\n");
+            writerMejorado.write("__________________________________________________________________________________\n");
+            writerMejorado.write("Tabla de ejercicios:\n");
+            for (int i = 0; i < entreno.getListaEjercicios().size(); i++) {
+                writerMejorado.write("\n" + (i + 1) + ": \n");
+                writerMejorado.write("   " + entreno.getListaEjercicios().get(i).getEjercicio().getNombre() + " (código " + entreno.getListaEjercicios().get(i).getEjercicio().getCodigo() + ")\n");
+                writerMejorado.write("   " + entreno.getListaEjercicios().get(i).getEjercicio().getDescripcion() + "\n");
+                if (entreno.getListaEjercicios().get(i).getRepeticiones() != 0) {           //El tipo primitivo nunca puede ser nulo, es 0 por defecto
+                    writerMejorado.write("   Repeticiones: " + entreno.getListaEjercicios().get(i).getRepeticiones() + "\n");
+                }
+                if (entreno.getListaEjercicios().get(i).getMinMinutos() != 0) {
+                    writerMejorado.write("   Tiempo mínimo: " + entreno.getListaEjercicios().get(i).getMinMinutos() + "\n");
+                }
+            }
+            writerMejorado.write("__________________________________________________________________________________\n\n");
+            System.out.println("Impresión realizada. Consultar archivo.");
+        } catch (IOException eio) {
+            System.out.println("IOException. Error al leer el archivo de destino.");
+        }
+    }
+
+    /**
+     * Genera un nombre único para cada programa de entrenamiento partiendo de su código (PK)
+     *
      * @param codigo
      * @return nombre del archivo en que se guarda
      */
@@ -253,22 +230,32 @@ public class Entrenamiento {
         archivo += ".txt";
         return archivo;
     }
-    
-    public static Entrenamiento generarObjetoEntrenamientoDesdeTabla(int codigo) throws SQLException {
+
+    public static Entrenamiento generarEntrenamientoDesdeTabla(int codigo) throws SQLException {
         Entrenamiento objetoEntrenamiento = new Entrenamiento();
         String queryEntrenamiento = "SELECT * FROM entrenamiento WHERE train_code = ?;";
-        String queryLineaEntrenamiento = "SELECT * from linea_entrenamiento as L, ejercicio as E where L.codigo_entreno = ? and L.codigo_ejercicio = E.ex_code;";
-        
-        
+        PreparedStatement prepStat = Menu.con.prepareStatement(queryEntrenamiento);
+        prepStat.setInt(1, codigo);
+        ResultSet results = prepStat.executeQuery();
+        results.next();
+        String idEntrenador = results.getString("dni_entrenador");
+        String idAlumno = results.getString("dni_alumno");
+        objetoEntrenamiento.setCodigo(codigo);
+        objetoEntrenamiento.setFecha(results.getString("fecha_creacion"));
+        objetoEntrenamiento.setEntrenador(Entrenador.generarEntrenadorDesdeTabla(idEntrenador));
+        objetoEntrenamiento.setAlumno(Alumno.generarAlumnoDesdeTabla(idAlumno));
+        objetoEntrenamiento.setListaEjercicios(LineaEntrenamiento.generarLineasDesdeTabla(codigo));
+        results.close();
+        prepStat.close();
         return objetoEntrenamiento;
     }
 
-    public static void archivarEntrenamientoDesdeTablaPorEntrenador(String id) throws SQLException {
-        archivarEntrenamientoDesdeTabla(id, null, "imprimir");
+    public static void imprimirEntrenamientoDesdeTablaPorEntrenador(String id) throws SQLException {
+        imprimirEntrenamientoDesdeTabla(id, null);
     }
 
-    public static void archivarEntrenamientoDesdeTablaPorAlumno(String id) throws SQLException {
-        archivarEntrenamientoDesdeTabla(null, id, "imprimir");
+    public static void imprimirEntrenamientoDesdeTablaPorAlumno(String id) throws SQLException {
+        imprimirEntrenamientoDesdeTabla(null, id);
     }
 
     //Getters y setters:
