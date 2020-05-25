@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.EnumSet;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,12 +43,12 @@ public class Menu {
                 usuario = menuLogIn();
             } while (usuario.equals(""));
             if (comprobarEntrenador(usuario) == true) {
+                System.out.println("Bienvenido, entrenador. ");
                 menuEntrenador(usuario);
             } else {
+                System.out.println("Bienvenido, alumno. ");
                 menuAlumno(usuario);
             }
-            //TODO: si el usuario es instance of entrenador, menuEntrenador. Else menuAlumno
-
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
@@ -87,19 +86,18 @@ public class Menu {
      * @return true si es entrenador, false si es alumno
      */
     public static boolean comprobarEntrenador(String id) throws SQLException {
-        boolean esEntrenador = false;
         String query = "SELECT discriminador FROM USUARIO WHERE DNI = ?;";
         PreparedStatement prepStat = con.prepareStatement(query);
         prepStat.setString(1, id);
         ResultSet queryResult = prepStat.executeQuery();
         if (queryResult.next()) {               //Comprobando que no me lo devuelva vacío.
             if (queryResult.getString("discriminador").equals("entrenador")) {
-                esEntrenador = true;
+                return true;
             }
         }
         queryResult.close();
         prepStat.close();
-        return esEntrenador;
+        return false;
     }
 
     /**
@@ -110,7 +108,8 @@ public class Menu {
     public static void menuEntrenador(String id) throws SQLException {
         boolean salir = false;
         while (salir == false) {
-            System.out.println("Bienvenido, entrenador.\n¿Qué quieres hacer?");
+            System.out.println("");
+            System.out.println("¿Qué quieres hacer?");
             System.out.println("  1- crear programa de entrenamiento");
             System.out.println("  2- consultar un programa de entrenamiento existente");
             System.out.println("  3- imprimir un programa de entrenamiento existente");
@@ -169,7 +168,8 @@ public class Menu {
     public static void menuAlumno(String id) throws SQLException {
         boolean salir = false;
         while (salir == false) {
-            System.out.println("Bienvenido, alumno.\n¿Qué quieres hacer?");
+            System.out.println("");
+            System.out.println("¿Qué quieres hacer?");
             System.out.println("  1- consultar un programa de entrenamiento existente");
             System.out.println("  2- solicitar un nuevo programa de entrenamiento");
             System.out.println("  3- imprimir un programa de entrenamiento personal existente");

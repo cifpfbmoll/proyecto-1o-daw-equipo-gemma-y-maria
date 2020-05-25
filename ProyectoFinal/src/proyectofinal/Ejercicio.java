@@ -78,6 +78,7 @@ public class Ejercicio {
             System.out.println("Introduce el código del nuevo ejercicio:");
             nuevoCodigo = Menu.lector.nextLine().toUpperCase();
             //TODO: mejora validar que el código sólo tenga dos letras
+            //todo añadir mensaje si error System.out.println("Error. El código introducido ya está en uso.");
         } while (comprobarCodigoExistente(nuevoCodigo));
         nuevoEjercicio.setCodigo(nuevoCodigo);
         System.out.println("Introduce el título del nuevo ejercicio:");
@@ -120,7 +121,6 @@ public class Ejercicio {
     public static boolean comprobarCodigoExistente(String codigo) throws SQLException{
         ArrayList<String> listaCodigos = obtenerCodigosExistentes();
         if (listaCodigos.contains(codigo)) {
-            System.out.println("Error. El código introducido ya está en uso.");
             return true;
         }
         return false;

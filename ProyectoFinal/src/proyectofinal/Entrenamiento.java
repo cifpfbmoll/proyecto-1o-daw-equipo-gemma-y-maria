@@ -48,10 +48,6 @@ public class Entrenamiento {
      * @param id identificador del entrenador que crea el programa
      */
     public static void menuCrearEntrenamiento(String id) throws SQLException {
-        Menu.verSolicitudesEntrenamiento();
-        System.out.println("Introduce el DNI del alumno para el que quieres preparar un entrenamiento:");
-        String opcionDNI = Menu.lector.nextLine();
-        //TODO: comprobar que este dni coincide con los de la base de datos y que necesita entrenamiento
         System.out.println("");
         System.out.println("¿Qué tipo de entrenamiento quieres crear?");
         System.out.println("  1- crear programa nuevo");
@@ -60,56 +56,148 @@ public class Entrenamiento {
 
         switch (opcionCrear) {
             case "1":
-                //Conectar
+                crearNuevoEntrenamiento(id);
                 break;
             case "2":
-                //TODO
+                copiarEntrenamiento(id);
                 break;
             default:
                 System.out.println("La opción seleccionada no existe.");
         }
     }
 
-    public void crearNuevoEntrenamiento() throws SQLException {
+    public static void crearNuevoEntrenamiento(String idEntrenador) throws SQLException {
+        Entrenamiento entreno = new Entrenamiento();
+        entreno.setEntrenador(Entrenador.generarEntrenadorDesdeTabla(idEntrenador));
+        Menu.verSolicitudesEntrenamiento();
+        System.out.println("Introduce el DNI del alumno para el que quieres preparar un entrenamiento:");
+        String idAlumno = Menu.lector.nextLine();
+        //TODO: comprobar que este dni coincide con los de la base de datos y que necesita entrenamiento
+        //TODO: confirmar que existe ese DNI para alumnos, como en copiarEntrenamiento
+        entreno.setAlumno(Alumno.generarAlumnoDesdeTabla(idAlumno));
+        System.out.println("¿Cuántos ejercicios diferentes tendrá este nuevo programa?");
+        int numLineas = Integer.parseInt(Menu.lector.nextLine());
+        ArrayList<LineaEntrenamiento> listaLineas = new ArrayList<>();
+        //TODO falta que sólo se puedan añadir ejercicios del tipo solicitado por el usuario. IMPORTANTE.
+        for (int i = 0; i < numLineas; i++) {
+            listaLineas.add(LineaEntrenamiento.crearLineaEntrenamiento());
+        }
+        entreno.setListaEjercicios(listaLineas);
+        entreno.insertarEntrenamientoEnTablaDesdeObjeto();
+        System.out.println("Nuevo entrenamiento creado con éxito.");
+        //TODO mejora devolver el código de entrenamiento
+        //TODO quitar la solicitud de tipo de entrenamiento del alumno
+    }
+
+    public static void copiarEntrenamiento(String idEntrenador) throws SQLException {
+        //Nota para documentación: sólo se pueden generar entrenamientos nuevos para quien lo pida; se pueden copiar entrenamientos para cualquiera.
+        System.out.println("Sólo puedes copiar entrenamientos elaborados por ti mismo.");
+        int codigoBase = consultarCodigoEntrenamiento(idEntrenador, null);
+        Entrenamiento entreno = generarEntrenamientoDesdeTabla(codigoBase);
+        System.out.println("Introduce el DNI del alumno para que el quieres copiar el programa de entrenamiento:");
+        String idAlumno = Menu.lector.nextLine();
+        //TODO: confirmar que existe ese DNI para alumnos
+        entreno.setAlumno(Alumno.generarAlumnoDesdeTabla(idAlumno));
+        System.out.println("La tabla de ejercicios que se copiará en el nuevo programa es:");
+        entreno.mostrarListaEjercicios();
+        //TODO mejora: añadir otros ejercicios en la tabla
+        entreno.insertarEntrenamientoEnTablaDesdeObjeto();
+        System.out.println("Copia realizada con éxito.");
+        //TODO mejora devolver el nuevo código de entrenamiento
+    }
+    
+    public void insertarEntrenamientoEnTablaDesdeObjeto() throws SQLException {
         boolean estadoAC = Menu.con.getAutoCommit();
         try {
             Menu.con.setAutoCommit(false);
-            String query = "INSERT INTO ENTRENAMIENTO (train_code, dni_entrenador, dni_alumno, fecha_creacion) VALUES (?, ?, ?, ?);";
-            PreparedStatement prepStat = Menu.con.prepareStatement(query);
-            prepStat.setInt(1, this.getCodigo());
-            prepStat.setString(2, this.getEntrenador().getDni());
-            prepStat.setString(3, this.getAlumno().getDni());
-            prepStat.setString(4, this.getFecha());
-            prepStat.execute();
+            String queryEntrenamiento = "INSERT INTO entrenamiento (dni_entrenador, dni_alumno) VALUES (?, ?);";
+            PreparedStatement prepStatEntrenamiento = Menu.con.prepareStatement(queryEntrenamiento);
+            prepStatEntrenamiento.setString(1, this.getEntrenador().getDni());
+            prepStatEntrenamiento.setString(2, this.getEntrenador().getDni());
+            //TODO falta fecha
+            prepStatEntrenamiento.execute();
             Menu.con.commit();
-            System.out.println("Nuevo entrenamiento (" + this.getCodigo() + " " + this.getEntrenador().getDni() + " " + this.getAlumno().getDni() + " " + this.getFecha() + " introducido correctamente.");
-            prepStat.close();
+            System.out.println("Tabla 'entrenamiento' modificada correctamente.");  //traza
+            //TODO rehacer esto con savepoints en vez de commits
+            prepStatEntrenamiento.close();
+            String queryCodigo = "SELECT MAX(train_code) as train_codigo FROM entrenamiento;";      //sé que el último que he creado es el mayor, por serial
+            PreparedStatement prepStatCodigo = Menu.con.prepareStatement(queryCodigo);
+            ResultSet resultsCodigo = prepStatCodigo.executeQuery();
+            resultsCodigo.next();
+            this.setCodigo(resultsCodigo.getInt("train_codigo"));
+            resultsCodigo.close();
+            prepStatCodigo.close();
+            for (int i = 0; i < this.getListaEjercicios().size(); i++) {
+                String queryLinea = "INSERT INTO linea_entrenamiento (codigo_entreno, codigo_ejercicio, repeticiones, tiempo_min) VALUES (?, ?, ?, ?);";
+                PreparedStatement prepStatLinea = Menu.con.prepareStatement(queryLinea);
+                prepStatLinea.setInt(1, this.getCodigo());
+                prepStatLinea.setString(2, this.getListaEjercicios().get(i).getEjercicio().getCodigo());
+                prepStatLinea.setInt(3, this.getListaEjercicios().get(i).getRepeticiones());
+                prepStatLinea.setInt(4, this.getListaEjercicios().get(i).getMinMinutos());
+                prepStatLinea.execute();
+                Menu.con.commit();
+                prepStatLinea.close();
+            }
+            System.out.println("Tabla 'linea_entrenamiento' modificada correctamente.");    //traza
+            //TODO comprobar aqui todos los commits
         } catch (SQLException sqle) {
             sqle.printStackTrace();
-            System.out.println("Error en la introducción del entrenamiento.");
+            System.out.println("Error en la introducción del alumno.");
             Menu.con.rollback();
         } finally {
             Menu.con.setAutoCommit(estadoAC);
         }
-        //TODO: tiempos, repeticiones
-    }
-
-    public static void copiarEntrenamiento() throws SQLException {
-        //TODO maria. usar generarObjetoEntrenamientoDesdeTabla
     }
 
     //El método de consultas tiene dos parámetros; paso como null, valor imposible en id, el que NO quiero usar como base
     //Para facilitar la lectura y las llamadas es más apropiado separarlo así.
     public static void consultarEntrenamientoPorEntrenador(String id) throws SQLException {
         mostrarEntrenamientoDesdeTabla(id, null);
-        //TODO rehacer
     }
 
     public static void consultarEntrenamientoPorAlumno(String id) throws SQLException {
         mostrarEntrenamientoDesdeTabla(null, id);
-        //TODO como arriba
     }
 
+    /**
+     * Toma un entrenamiento de tablas y lo muestra por consola.
+     * 
+     * @param idEntrenador DNI del entrenador
+     * @param idAlumno DNI del alumno
+     */
+    public static void mostrarEntrenamientoDesdeTabla(String idEntrenador, String idAlumno) throws SQLException {
+        int codigo = consultarCodigoEntrenamiento(idEntrenador, idAlumno);
+        Entrenamiento entreno = generarEntrenamientoDesdeTabla(codigo);
+        System.out.println("CONSULTA DE ENTRENAMIENTO:");
+        System.out.println("Fecha de creación: " + entreno.getFecha());
+        System.out.println("Preparado por el entrenador " + entreno.getEntrenador().getNombre() + " " + entreno.getEntrenador().getApellido1() + 
+                " " + entreno.getEntrenador().getApellido2());
+        System.out.println("Para el alumno " + entreno.getAlumno().getNombre() + " " + entreno.getAlumno().getApellido1() + " " + 
+                entreno.getAlumno().getApellido2());
+        System.out.println("Tabla de ejercicios:");
+        entreno.mostrarListaEjercicios();
+        try {
+            TimeUnit.SECONDS.sleep(6);             //Para pausar la ejecución del código 6 segundos.
+        } catch (InterruptedException IE) {
+            System.out.println("InterruptedException. Error al pausar la ejecución del código.");
+        }
+    }
+    
+    public void mostrarListaEjercicios() {
+        for (int i = 0; i < this.getListaEjercicios().size(); i++) {
+            System.out.println(i + 1 + ":");
+            System.out.println("   " + this.getListaEjercicios().get(i).getEjercicio().getNombre() + " (código " + 
+                    this.getListaEjercicios().get(i).getEjercicio().getCodigo() + ")\n");
+            System.out.println("   " + this.getListaEjercicios().get(i).getEjercicio().getDescripcion() + "\n");
+            if (this.getListaEjercicios().get(i).getRepeticiones() != 0) {           //El tipo primitivo nunca puede ser nulo, es 0 por defecto
+                System.out.println("   Repeticiones: " + this.getListaEjercicios().get(i).getRepeticiones() + "\n");
+            }
+            if (this.getListaEjercicios().get(i).getMinMinutos() != 0) {
+                System.out.println("   Tiempo mínimo: " + this.getListaEjercicios().get(i).getMinMinutos() + "\n");
+            }
+        }
+    }
+    
     public static int consultarCodigoEntrenamiento(String idEntrenador, String idAlumno) throws SQLException {
         int codigo = 0;             //TODO: si hago el bucle nunca devolverá esto
         String query = "SELECT train_code, fecha_creacion FROM ENTRENAMIENTO ";
@@ -134,7 +222,7 @@ public class Entrenamiento {
             queryResult.close();
         }
         prepStat.close();
-        System.out.println("Introduce el código del programa de entrenamiento que quieres consultar:");
+        System.out.println("Introduce el código del programa de entrenamiento que te interesa:");
         int opcionCodigo = Integer.parseInt(Menu.lector.nextLine());
         if (codigosEncontrados.contains(opcionCodigo)) {
             return opcionCodigo;
@@ -146,41 +234,8 @@ public class Entrenamiento {
     }
 
     /**
-     * Toma un entrenamiento de tablas y lo muestra por consola.
-     * @param idEntrenador DNI del entrenador
-     * @param idAlumno DNI del alumno
-     */
-    public static void mostrarEntrenamientoDesdeTabla(String idEntrenador, String idAlumno) throws SQLException {
-        int codigo = consultarCodigoEntrenamiento(idEntrenador, idAlumno);
-        Entrenamiento entreno = generarEntrenamientoDesdeTabla(codigo);
-        System.out.println("CONSULTA DE ENTRENAMIENTO:");
-        System.out.println("Fecha de creación: " + entreno.getFecha());
-        System.out.println("Preparado por el entrenador " + entreno.getEntrenador().getNombre() + " " + entreno.getEntrenador().getApellido1() + 
-                " " + entreno.getEntrenador().getApellido2());
-        System.out.println("Para el alumno " + entreno.getAlumno().getNombre() + " " + entreno.getAlumno().getApellido1() + " " + 
-                entreno.getAlumno().getApellido2());
-        System.out.println("Tabla de ejercicios:");
-        for (int i = 0; i < entreno.getListaEjercicios().size(); i++) {
-            System.out.println(i + 1 + ":");
-            System.out.println("   " + entreno.getListaEjercicios().get(i).getEjercicio().getNombre() + " (código " + 
-                    entreno.getListaEjercicios().get(i).getEjercicio().getCodigo() + ")\n");
-            System.out.println("   " + entreno.getListaEjercicios().get(i).getEjercicio().getDescripcion() + "\n");
-            if (entreno.getListaEjercicios().get(i).getRepeticiones() != 0) {           //El tipo primitivo nunca puede ser nulo, es 0 por defecto
-                System.out.println("   Repeticiones: " + entreno.getListaEjercicios().get(i).getRepeticiones() + "\n");
-            }
-            if (entreno.getListaEjercicios().get(i).getMinMinutos() != 0) {
-                System.out.println("   Tiempo mínimo: " + entreno.getListaEjercicios().get(i).getMinMinutos() + "\n");
-            }
-        }
-        try {
-            TimeUnit.SECONDS.sleep(6);             //Para pausar la ejecución del código 6 segundos.
-        } catch (InterruptedException IE) {
-            System.out.println("InterruptedException. Error al pausar la ejecución del código.");
-        }
-    }
-
-    /**
      * Toma un entrenamiento de tablas y lo guarda en un archivo de texto personalizado para cada programa.
+     * 
      * @param idEntrenador DNI del entrenador
      * @param idAlumno DNI del alumno
      */
@@ -221,7 +276,7 @@ public class Entrenamiento {
     /**
      * Genera un nombre único para cada programa de entrenamiento partiendo de su código (PK)
      *
-     * @param codigo
+     * @param codigo identificador del programa de entrenamiento que se archivará
      * @return nombre del archivo en que se guarda
      */
     public static String crearArchivoEntrenamiento(int codigo) {
