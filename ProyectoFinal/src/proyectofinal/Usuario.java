@@ -76,7 +76,14 @@ public abstract class Usuario {
         System.out.println("  -e-mail:");
         String userEmail = Menu.lector.nextLine();
         this.setEmail(userEmail);
+        System.out.println("  -telefono:");
+        int userPhone = Integer.parseInt(Menu.lector.nextLine());
+        this.setTelefono(userPhone);
+        System.out.println("  -direccion:");
+        String userAdress = Menu.lector.nextLine();
+        this.setDireccion(userAdress);
         //TODO acabar de completar
+        
     }
 
     //Getters y setters:
