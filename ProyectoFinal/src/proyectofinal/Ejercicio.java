@@ -38,7 +38,7 @@ public class Ejercicio {
         System.out.println("  " + this.getDescripcion());
         System.out.println("  Tipos:");
         for (int i = 0; i < this.getTipo().size(); i++){
-            System.out.println("      -" + this.getTipo().get(i).getTextoTipoEjercicio() + " (código " + this.getTipo().get(i) + ")");
+            System.out.println("      -" + this.getTipo().get(i).getTextoTipoEjercicio() + " (código " + this.getTipo().get(i).name() + ")");
         }
     }
     
@@ -97,8 +97,40 @@ public class Ejercicio {
         nuevoEjercicio.setDescripcion(Menu.lector.nextLine());
         ArrayList<TipoEjercicio> listaTipos = generarListaTipos();
         nuevoEjercicio.setTipo(listaTipos);
-        System.out.println("Ejercicio creado con éxito. Detalles:");
-        nuevoEjercicio.mostrarDatosEjercicio();
+        nuevoEjercicio.guardarEjercicioEnTabla();
+    }
+    
+    public void guardarEjercicioEnTabla() throws SQLException{
+        boolean estadoAC = Menu.con.getAutoCommit();
+        try {
+            Menu.con.setAutoCommit(false);
+            String query = "INSERT INTO ejercicio (ex_code, nombre, descripcion) VALUES (?, ?, ?);";
+            PreparedStatement prepStat = Menu.con.prepareStatement(query);
+            prepStat.setString(1, this.getCodigo());
+            prepStat.setString(2, this.getNombre());
+            prepStat.setString(3, this.getDescripcion());
+            prepStat.execute();
+            Menu.con.commit();
+            prepStat.close();
+            //Tengo que commitear el ejercicio antes de meter tipos, de lo contrario me falla por PK
+            for (int i = 0; i < this.getTipo().size(); i++) {
+                String queryTipo = "INSERT INTO tipo_ejercicio (ej_code, tipo) VALUES (?, ?);";
+                PreparedStatement prepStatTipo = Menu.con.prepareStatement(queryTipo);
+                prepStatTipo.setString(1, this.getCodigo());
+                prepStatTipo.setString(2, this.getTipo().get(i).name());
+                prepStatTipo.execute();
+                prepStatTipo.close();
+            }
+            Menu.con.commit();
+            System.out.println("Ejercicio creado con éxito. Detalles:");
+            this.mostrarDatosEjercicio();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            System.out.println("Error en la introducción del ejercicio.");
+            Menu.con.rollback();
+        } finally {
+            Menu.con.setAutoCommit(estadoAC);
+        }
     }
     
     public static ArrayList<TipoEjercicio> generarListaTipos() {
@@ -122,6 +154,8 @@ public class Ejercicio {
                 if (!tipoExistente) {
                     System.out.println("Error. Código inexistente.\nLos tipos de ejercicio existentes son:");
                     TipoEjercicio.imprimirTipo();
+                } else {
+                    lista.add(TipoEjercicio.valueOf(tipo));
                 }
             }    
         }

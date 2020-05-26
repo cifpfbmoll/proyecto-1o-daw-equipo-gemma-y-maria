@@ -55,6 +55,32 @@ public class Entrenador extends Usuario {
         return user;
     }
     
+    public void incrementarPrograma() throws SQLException {
+        this.setProgramasPreparados(this.getProgramasPreparados() + 1);
+        this.incrementarProgramaEnTabla();
+    }
+    
+    public void incrementarProgramaEnTabla() throws SQLException {
+        boolean estadoAC = Menu.con.getAutoCommit();
+        try {
+            Menu.con.setAutoCommit(false);
+            String query = "UPDATE usuario SET num_prog_prep = ? where DNI = ?;";
+            PreparedStatement prepStat = Menu.con.prepareStatement(query);
+            prepStat.setInt(1, this.getProgramasPreparados());
+            prepStat.setString(2, this.getDni());
+            prepStat.executeUpdate();
+            Menu.con.commit();
+            System.out.println("Entrenador: con este, has elaborado un total de " + this.getProgramasPreparados() + " programas.");
+            prepStat.close();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            System.out.println("Error al incrementar el número de programas del entrenador.");
+            Menu.con.rollback();
+        } finally {
+            Menu.con.setAutoCommit(estadoAC);
+        }
+    }
+    
     //Getters y setters:
     public int getProgramasPreparados() {
         return programasPreparados;

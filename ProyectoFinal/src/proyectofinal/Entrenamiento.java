@@ -103,6 +103,7 @@ public class Entrenamiento {
             entreno.setListaEjercicios(listaLineas);
             entreno.insertarEntrenamientoEnTablaDesdeObjeto();
             System.out.println("Nuevo entrenamiento creado con éxito.");
+            entreno.getEntrenador().incrementarPrograma();
             eliminarSolicitudEntrenamiento(idAlumno);
             //TODO mejora devolver el código de entrenamiento
         }
@@ -146,6 +147,7 @@ public class Entrenamiento {
         //TODO mejora: añadir otros ejercicios en la tabla
         entreno.insertarEntrenamientoEnTablaDesdeObjeto();
         System.out.println("Copia realizada con éxito.");
+        entreno.getEntrenador().incrementarPrograma();
         //TODO mejora devolver el nuevo código de entrenamiento
     }
     

@@ -89,10 +89,8 @@ public class Alumno extends Usuario {
         boolean estadoAC = Menu.con.getAutoCommit();
         try {
             Menu.con.setAutoCommit(false);
-            String query = "INSERT INTO usuario (DNI, password, discriminador, "
-                    + "nombre, apellido1, apellido2, email, telefono, direccion, IBAN) "
+            String query = "INSERT INTO usuario (DNI, password, discriminador, nombre, apellido1, apellido2, email, telefono, direccion, IBAN) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-            //TODO completar con el resto de campos
             PreparedStatement prepStat = Menu.con.prepareStatement(query);
             prepStat.setString(1, this.getDni());
             prepStat.setString(2, this.getPassword());

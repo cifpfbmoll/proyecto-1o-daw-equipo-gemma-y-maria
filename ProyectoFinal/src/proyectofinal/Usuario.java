@@ -14,7 +14,7 @@ import java.sql.SQLException;
 public abstract class Usuario {
 
     //Atributos:
-    private String dni;     //TODO preparar validación para num/letra
+    private String dni;
     private String password;
     private String nombre;
     private String apellido1;
@@ -58,12 +58,18 @@ public abstract class Usuario {
         return queryResult;
     }
 
+    /**
+     * Pide los datos del nuevo usuario por consola y los setea en el objeto.
+     */
     public void crearNuevoUsuario() {
-        System.out.println("  -dni:");
-        String userDni = Menu.lector.nextLine();
+        String userDni = "";
+        do {
+            System.out.println("  -dni:");
+            userDni = Menu.lector.nextLine().toUpperCase().trim();
+        } while (!validarDni(userDni));
         this.setDni(userDni);
         System.out.println("  -contraseña:");
-        String userPw = Menu.lector.nextLine();
+        String userPw = Menu.lector.nextLine().toLowerCase().trim();
         this.setPassword(userPw);
         //TODO: confirmarContraseña()
         System.out.println("  -nombre:");
@@ -86,6 +92,32 @@ public abstract class Usuario {
         this.setDireccion(userAdress);
     }
 
+    /**
+     * Es una validación básica, no buscamos que la letra coincida porque los datos preintroducidos son inventados.<br>
+     * Dos comprobaciones: que los ocho primeros caracteres sean números (ascii entre 48 y 57) y que el último sea letra.
+     * Sólo consideramos DNI, no NIE ni pasaportes.
+     * @param dni
+     * @return true si cumple los requisitos de validez
+     */
+    public static boolean validarDni(String dni){
+        boolean dniValido = true;
+        if (dni.length() != 9 || !Character.isLetter(dni.charAt(8))) {
+            dniValido = false;
+        } else {
+            for (int i = 0; i < dni.length() - 1; i++) {
+                int numAscii = dni.codePointAt(i);
+                boolean numValido = (numAscii > 47 && numAscii < 58);
+                if (numValido == false) {
+                    dniValido = false;
+                }
+            }
+        }
+        if (dniValido == false) {
+            System.out.println("Este DNI no cumple los requisitos.");
+        }
+        return dniValido;
+    }
+    
     //Getters y setters:
     public String getPassword() {
         return password;
