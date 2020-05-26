@@ -41,7 +41,7 @@ CREATE TABLE ENTRENAMIENTO (
   train_code serial NOT NULL,
   dni_entrenador varchar(9)  NOT NULL,
   dni_alumno varchar(9)  NOT NULL,
-  tipo_programa varchar(3) DEFAULT NULL,
+  tipo_programa varchar(3) NOT NULL,
   fecha_creacion date
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -184,20 +184,20 @@ INSERT INTO TIPO_EJERCICIO (ej_code, tipo) VALUES
 
 INSERT INTO ENTRENAMIENTO (dni_entrenador, dni_alumno, tipo_programa, fecha_creacion) VALUES
 ('11111111A', '66666666F', 'GM', '2020-05-10'),
-('22222222B', '77777777G', null, '2020-05-11'),
-('33333333C', '88888888H', null, '2020-05-11'),
-('44444444D', '99999999I', null, '2020-05-11'),
-('55555555E', '00000000J', null, '2020-05-11'),
-('11111111A', '11111111K', null, '2020-05-11'),
-('22222222B', '22222222L', null, '2020-05-12'),
-('33333333C', '33333333M', null, '2020-05-12'),
-('44444444D', '44444444N', null, '2020-05-12'),
-('55555555E', '55555555O', null, '2020-05-13'),
-('11111111A', '66666666P', null, '2020-05-13'),
-('22222222B', '77777777Q', null, '2020-05-14'),
-('33333333C', '88888888R', null, '2020-05-14'),
-('44444444D', '99999999S', null, '2020-05-14'),
-('55555555E', '00000000T', null, '2020-05-14');
+('22222222B', '77777777G', 'YG', '2020-05-11'),
+('33333333C', '88888888H', 'WF', '2020-05-11'),
+('44444444D', '99999999I', 'CD', '2020-05-11'),
+('55555555E', '00000000J', 'RH', '2020-05-11'),
+('11111111A', '11111111K', 'WF', '2020-05-11'),
+('22222222B', '22222222L', 'HT', '2020-05-12'),
+('33333333C', '33333333M', 'GM', '2020-05-12'),
+('44444444D', '44444444N', 'ST', '2020-05-12'),
+('55555555E', '55555555O', 'WF', '2020-05-13'),
+('11111111A', '66666666P', 'GM', '2020-05-13'),
+('22222222B', '77777777Q', 'MB', '2020-05-14'),
+('33333333C', '88888888R', 'ST', '2020-05-14'),
+('44444444D', '99999999S', 'RT', '2020-05-14'),
+('55555555E', '00000000T', 'CD', '2020-05-14');
 
 INSERT INTO LINEA_ENTRENAMIENTO (codigo_entreno, codigo_ejercicio, repeticiones, tiempo_min) VALUES
 (1, 'PU', 10, 4),
@@ -235,12 +235,14 @@ INSERT INTO LINEA_ENTRENAMIENTO (codigo_entreno, codigo_ejercicio, repeticiones,
 (12, 'CP', 20, null),
 (12, 'GP', 20, null),
 (12, 'LE', 20, null),
+(12, 'HB', 20, null),
 (13, 'HB', null, 10),
+(13, 'FW', null, 10),
 (13, 'FS', 20, null),
 (13, 'WB', 50, 5),
-(14, 'GP', 20, null),
+(14, 'RT', 20, null),
 (14, 'LE', 40, 10),
 (14, 'ST', 20, null),
 (15, 'RW', 20, null),
 (15, 'KF', null, 5),
-(15, 'FS', 20, null);
+(15, 'DU', 20, null);
