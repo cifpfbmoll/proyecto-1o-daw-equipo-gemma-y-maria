@@ -12,6 +12,7 @@ CREATE TABLE USUARIO (
   email varchar(50) DEFAULT NULL,
   telefono int DEFAULT NULL,
   direccion text DEFAULT NULL,
+  IBAN varchar(22) DEFAULT NULL,
   num_prog_prep int DEFAULT NULL,
   tipo_prog_solicitado varchar(3) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -40,6 +41,7 @@ CREATE TABLE ENTRENAMIENTO (
   train_code serial NOT NULL,
   dni_entrenador varchar(9)  NOT NULL,
   dni_alumno varchar(9)  NOT NULL,
+  tipo_programa varchar(3) DEFAULT NULL,
   fecha_creacion date
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -65,7 +67,8 @@ ALTER TABLE USUARIO
 ALTER TABLE ENTRENAMIENTO
   ADD PRIMARY KEY (train_code),
   ADD CONSTRAINT train_ex_fk1 FOREIGN KEY (dni_entrenador) REFERENCES USUARIO (DNI),
-  ADD CONSTRAINT train_ex_fk2 FOREIGN KEY (dni_alumno) REFERENCES USUARIO (DNI);
+  ADD CONSTRAINT train_ex_fk2 FOREIGN KEY (dni_alumno) REFERENCES USUARIO (DNI),
+  ADD CONSTRAINT train_ex_fk3 FOREIGN KEY (tipo_programa) REFERENCES TIPO (tipo_code);
 
 ALTER TABLE TIPO_EJERCICIO
   ADD PRIMARY KEY (ej_code,tipo),
@@ -88,27 +91,27 @@ INSERT INTO TIPO (tipo_code, nombre) VALUES
 ('HT', 'HYPERTROPHY'),
 ('CD', 'CARDIO');
 
-INSERT INTO USUARIO (DNI, password, discriminador, nombre, apellido1, apellido2, email, telefono, direccion, num_prog_prep, tipo_prog_solicitado) VALUES
-('11111111A', 'usuario001', 'entrenador', 'Oswald', 'Cobblepot', 'Penguin', 'oswaldc@gmail.com', 600000001, 'Pingu Ave. 66 Gotham City  KT13 8XQ', 10, null ),
-('22222222B', 'usuario002', 'entrenador', 'Harley', 'Queen', 'Joker', 'harleyqk@gmail.com', 600000002, 'Madness St. 24 Kansas  KT13 8XL', 10, null ),
-('33333333C', 'usuario003', 'entrenador', 'Edward', 'Nygma', 'Enigma', 'edwardnygma@gmail.com', 600000003, 'The Riddler St. 48 Gotham City  KH13 8XQ', 10, null ),
-('44444444D', 'usuario004', 'entrenador', 'Alexander', 'Luthor', null, 'lexluthor@gmail.com', 600000004, 'Kryptonite Road 67 Metropolis  KT13 9XQ', 10, 'WF' ),
-('55555555E', 'usuario005', 'entrenador', 'Alice', 'Kane', 'Beth', 'alicekane@gmail.com', 600000005, 'Mansion Wayne Road s/n Gotham City  KT13 8PQ', 10, null ),
-('66666666F', 'usuario006', 'alumno', 'Selina', 'Kyle', 'Catwoman', 'catwoman@gmail.com', 600000006, 'The little Rabbit St. 44 Gotham City  KH13 8XQ', 10, 'YG'),
-('77777777G', 'usuario007', 'alumno', 'Bruce', 'Wayne', 'Batman', 'brucewayne@gmail.com', 600000007, 'Mansion Wayne Road s/n Gotham City  KT13 8XQ', null, 'RH' ),
-('88888888H', 'usuario008', 'alumno', 'Clark', 'Kent', 'Superman', 'clarkkent@gmail.com', 600000008, 'Long Field St. 24 Kansas  KT13 8XL', null, null ),
-('99999999I', 'usuario009', 'alumno', 'Kara', 'Danvers', 'Supergirl', 'karadanvers@gmail.com', 600000009, 'The CatCo s/n Central City  KT00 8XQ', null, 'WF' ),
-('00000000J', 'usuario010', 'alumno', 'Barry', 'Allen', 'Flash', 'barryallen@gmail.com', 600000010, 'Running Home St. 99 Star City  KT13 5XQ', null, 'HT' ),
-('11111111K', 'usuario011', 'alumno', 'Oliver', 'Queen', 'Arrow', 'oliverqueen@gmail.com', 600000011, 'Mansion Queen Road s/n Starling City  KT13 8IQ', null, 'RT' ),
-('22222222L', 'usuario012', 'alumno', 'Sara', 'Lance', 'Canary', 'saralance@gmail.com', 600000012, 'Time Ship Road 33 s/n Time City  KA13 8XQ', null, null ),
-('33333333M', 'usuario013', 'alumno', 'Kate', 'Kane', 'Batwoman', 'katekane@gmail.com', 600000013, 'Wayne Enterprises Ave. s/n Gotham City  KM13 80Q', null, null ),
-('44444444N', 'usuario014', 'alumno', 'Helena', 'Bertinelli', 'Huntress', 'helenaberti@gmail.com', 600000014, 'Mansion Bertinelli Road s/n Starling City  KT33 8XQ', null, 'GM' ),
-('55555555O', 'usuario015', 'alumno', 'Diana', 'Prince', 'Wonder', 'dianaprince@gmail.com', 600000015, 'The Sea s/n Water City  KT10 8UY', null, 'CD' ),
-('66666666P', 'usuario016', 'alumno', 'Arthur', 'Curry', 'Aquaman', 'arthurcurry@gmail.com', 600000016, 'Mansion Wayne Road s/n Gotham City  KT13 7YY', null, null ),
-('77777777Q', 'usuario017', 'alumno', 'Alfred', 'Pennyworth', 'Butler', 'alfredpenny@gmail.com', 600000017, 'Mansion Wayne Road s/n Gotham City  KT13 8PPQ', null, 'HT' ), 
-('88888888R', 'usuario018', 'alumno', 'Victor', 'Stone', 'Cyborg', 'victorstone@gmail.com', 600000018, 'Technology Ave. s/n Gotham City  KK13 8XQ', null, null ),
-('99999999S', 'usuario019', 'alumno', 'John', 'Constantine', 'Witcher', 'johnconstantine@gmail.com', 600000019, 'Hellskitchen 23 Starling City  IT13 8XQ', null, 'RT' ),
-('00000000T', 'usuario020', 'alumno', 'Rachel', 'Roth', 'Raven', 'rachelroth@gmail.com', 600000020, 'The darkest avenur 99 Chicago City  KT00 8XQ', null, 'YG' );
+INSERT INTO USUARIO (DNI, password, discriminador, nombre, apellido1, apellido2, email, telefono, direccion, IBAN, num_prog_prep, tipo_prog_solicitado) VALUES
+('11111111A', 'usuario001', 'entrenador', 'Oswald', 'Cobblepot', 'Penguin', 'oswaldc@gmail.com', 600000001, 'Pingu Ave. 66 Gotham City  KT13 8XQ', null, 10, null ),
+('22222222B', 'usuario002', 'entrenador', 'Harley', 'Queen', 'Joker', 'harleyqk@gmail.com', 600000002, 'Madness St. 24 Kansas  KT13 8XL', null, 10, null ),
+('33333333C', 'usuario003', 'entrenador', 'Edward', 'Nygma', 'Enigma', 'edwardnygma@gmail.com', 600000003, 'The Riddler St. 48 Gotham City  KH13 8XQ', null, 10, null ),
+('44444444D', 'usuario004', 'entrenador', 'Alexander', 'Luthor', null, 'lexluthor@gmail.com', 600000004, 'Kryptonite Road 67 Metropolis  KT13 9XQ', null, 10, 'WF' ),
+('55555555E', 'usuario005', 'entrenador', 'Alice', 'Kane', 'Beth', 'alicekane@gmail.com', 600000005, 'Mansion Wayne Road s/n Gotham City  KT13 8PQ', null, 10, null ),
+('66666666F', 'usuario006', 'alumno', 'Selina', 'Kyle', 'Catwoman', 'catwoman@gmail.com', 600000006, 'The little Rabbit St. 44 Gotham City  KH13 8XQ', 'US22050204050607019675', 10, 'YG'),
+('77777777G', 'usuario007', 'alumno', 'Bruce', 'Wayne', 'Batman', 'brucewayne@gmail.com', 600000007, 'Mansion Wayne Road s/n Gotham City  KT13 8XQ', 'US22050204050607019680', null, 'RH' ),
+('88888888H', 'usuario008', 'alumno', 'Clark', 'Kent', 'Superman', 'clarkkent@gmail.com', 600000008, 'Long Field St. 24 Kansas  KT13 8XL', 'US22050204050607019685', null, null ),
+('99999999I', 'usuario009', 'alumno', 'Kara', 'Danvers', 'Supergirl', 'karadanvers@gmail.com', 600000009, 'The CatCo s/n Central City  KT00 8XQ', 'US22050204060607019685', null, 'WF' ),
+('00000000J', 'usuario010', 'alumno', 'Barry', 'Allen', 'Flash', 'barryallen@gmail.com', 600000010, 'Running Home St. 99 Star City  KT13 5XQ', 'US22050204050557019685', null, 'HT' ),
+('11111111K', 'usuario011', 'alumno', 'Oliver', 'Queen', 'Arrow', 'oliverqueen@gmail.com', 600000011, 'Mansion Queen Road s/n Starling City  KT13 8IQ', 'US22050204050607019633',  null, 'RT' ),
+('22222222L', 'usuario012', 'alumno', 'Sara', 'Lance', 'Canary', 'saralance@gmail.com', 600000012, 'Time Ship Road 33 s/n Time City  KA13 8XQ', 'US22050644050607019685', null, null ),
+('33333333M', 'usuario013', 'alumno', 'Kate', 'Kane', 'Batwoman', 'katekane@gmail.com', 600000013, 'Wayne Enterprises Ave. s/n Gotham City  KM13 80Q', 'US22050204050606719685', null, null ),
+('44444444N', 'usuario014', 'alumno', 'Helena', 'Bertinelli', 'Huntress', 'helenaberti@gmail.com', 600000014, 'Mansion Bertinelli Road s/n Starling City  KT33 8XQ', 'US22050204050607019573', null, 'GM' ),
+('55555555O', 'usuario015', 'alumno', 'Diana', 'Prince', 'Wonder', 'dianaprince@gmail.com', 600000015, 'The Sea s/n Water City  KT10 8UY', 'US22050204050600719685', null, 'CD' ),
+('66666666P', 'usuario016', 'alumno', 'Arthur', 'Curry', 'Aquaman', 'arthurcurry@gmail.com', 600000016, 'Mansion Wayne Road s/n Gotham City  KT13 7YY', 'US22050444050607019681', null, 'YG' ),
+('77777777Q', 'usuario017', 'alumno', 'Alfred', 'Pennyworth', 'Butler', 'alfredpenny@gmail.com', 600000017, 'Mansion Wayne Road s/n Gotham City  KT13 8PPQ', 'US22050204050607019687', null, 'HT' ), 
+('88888888R', 'usuario018', 'alumno', 'Victor', 'Stone', 'Cyborg', 'victorstone@gmail.com', 600000018, 'Technology Ave. s/n Gotham City  KK13 8XQ', 'US22050874070607019685', null, null ),
+('99999999S', 'usuario019', 'alumno', 'John', 'Constantine', 'Witcher', 'johnconstantine@gmail.com', 600000019, 'Hellskitchen 23 Starling City  IT13 8XQ', 'US22050204050607019323', null, 'RT' ),
+('00000000T', 'usuario020', 'alumno', 'Rachel', 'Roth', 'Raven', 'rachelroth@gmail.com', 600000020, 'The darkest avenur 99 Chicago City  KT00 8XQ', 'US22050204050607819681', null, 'YG' );
 
 
 INSERT INTO EJERCICIO (ex_code, nombre, descripcion) VALUES
@@ -179,22 +182,22 @@ INSERT INTO TIPO_EJERCICIO (ej_code, tipo) VALUES
 ('HW', 'GM'),
 ('DP', 'YG');
 
-INSERT INTO ENTRENAMIENTO (dni_entrenador, dni_alumno, fecha_creacion) VALUES
-('11111111A', '66666666F', '2020-05-10'),
-('22222222B', '77777777G', '2020-05-11'),
-('33333333C', '88888888H', '2020-05-11'),
-('44444444D', '99999999I', '2020-05-11'),
-('55555555E', '00000000J', '2020-05-11'),
-('11111111A', '11111111K', '2020-05-11'),
-('22222222B', '22222222L', '2020-05-12'),
-('33333333C', '33333333M', '2020-05-12'),
-('44444444D', '44444444N', '2020-05-12'),
-('55555555E', '55555555O', '2020-05-13'),
-('11111111A', '66666666P', '2020-05-13'),
-('22222222B', '77777777Q', '2020-05-14'),
-('33333333C', '88888888R', '2020-05-14'),
-('44444444D', '99999999S', '2020-05-14'),
-('55555555E', '00000000T', '2020-05-14');
+INSERT INTO ENTRENAMIENTO (dni_entrenador, dni_alumno, tipo_programa, fecha_creacion) VALUES
+('11111111A', '66666666F', 'GM', '2020-05-10'),
+('22222222B', '77777777G', null, '2020-05-11'),
+('33333333C', '88888888H', null, '2020-05-11'),
+('44444444D', '99999999I', null, '2020-05-11'),
+('55555555E', '00000000J', null, '2020-05-11'),
+('11111111A', '11111111K', null, '2020-05-11'),
+('22222222B', '22222222L', null, '2020-05-12'),
+('33333333C', '33333333M', null, '2020-05-12'),
+('44444444D', '44444444N', null, '2020-05-12'),
+('55555555E', '55555555O', null, '2020-05-13'),
+('11111111A', '66666666P', null, '2020-05-13'),
+('22222222B', '77777777Q', null, '2020-05-14'),
+('33333333C', '88888888R', null, '2020-05-14'),
+('44444444D', '99999999S', null, '2020-05-14'),
+('55555555E', '00000000T', null, '2020-05-14');
 
 INSERT INTO LINEA_ENTRENAMIENTO (codigo_entreno, codigo_ejercicio, repeticiones, tiempo_min) VALUES
 (1, 'PU', 10, 4),
@@ -239,5 +242,5 @@ INSERT INTO LINEA_ENTRENAMIENTO (codigo_entreno, codigo_ejercicio, repeticiones,
 (14, 'LE', 40, 10),
 (14, 'ST', 20, null),
 (15, 'RW', 20, null),
-(15, 'KF', null, null),
+(15, 'KF', null, 5),
 (15, 'FS', 20, null);

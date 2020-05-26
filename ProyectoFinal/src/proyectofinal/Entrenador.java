@@ -13,7 +13,6 @@ public class Entrenador extends Usuario {
     
     //Atributos:
     private int programasPreparados;
-    private TipoEjercicio tipoEjercicio;
     //este atributos sumará 1 por cada programa preparado; como los entrenadores vendrán de crear otros programas no puede iniciarse a 0
     
     //Constructores:
@@ -21,9 +20,8 @@ public class Entrenador extends Usuario {
     }
 
     public Entrenador(int programasPreparados, String password, String nombre, String apellido1, String apellido2, String dni, String email, int telefono, String direccion, TipoEjercicio tipoEjercicio) {
-        super(password, nombre, apellido1, apellido2, dni, email, telefono, direccion);
+        super(password, nombre, apellido1, apellido2, dni, email, telefono, direccion, tipoEjercicio);
         this.programasPreparados = programasPreparados;
-        this.tipoEjercicio = tipoEjercicio;
     }
     
     //Métodos:
@@ -54,7 +52,6 @@ public class Entrenador extends Usuario {
         }
         results.close();
         prepStat.close();
-        //Ver nota final en Alumno.generarAlumnoDesdeTabla()
         return user;
     }
     
@@ -66,15 +63,5 @@ public class Entrenador extends Usuario {
     public void setProgramasPreparados(int programasPreparados) {
         this.programasPreparados = programasPreparados;
     }
-
-    public TipoEjercicio getTipoEjercicio() {
-        return tipoEjercicio;
-    }
-
-    public void setTipoEjercicio(TipoEjercicio tipoEjercicio) {
-        this.tipoEjercicio = tipoEjercicio;
-    }
-    
-    
     
 }

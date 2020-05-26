@@ -1,21 +1,18 @@
 CONSULTA DE ENTRENAMIENTO:
 __________________________________________________________________________________
-Fecha de creación: 2020-05-11
+Fecha de creación: 2020-05-26
+Tipo de entrenamiento: yoga (código YG)
 Preparado por el entrenador Oswald Cobblepot Penguin
   (teléfono de contacto: 600000001; mail de contacto: oswaldc@gmail.com)
-Para el alumno Oliver Queen Arrow
-  (teléfono de contacto: 600000011; mail de contacto: oliverqueen@gmail.com)
+Para el alumno Arthur Curry Aquaman
+  (teléfono de contacto: 600000016; mail de contacto: arthurcurry@gmail.com)
 __________________________________________________________________________________
 Tabla de ejercicios:
 
 1: 
    BACK SQUAD (código BS)
    Sentadilla con barra olímpica colocada detrás del cuello
-   Repeticiones: 25
-
-2: 
-   PULL UPS (código PU)
-   Dominadas en el rack o en las anillas
-   Repeticiones: 25
+   Repeticiones: 20
+   Tiempo mínimo: 5
 __________________________________________________________________________________
 

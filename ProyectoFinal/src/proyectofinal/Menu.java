@@ -143,9 +143,7 @@ public class Menu {
                     Entrenamiento.imprimirEntrenamientoDesdeTablaPorAlumno(id);
                     break;
                 case "7":
-                    Alumno alu = new Alumno();
-                    alu.crearNuevoAlumno();
-                    alu.introducirNuevoAlumno();
+                    Alumno.crearNuevoAlumno();
                     break;
                 case "8":
                     Ejercicio.crearNuevoEjercicio();

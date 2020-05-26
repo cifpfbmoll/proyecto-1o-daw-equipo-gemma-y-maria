@@ -13,15 +13,15 @@ import java.sql.SQLException;
 public class Alumno extends Usuario {
 
     //Atributos:
-    private TipoEjercicio tipoEjercicio;
+    private String iban;
 
     //Constructores:
     public Alumno() {
     }
 
-    public Alumno(TipoEjercicio tipoEjercicio, String password, String nombre, String apellido1, String apellido2, String dni, String email, int telefono, String direccion) {
-        super(password, nombre, apellido1, apellido2, dni, email, telefono, direccion);
-        this.tipoEjercicio = tipoEjercicio;
+    public Alumno(String password, String nombre, String apellido1, String apellido2, String dni, String email, int telefono, String direccion, TipoEjercicio tipoEjercicio, String iban) {
+        super(password, nombre, apellido1, apellido2, dni, email, telefono, direccion, tipoEjercicio);
+        this.iban = iban;
     }
 
     //Métodos:
@@ -58,20 +58,40 @@ public class Alumno extends Usuario {
         return user;
     }
 
-    public void crearNuevoAlumno() {
+    /**
+     * Solicita datos para crear un nuevo alumno.
+     * @throws SQLException 
+     */
+    public static void crearNuevoAlumno() throws SQLException{
+        Alumno alu = new Alumno();
         System.out.println("Introduce los siguientes datos del nuevo alumno:");
-        super.crearNuevoUsuario();
-        //TODO completar con el tipo de ejercicio cuando cambien en la bbdd
+        alu.crearNuevoUsuario();
+        System.out.println("  -IBAN para domiciliacion:");
+        String userIban = Menu.lector.nextLine();
+        alu.setIban(userIban);
+        alu.introducirNuevoAlumno();
+        System.out.println("¿Deseas establecer un tipo de entrenamiento solicitado para " + alu.getNombre()+ "?");
+        System.out.println("  1- sí");
+        System.out.println("  2- no");
+        String opcionUserPrograma = Menu.lector.nextLine().trim();
+        if (opcionUserPrograma.equals("1")) {
+            Menu.solicitarEntrenamiento(alu.getDni());
+        }
+        System.out.println("Alumno creado con éxito.");
     }
 
     //Al ser un insert, por transacción. Sólo hago sin transacción las meras consultas.
+    /**
+     * Pasa un objeto Alumno a la tabla
+     * @throws SQLException 
+     */
     public void introducirNuevoAlumno() throws SQLException {
         boolean estadoAC = Menu.con.getAutoCommit();
         try {
             Menu.con.setAutoCommit(false);
-            String query = "INSERT INTO USUARIO (DNI, password, discriminador, "
-                    + "nombre, apellido1, apellido2, email, telefono, direccion) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            String query = "INSERT INTO usuario (DNI, password, discriminador, "
+                    + "nombre, apellido1, apellido2, email, telefono, direccion, IBAN) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
             //TODO completar con el resto de campos
             PreparedStatement prepStat = Menu.con.prepareStatement(query);
             prepStat.setString(1, this.getDni());
@@ -83,7 +103,7 @@ public class Alumno extends Usuario {
             prepStat.setString(7, this.getEmail());
             prepStat.setInt(8, this.getTelefono());
             prepStat.setString(9, this.getDireccion());
-            //TODO 
+            prepStat.setString(10, this.getIban());
             prepStat.execute();
             Menu.con.commit();
             System.out.println("Nuevo alumno (" + this.getNombre() + " " + this.getApellido1() + ") introducido correctamente.");
@@ -114,17 +134,32 @@ public class Alumno extends Usuario {
         alumno.setEmail(lineaAlumno.getString("email"));
         alumno.setTelefono(lineaAlumno.getInt("telefono"));
         alumno.setDireccion(lineaAlumno.getString("direccion"));
+        alumno.setIban("IBAN");
         lineaAlumno.close();
         return alumno;
     }
 
+    public static TipoEjercicio obtenerSolicitudAlumno(String idAlumno) throws SQLException {
+        String query = "SELECT tipo_prog_solicitado FROM usuario WHERE DNI = ?;";      //sé que el último que he creado es el mayor, por serial
+        PreparedStatement prepStat = Menu.con.prepareStatement(query);
+        prepStat.setString(1, idAlumno);
+        ResultSet results = prepStat.executeQuery();
+        results.next();
+        String tipoString = results.getString(1);
+        results.close();
+        prepStat.close();
+        if (tipoString != null) {
+            return TipoEjercicio.valueOf(tipoString);
+        }
+        return null;
+    }
+    
     //Getters y setters:
-    public TipoEjercicio getTipoEjercicio() {
-        return tipoEjercicio;
+    public String getIban() {
+        return iban;
     }
 
-    public void setTipoEjercicio(TipoEjercicio tipoEjercicio) {
-        this.tipoEjercicio = tipoEjercicio;
-    }
-
+    public void setIban(String iban) {
+        this.iban = iban;
+    }   
 }

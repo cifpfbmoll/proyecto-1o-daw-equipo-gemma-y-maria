@@ -22,12 +22,13 @@ public abstract class Usuario {
     private String email;
     private int telefono;
     private String direccion;
+    private TipoEjercicio tipoEjercicio;
 
     //Constructores:
     public Usuario() {
     }
 
-    public Usuario(String dni, String password, String nombre, String apellido1, String apellido2, String email, int telefono, String direccion) {
+    public Usuario(String dni, String password, String nombre, String apellido1, String apellido2, String email, int telefono, String direccion, TipoEjercicio tipoEjercicio) {
         this.password = password;
         this.nombre = nombre;
         this.apellido1 = apellido1;
@@ -36,6 +37,7 @@ public abstract class Usuario {
         this.email = email;
         this.telefono = telefono;
         this.direccion = direccion;
+        this.tipoEjercicio = tipoEjercicio;
     }
 
     //Métodos:
@@ -82,8 +84,6 @@ public abstract class Usuario {
         System.out.println("  -direccion:");
         String userAdress = Menu.lector.nextLine();
         this.setDireccion(userAdress);
-        //TODO acabar de completar
-        
     }
 
     //Getters y setters:
@@ -149,6 +149,14 @@ public abstract class Usuario {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+
+    public TipoEjercicio getTipoEjercicio() {
+        return tipoEjercicio;
+    }
+
+    public void setTipoEjercicio(TipoEjercicio tipoEjercicio) {
+        this.tipoEjercicio = tipoEjercicio;
     }
 
 }

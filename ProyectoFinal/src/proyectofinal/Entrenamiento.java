@@ -27,6 +27,7 @@ public class Entrenamiento {
     private Entrenador entrenador;
     private Alumno alumno;
     private String fecha;
+    private TipoEjercicio tipo;
     private ArrayList<LineaEntrenamiento> listaEjercicios;
 
     //Constructores:
@@ -36,11 +37,21 @@ public class Entrenamiento {
     public Entrenamiento() {
     }
 
-    public Entrenamiento(int codigo, Entrenador entrenador, Alumno alumno, String fecha, ArrayList<LineaEntrenamiento> listaEjercicios) {
+    /**
+     * Constructor completo
+     * @param codigo
+     * @param entrenador
+     * @param alumno
+     * @param fecha
+     * @param tipo
+     * @param listaEjercicios 
+     */
+    public Entrenamiento(int codigo, Entrenador entrenador, Alumno alumno, String fecha, TipoEjercicio tipo, ArrayList<LineaEntrenamiento> listaEjercicios) {
         this.codigo = codigo;
         this.entrenador = entrenador;
         this.alumno = alumno;
         this.fecha = fecha;
+        this.tipo = tipo;
         this.listaEjercicios = listaEjercicios;
     }
 
@@ -73,23 +84,28 @@ public class Entrenamiento {
         Entrenamiento entreno = new Entrenamiento();
         entreno.setEntrenador(Entrenador.generarEntrenadorDesdeTabla(idEntrenador));
         Menu.verSolicitudesEntrenamiento();
-        System.out.println("Introduce el DNI del alumno para el que quieres preparar un entrenamiento:");
+        System.out.println("Introduce el DNI del usuario para el que quieres preparar un entrenamiento:");
         String idAlumno = Menu.lector.nextLine();
-        //TODO: comprobar que este dni coincide con los de la base de datos y que necesita entrenamiento
-        //TODO: confirmar que existe ese DNI para alumnos, como en copiarEntrenamiento
-        entreno.setAlumno(Alumno.generarAlumnoDesdeTabla(idAlumno));
-        System.out.println("¿Cuántos ejercicios diferentes tendrá este nuevo programa?");
-        int numLineas = Integer.parseInt(Menu.lector.nextLine());
-        ArrayList<LineaEntrenamiento> listaLineas = new ArrayList<>();
-        //TODO falta que sólo se puedan añadir ejercicios del tipo solicitado por el usuario. IMPORTANTE.
-        for (int i = 0; i < numLineas; i++) {
-            listaLineas.add(LineaEntrenamiento.crearLineaEntrenamiento());
+        TipoEjercicio tipoPrograma = Alumno.obtenerSolicitudAlumno(idAlumno);
+        //Con esto compruebo que este DNI tiene asociada una solicitud de entrenamiento, y recibo el dato de la solicitud.
+        if (tipoPrograma == null) {
+            System.out.println("Este usuario no quiere ningún programa.\nSe cancela el proceso de creación.");
+        } else {
+            entreno.setTipo(tipoPrograma);
+            entreno.setAlumno(Alumno.generarAlumnoDesdeTabla(idAlumno));
+            System.out.println("¿Cuántos ejercicios diferentes tendrá este nuevo programa?");
+            int numLineas = Integer.parseInt(Menu.lector.nextLine());
+            ArrayList<LineaEntrenamiento> listaLineas = new ArrayList<>();
+            //TODO falta que sólo se puedan añadir ejercicios del tipo solicitado por el usuario. IMPORTANTE.
+            for (int i = 0; i < numLineas; i++) {
+                listaLineas.add(LineaEntrenamiento.crearLineaEntrenamiento());
+            }
+            entreno.setListaEjercicios(listaLineas);
+            entreno.insertarEntrenamientoEnTablaDesdeObjeto();
+            System.out.println("Nuevo entrenamiento creado con éxito.");
+            eliminarSolicitudEntrenamiento(idAlumno);
+            //TODO mejora devolver el código de entrenamiento
         }
-        entreno.setListaEjercicios(listaLineas);
-        entreno.insertarEntrenamientoEnTablaDesdeObjeto();
-        System.out.println("Nuevo entrenamiento creado con éxito.");
-        eliminarSolicitudEntrenamiento(idAlumno);
-        //TODO mejora devolver el código de entrenamiento
     }
     
     /**
@@ -137,11 +153,12 @@ public class Entrenamiento {
         boolean estadoAC = Menu.con.getAutoCommit();
         try {
             Menu.con.setAutoCommit(false);
-            String queryEntrenamiento = "INSERT INTO entrenamiento (dni_entrenador, dni_alumno, fecha_creacion) VALUES (?, ?, ?);";
+            String queryEntrenamiento = "INSERT INTO entrenamiento (dni_entrenador, dni_alumno, tipo_programa, fecha_creacion) VALUES (?, ?, ?, ?);";
             PreparedStatement prepStatEntrenamiento = Menu.con.prepareStatement(queryEntrenamiento);
             prepStatEntrenamiento.setString(1, this.getEntrenador().getDni());
             prepStatEntrenamiento.setString(2, this.getAlumno().getDni());
-            prepStatEntrenamiento.setString(3, obtenerFecha());
+            prepStatEntrenamiento.setString(3, this.getTipo().name());
+            prepStatEntrenamiento.setString(4, obtenerFecha());
             prepStatEntrenamiento.execute();
             Savepoint puntoEntrenamiento = Menu.con.setSavepoint();
             System.out.println("Tabla 'entrenamiento' posible de modificar correctamente.");  //traza
@@ -196,6 +213,7 @@ public class Entrenamiento {
         Entrenamiento entreno = generarEntrenamientoDesdeTabla(codigo);
         System.out.println("CONSULTA DE ENTRENAMIENTO:");
         System.out.println("Fecha de creación: " + entreno.getFecha());
+        System.out.println("Tipo de entrenamiento: " + entreno.getTipo().getTextoTipoEjercicio() + " (código " + entreno.getTipo().name() + ")");
         System.out.println("Preparado por el entrenador " + entreno.getEntrenador().getNombre() + " " + entreno.getEntrenador().getApellido1() + 
                 " " + entreno.getEntrenador().getApellido2());
         System.out.println("Para el alumno " + entreno.getAlumno().getNombre() + " " + entreno.getAlumno().getApellido1() + " " + 
@@ -272,7 +290,8 @@ public class Entrenamiento {
         String archivo = crearArchivoEntrenamiento(codigo);
         try (BufferedWriter writerMejorado = new BufferedWriter(new FileWriter(archivo, false))) {
             writerMejorado.write("CONSULTA DE ENTRENAMIENTO:\n__________________________________________________________________________________\n");
-            writerMejorado.write("Fecha de creación: " + entreno.getFecha() + "\n");    //TODO: añadir fecha de creacion
+            writerMejorado.write("Fecha de creación: " + entreno.getFecha() + "\n");
+            writerMejorado.write("Tipo de entrenamiento: " + entreno.getTipo().getTextoTipoEjercicio() + " (código " + entreno.getTipo().name() + ")\n");
             writerMejorado.write("Preparado por el entrenador " + entreno.getEntrenador().getNombre() + " " + entreno.getEntrenador().getApellido1() + " "
                     + entreno.getEntrenador().getApellido2() + "\n  (teléfono de contacto: " + entreno.getEntrenador().getTelefono() + "; mail de contacto: "
                     + entreno.getEntrenador().getEmail() + ")\n");
@@ -322,6 +341,7 @@ public class Entrenamiento {
         String idEntrenador = results.getString("dni_entrenador");
         String idAlumno = results.getString("dni_alumno");
         objetoEntrenamiento.setCodigo(codigo);
+        objetoEntrenamiento.setTipo(TipoEjercicio.valueOf(results.getString("tipo_programa")));
         objetoEntrenamiento.setFecha(results.getString("fecha_creacion"));
         objetoEntrenamiento.setEntrenador(Entrenador.generarEntrenadorDesdeTabla(idEntrenador));
         objetoEntrenamiento.setAlumno(Alumno.generarAlumnoDesdeTabla(idAlumno));
@@ -378,6 +398,14 @@ public class Entrenamiento {
 
     public void setFecha(String fecha) {
         this.fecha = fecha;
+    }
+
+    public TipoEjercicio getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoEjercicio tipo) {
+        this.tipo = tipo;
     }
 
     public ArrayList<LineaEntrenamiento> getListaEjercicios() {

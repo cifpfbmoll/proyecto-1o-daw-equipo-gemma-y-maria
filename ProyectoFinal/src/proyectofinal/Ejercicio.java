@@ -30,6 +30,9 @@ public class Ejercicio {
     }
     
     //Métodos:
+    /**
+     * Imprime los datos del ejercicio por consola.
+     */
     public void mostrarDatosEjercicio() {
         System.out.println("  " + this.getNombre() + " (código " + this.getCodigo() + "):");
         System.out.println("  " + this.getDescripcion());
@@ -73,6 +76,10 @@ public class Ejercicio {
         return ej;
     }
     
+    /**
+     * Crea objeto ejercicio y lo rellena con datos pedidos por consola.
+     * @throws SQLException 
+     */
     public static void crearNuevoEjercicio() throws SQLException{
         Ejercicio nuevoEjercicio = new Ejercicio();
         imprimirCodigosExistentens();
