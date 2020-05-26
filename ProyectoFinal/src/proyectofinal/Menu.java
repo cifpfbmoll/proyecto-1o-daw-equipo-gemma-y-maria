@@ -220,23 +220,25 @@ public class Menu {
         return password;
     }
 
-    //TODO plantear si es mejor pasar esto a usuario
     public static void solicitarEntrenamiento(String id) throws SQLException {
-        System.out.println("¿Qué tipo de entrenamiento quieres solicitar?");
-        TipoEjercicio.imprimirTipo();
-        System.out.println("Introduce el código de la opción elegida:");
-        String opcionTipo = lector.nextLine();
-        while (!TipoEjercicio.comprobarTipo(opcionTipo)) {
-            System.out.println("Error en la selección.");
-            System.out.println("Introduce de nuevo el código de la opción elegida:");
-            opcionTipo = lector.nextLine();
+        if (!comprobarExistenciaSolicitudEntrenamiento(id)) {
+            System.out.println("¿Qué tipo de entrenamiento quieres solicitar?");
+            TipoEjercicio.imprimirTipo();
+            System.out.println("Introduce el código de la opción elegida:");
+            String opcionTipo = lector.nextLine().toUpperCase().trim();
+            while (!TipoEjercicio.comprobarTipo(opcionTipo)) {
+                System.out.println("Error en la selección.");
+                System.out.println("Introduce de nuevo el código de la opción elegida:");
+                opcionTipo = lector.nextLine();
+            }
+            guardarSolicitudEntrenamiento(id, opcionTipo);
+        } else {
+            System.out.println("Ya has solicitado un entrenamiento previamente.\nEstá en proceso de elaboración.");
         }
-        guardarSolicitudEntrenamiento(id, opcionTipo);
     }
 
     public static void guardarSolicitudEntrenamiento(String id, String tipo) throws SQLException {
         boolean estadoAC = Menu.con.getAutoCommit();
-        //TODO confirmar q no ha solicitado un programa anteriormente
         try {
             Menu.con.setAutoCommit(false);
             String query = "UPDATE usuario SET tipo_prog_solicitado = ? where DNI = ?;";
@@ -256,16 +258,30 @@ public class Menu {
         }
     }
 
+    public static boolean comprobarExistenciaSolicitudEntrenamiento(String id) throws SQLException {
+        String query = "SELECT tipo_prog_solicitado FROM usuario WHERE DNI = ?;";
+        PreparedStatement prepStat = Menu.con.prepareStatement(query);
+        prepStat.setString(1, id);
+        ResultSet queryResult = prepStat.executeQuery();
+        queryResult.next();
+        if (queryResult.getString("tipo_prog_solicitado") != null) {
+            return true;
+        }
+        queryResult.close();
+        prepStat.close();
+        return false;
+    }
+
     public static void verSolicitudesEntrenamiento() throws SQLException {
-        //realmente para esto no hace falta que sea preparedstatement porque no le meto valores... TODO cambiar por statement normal
         String query = "SELECT DNI, nombre, apellido1, apellido2, tipo_prog_solicitado FROM usuario WHERE tipo_prog_solicitado is not NULL;";
         PreparedStatement prepStat = Menu.con.prepareStatement(query);
         ResultSet queryResult = prepStat.executeQuery();
         System.out.println("Entrenamientos solicitados actualmente:");
         while (queryResult.next()) {
-            //TODO asociar el tipo con el enum
-            System.out.println("  -tipo " + queryResult.getString("tipo_prog_solicitado") + " para alumno " + queryResult.getString("nombre") + " "
-                    + queryResult.getString("apellido1") + " " + queryResult.getString("apellido2") + " (con DNI " + queryResult.getString("DNI") + ")");
+            String codigoTipo = queryResult.getString("tipo_prog_solicitado");
+            System.out.println("  -tipo " + TipoEjercicio.valueOf(codigoTipo).getTextoTipoEjercicio() + " (código " + codigoTipo + ") para alumno "
+                    + queryResult.getString("nombre") + " " + queryResult.getString("apellido1") + " " + queryResult.getString("apellido2")
+                    + " (DNI " + queryResult.getString("DNI") + ")");
         }
         queryResult.close();
         prepStat.close();
@@ -278,7 +294,6 @@ public class Menu {
      * @throws SQLException
      */
     public static Connection obtenerConexion() throws SQLException {
-        //TODO completar; el puerto default para MySQL es 3306
         String url = "jdbc:mysql://localhost:3306/programacion";
         String password = "alualualu";
         return DriverManager.getConnection(url, "root", password);

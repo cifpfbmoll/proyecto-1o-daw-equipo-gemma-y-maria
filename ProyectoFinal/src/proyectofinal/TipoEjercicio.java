@@ -1,7 +1,6 @@
 package proyectofinal;
 
 import java.util.EnumSet;
-import java.util.stream.Stream;
 
 /**
  * Enumerador con los posibles tipos de ejercicios.

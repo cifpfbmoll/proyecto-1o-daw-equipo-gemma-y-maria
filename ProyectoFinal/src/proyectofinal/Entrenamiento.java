@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -85,8 +88,32 @@ public class Entrenamiento {
         entreno.setListaEjercicios(listaLineas);
         entreno.insertarEntrenamientoEnTablaDesdeObjeto();
         System.out.println("Nuevo entrenamiento creado con éxito.");
+        eliminarSolicitudEntrenamiento(idAlumno);
         //TODO mejora devolver el código de entrenamiento
-        //TODO quitar la solicitud de tipo de entrenamiento del alumno
+    }
+    
+    /**
+     * Enlazando con crearNuevoEntrenamiento(), cuando se ha completado un programa se elimina la solicitud.
+     */
+    public static void eliminarSolicitudEntrenamiento(String idAlumno) throws SQLException{
+        boolean estadoAC = Menu.con.getAutoCommit();
+        try {
+            Menu.con.setAutoCommit(false);
+            String query = "UPDATE usuario SET tipo_prog_solicitado = ? where DNI = ?;";
+            PreparedStatement prepStat = Menu.con.prepareStatement(query);
+            prepStat.setString(1, null);
+            prepStat.setString(2, idAlumno);
+            prepStat.executeUpdate();
+            Menu.con.commit();
+            System.out.println("Se ha desmarcado la solicitud de entrenamiento completada.");
+            prepStat.close();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            System.out.println("Error en la eliminación de la solicitud de entrenamiento completada.");
+            Menu.con.rollback();
+        } finally {
+            Menu.con.setAutoCommit(estadoAC);
+        }
     }
 
     public static void copiarEntrenamiento(String idEntrenador) throws SQLException {
@@ -110,15 +137,14 @@ public class Entrenamiento {
         boolean estadoAC = Menu.con.getAutoCommit();
         try {
             Menu.con.setAutoCommit(false);
-            String queryEntrenamiento = "INSERT INTO entrenamiento (dni_entrenador, dni_alumno) VALUES (?, ?);";
+            String queryEntrenamiento = "INSERT INTO entrenamiento (dni_entrenador, dni_alumno, fecha_creacion) VALUES (?, ?, ?);";
             PreparedStatement prepStatEntrenamiento = Menu.con.prepareStatement(queryEntrenamiento);
             prepStatEntrenamiento.setString(1, this.getEntrenador().getDni());
-            prepStatEntrenamiento.setString(2, this.getEntrenador().getDni());
-            //TODO falta fecha
+            prepStatEntrenamiento.setString(2, this.getAlumno().getDni());
+            prepStatEntrenamiento.setString(3, obtenerFecha());
             prepStatEntrenamiento.execute();
-            Menu.con.commit();
-            System.out.println("Tabla 'entrenamiento' modificada correctamente.");  //traza
-            //TODO rehacer esto con savepoints en vez de commits
+            Savepoint puntoEntrenamiento = Menu.con.setSavepoint();
+            System.out.println("Tabla 'entrenamiento' posible de modificar correctamente.");  //traza
             prepStatEntrenamiento.close();
             String queryCodigo = "SELECT MAX(train_code) as train_codigo FROM entrenamiento;";      //sé que el último que he creado es el mayor, por serial
             PreparedStatement prepStatCodigo = Menu.con.prepareStatement(queryCodigo);
@@ -135,11 +161,11 @@ public class Entrenamiento {
                 prepStatLinea.setInt(3, this.getListaEjercicios().get(i).getRepeticiones());
                 prepStatLinea.setInt(4, this.getListaEjercicios().get(i).getMinMinutos());
                 prepStatLinea.execute();
-                Menu.con.commit();
                 prepStatLinea.close();
             }
+            Menu.con.commit();
+            System.out.println("Tabla 'entrenamiento' modificada correctamente.");
             System.out.println("Tabla 'linea_entrenamiento' modificada correctamente.");    //traza
-            //TODO comprobar aqui todos los commits
         } catch (SQLException sqle) {
             sqle.printStackTrace();
             System.out.println("Error en la introducción del alumno.");
@@ -311,6 +337,14 @@ public class Entrenamiento {
 
     public static void imprimirEntrenamientoDesdeTablaPorAlumno(String id) throws SQLException {
         imprimirEntrenamientoDesdeTabla(null, id);
+    }
+    
+    /**
+     * Este método toma la fecha actual y la adapta al formato de la base de datos.
+     * @return 
+     */
+    public static String obtenerFecha() {
+        return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     }
 
     //Getters y setters:

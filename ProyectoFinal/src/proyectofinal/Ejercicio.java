@@ -33,7 +33,10 @@ public class Ejercicio {
     public void mostrarDatosEjercicio() {
         System.out.println("  " + this.getNombre() + " (código " + this.getCodigo() + "):");
         System.out.println("  " + this.getDescripcion());
-        //TODO falta lista tipos
+        System.out.println("  Tipos:");
+        for (int i = 0; i < this.getTipo().size(); i++){
+            System.out.println("      -" + this.getTipo().get(i).getTextoTipoEjercicio() + " (código " + this.getTipo().get(i) + ")");
+        }
     }
     
     /**
