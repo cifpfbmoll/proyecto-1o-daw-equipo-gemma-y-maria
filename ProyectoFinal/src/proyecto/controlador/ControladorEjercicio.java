@@ -1,47 +1,14 @@
-package proyectofinal;
+package proyecto.controlador;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import proyecto.modelo.Ejercicio;
+import proyecto.modelo.TipoEjercicio;
+import proyecto.principal.MenuEjecucion;
 
-/**
- * Clase que refleja cada ejercicio posible.
- * @author Gemma Díez Cabeza & María Rabanales González
- * @version 20.05.10.am
- */
-public class Ejercicio {
-    
-    //Atributos:
-    private String codigo;
-    private String nombre;
-    private String descripcion;
-    private ArrayList<TipoEjercicio> tipo;
-    
-    //Constructores:
-    public Ejercicio() {
-    }
-
-    public Ejercicio(String codigo, String nombre, String descripcion, ArrayList<TipoEjercicio> tipo) {
-        this.codigo = codigo;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.tipo = tipo;
-    }
-    
-    //Métodos:
-    /**
-     * Imprime los datos del ejercicio por consola.
-     */
-    public void mostrarDatosEjercicio() {
-        System.out.println("  " + this.getNombre() + " (código " + this.getCodigo() + "):");
-        System.out.println("  " + this.getDescripcion());
-        System.out.println("  Tipos:");
-        for (int i = 0; i < this.getTipo().size(); i++){
-            System.out.println("      -" + this.getTipo().get(i).getTextoTipoEjercicio() + " (código " + this.getTipo().get(i).name() + ")");
-        }
-    }
-    
+public class ControladorEjercicio {
     /**
      * Genera un objeto de tipo Ejercicio desde datos obtenidos en la tabla.
      * 
@@ -52,7 +19,7 @@ public class Ejercicio {
     public static Ejercicio generarEjercicioDesdeTabla(String codigo) throws SQLException{
         Ejercicio ej = new Ejercicio();
         String queryEjercicio = "SELECT * FROM ejercicio WHERE ex_code = ?;";
-        PreparedStatement prepStat = Menu.con.prepareStatement(queryEjercicio);
+        PreparedStatement prepStat = MenuEjecucion.con.prepareStatement(queryEjercicio);
         prepStat.setString(1, codigo);
         ResultSet results = prepStat.executeQuery();
         results.next();
@@ -62,7 +29,7 @@ public class Ejercicio {
         results.close();
         prepStat.close();
         String queryTipo = "SELECT * FROM tipo_ejercicio WHERE ej_code = ?;";
-        PreparedStatement prepStatTipo = Menu.con.prepareStatement(queryTipo);
+        PreparedStatement prepStatTipo = MenuEjecucion.con.prepareStatement(queryTipo);
         prepStatTipo.setString(1, codigo);
         ResultSet resultsTipo = prepStatTipo.executeQuery();
         ArrayList<TipoEjercicio> listaTipos = new ArrayList<>();
@@ -82,54 +49,54 @@ public class Ejercicio {
      */
     public static void crearNuevoEjercicio() throws SQLException{
         Ejercicio nuevoEjercicio = new Ejercicio();
-        imprimirCodigosExistentens();
+        imprimirCodigosExistentes();
         String nuevoCodigo;
         do {
             System.out.println("Introduce el código del nuevo ejercicio:");
-            nuevoCodigo = Menu.lector.nextLine().toUpperCase();
+            nuevoCodigo = MenuEjecucion.lector.nextLine().toUpperCase();
             //TODO: mejora validar que el código sólo tenga dos letras
             //todo añadir mensaje si error System.out.println("Error. El código introducido ya está en uso.");
         } while (comprobarCodigoExistente(nuevoCodigo));
         nuevoEjercicio.setCodigo(nuevoCodigo);
         System.out.println("Introduce el título del nuevo ejercicio:");
-        nuevoEjercicio.setNombre(Menu.lector.nextLine());
+        nuevoEjercicio.setNombre(MenuEjecucion.lector.nextLine());
         System.out.println("Introduce la descripción del nuevo ejercicio:");
-        nuevoEjercicio.setDescripcion(Menu.lector.nextLine());
+        nuevoEjercicio.setDescripcion(MenuEjecucion.lector.nextLine());
         ArrayList<TipoEjercicio> listaTipos = generarListaTipos();
         nuevoEjercicio.setTipo(listaTipos);
-        nuevoEjercicio.guardarEjercicioEnTabla();
+        guardarEjercicioEnTabla(nuevoEjercicio);
     }
     
-    public void guardarEjercicioEnTabla() throws SQLException{
-        boolean estadoAC = Menu.con.getAutoCommit();
+    public static void guardarEjercicioEnTabla(Ejercicio ejercicio) throws SQLException{
+        boolean estadoAC = MenuEjecucion.con.getAutoCommit();
         try {
-            Menu.con.setAutoCommit(false);
+            MenuEjecucion.con.setAutoCommit(false);
             String query = "INSERT INTO ejercicio (ex_code, nombre, descripcion) VALUES (?, ?, ?);";
-            PreparedStatement prepStat = Menu.con.prepareStatement(query);
-            prepStat.setString(1, this.getCodigo());
-            prepStat.setString(2, this.getNombre());
-            prepStat.setString(3, this.getDescripcion());
+            PreparedStatement prepStat = MenuEjecucion.con.prepareStatement(query);
+            prepStat.setString(1, ejercicio.getCodigo());
+            prepStat.setString(2, ejercicio.getNombre());
+            prepStat.setString(3, ejercicio.getDescripcion());
             prepStat.execute();
-            Menu.con.commit();
+            MenuEjecucion.con.commit();
             prepStat.close();
             //Tengo que commitear el ejercicio antes de meter tipos, de lo contrario me falla por PK
-            for (int i = 0; i < this.getTipo().size(); i++) {
+            for (int i = 0; i < ejercicio.getTipo().size(); i++) {
                 String queryTipo = "INSERT INTO tipo_ejercicio (ej_code, tipo) VALUES (?, ?);";
-                PreparedStatement prepStatTipo = Menu.con.prepareStatement(queryTipo);
-                prepStatTipo.setString(1, this.getCodigo());
-                prepStatTipo.setString(2, this.getTipo().get(i).name());
+                PreparedStatement prepStatTipo = MenuEjecucion.con.prepareStatement(queryTipo);
+                prepStatTipo.setString(1, ejercicio.getCodigo());
+                prepStatTipo.setString(2, ejercicio.getTipo().get(i).name());
                 prepStatTipo.execute();
                 prepStatTipo.close();
             }
-            Menu.con.commit();
+            MenuEjecucion.con.commit();
             System.out.println("Ejercicio creado con éxito. Detalles:");
-            this.mostrarDatosEjercicio();
+            ejercicio.mostrarDatosEjercicio();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
             System.out.println("Error en la introducción del ejercicio.");
-            Menu.con.rollback();
+            MenuEjecucion.con.rollback();
         } finally {
-            Menu.con.setAutoCommit(estadoAC);
+            MenuEjecucion.con.setAutoCommit(estadoAC);
         }
     }
     
@@ -137,19 +104,19 @@ public class Ejercicio {
         System.out.println("Los tipos de ejercicio existentes son:");
         TipoEjercicio.imprimirTipo();
         System.out.println("¿En cuántos de estos tipos se puede clasificar el nuevo ejercicio?\nIntroduce número:");
-        int numTipos = Integer.parseInt(Menu.lector.nextLine());
+        int numTipos = Integer.parseInt(MenuEjecucion.lector.nextLine());
         //TODO convertir if en bucle
         if (numTipos > TipoEjercicio.values().length + 1) {
             System.out.println(numTipos + " es mayor a la cantidad de tipos posibles (" + TipoEjercicio.values().length + 1 + ")");
             System.out.println("Introduce nuevo número de tipos:");
-            numTipos = Integer.parseInt(Menu.lector.nextLine());
+            numTipos = Integer.parseInt(MenuEjecucion.lector.nextLine());
         }
         ArrayList<TipoEjercicio> lista = new ArrayList<>();
         for (int i = 0; i < numTipos; i++) {
             boolean tipoExistente = false;
             while (!tipoExistente) {
                 System.out.println("Introduce las siglas del código del tipo de ejercicio:");
-                String tipo = Menu.lector.nextLine();
+                String tipo = MenuEjecucion.lector.nextLine();
                 tipoExistente = TipoEjercicio.comprobarTipo(tipo);
                 if (!tipoExistente) {
                     System.out.println("Error. Código inexistente.\nLos tipos de ejercicio existentes son:");
@@ -170,7 +137,7 @@ public class Ejercicio {
         return false;
     }
     
-    public static void imprimirCodigosExistentens() throws SQLException{
+    public static void imprimirCodigosExistentes() throws SQLException{
         System.out.println("En estos momentos están en uso los siguientes códigos:");
         ArrayList<String> listaCodigos = obtenerCodigosExistentes();
         for (int i = 0; i < listaCodigos.size(); i++) {
@@ -185,7 +152,7 @@ public class Ejercicio {
     public static ArrayList<String> obtenerCodigosExistentes() throws SQLException{
         ArrayList<String> lista = new ArrayList<>();
         String query = "SELECT ex_code FROM ejercicio;";
-        PreparedStatement prepStat = Menu.con.prepareStatement(query);
+        PreparedStatement prepStat = MenuEjecucion.con.prepareStatement(query);
         ResultSet results = prepStat.executeQuery();
         while (results.next()) {
             lista.add(results.getString("ex_code"));
@@ -194,39 +161,4 @@ public class Ejercicio {
         prepStat.close();
         return lista;
     }
-    
-    //Getters y setters:
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public ArrayList<TipoEjercicio> getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(ArrayList<TipoEjercicio> tipo) {
-        this.tipo = tipo;
-    }
-    
-    
 }
