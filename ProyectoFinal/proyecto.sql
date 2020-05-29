@@ -113,7 +113,6 @@ INSERT INTO USUARIO (DNI, password, discriminador, nombre, apellido1, apellido2,
 ('99999999S', 'usuario019', 'alumno', 'John', 'Constantine', 'Witcher', 'johnconstantine@gmail.com', 600000019, 'Hellskitchen 23 Starling City  IT13 8XQ', 'US22050204050607019323', null, 'RT' ),
 ('00000000T', 'usuario020', 'alumno', 'Rachel', 'Roth', 'Raven', 'rachelroth@gmail.com', 600000020, 'The darkest avenur 99 Chicago City  KT00 8XQ', 'US22050204050607819681', null, 'YG' );
 
-
 INSERT INTO EJERCICIO (ex_code, nombre, descripcion) VALUES
 ('DL', 'DEAD LIFT', 'Peso muerto con la barra olímpica desde el suelo'),
 ('CJ', 'CLEAN & JERK', 'Arrancada desde el suelo con la barra olímpica acabando con un split'),
@@ -240,7 +239,6 @@ INSERT INTO LINEA_ENTRENAMIENTO (codigo_entreno, codigo_ejercicio, repeticiones,
 (13, 'FW', null, 10),
 (13, 'FS', 20, null),
 (13, 'WB', 50, 5),
-(14, 'RT', 20, null),
 (14, 'LE', 40, 10),
 (14, 'ST', 20, null),
 (15, 'RW', 20, null),

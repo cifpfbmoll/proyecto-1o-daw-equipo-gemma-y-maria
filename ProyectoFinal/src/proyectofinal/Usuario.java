@@ -118,6 +118,11 @@ public abstract class Usuario {
         return dniValido;
     }
     
+    public static boolean validarPassword(String pw){
+        //TODO
+        return false;
+    }
+    
     //Getters y setters:
     public String getPassword() {
         return password;
