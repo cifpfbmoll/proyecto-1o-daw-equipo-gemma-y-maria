@@ -18,8 +18,11 @@ public class ControladorAlumno extends ControladorUsuario{
         Alumno alu = new Alumno();
         System.out.println("Introduce los siguientes datos del nuevo alumno:");
         crearNuevoUsuario(alu);
-        System.out.println("  -IBAN para domiciliacion:");
-        String userIban = MenuEjecucion.lector.nextLine();
+        String userIban = "";
+        do {
+            System.out.println("  -IBAN para domiciliacion:");
+            userIban = MenuEjecucion.lector.nextLine().toUpperCase().trim();
+        } while (!validarIban(userIban));
         alu.setIban(userIban);
         introducirNuevoAlumno(alu);
         System.out.println("¿Deseas establecer un tipo de entrenamiento solicitado para " + alu.getNombre()+ "?");

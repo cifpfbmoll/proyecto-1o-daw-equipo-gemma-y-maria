@@ -131,6 +131,24 @@ public class ControladorUsuario {
         }
         return dniValido;
     }
+    public static boolean validarIban (String iban){
+        boolean ibanvalido = true;
+        if (iban.length() != 24 || Character.isLetter(iban.charAt(2))) {
+            ibanvalido = false;
+        } else {
+            for (int i = 2; i < iban.length() ; i++) {
+                int numAscii = iban.codePointAt(i);
+                boolean numValido = (numAscii > 47 && numAscii < 58);
+                if (numValido == false) {
+                    ibanvalido = false;
+                }
+            }
+        }
+        if (ibanvalido == false) {
+            System.out.println("Este IBAN no cumple los requisitos.");
+        }
+        return ibanvalido;
+    }
     
     /**
      * Obtiene el tipo de programa que ha solicitado un alumno concreto
