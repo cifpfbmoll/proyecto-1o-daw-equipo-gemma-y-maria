@@ -1,4 +1,4 @@
-package proyecto.principal;
+package proyecto.vista;
 
 import proyecto.controlador.*;
 import java.sql.Connection;
@@ -13,7 +13,7 @@ import java.util.logging.*;
  * @version 20.05.18.am
  */
 //TODO decidir qué tratamiento damos a las excepciones
-public class MenuEjecucion {
+public class MenuPrincipal {
 
     //MarcoAplicacion marco = new MarcoAplicacion();
 
@@ -33,7 +33,7 @@ public class MenuEjecucion {
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(MenuEjecucion.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
         //La conexión tiene autoclose: con y con2 son el mismo objeto desde dos puntos diferentes.
         //Si se quiere con como variable estática no se puede iniciar en el try().
@@ -148,7 +148,7 @@ public class MenuEjecucion {
         System.out.println("¿Qué tipo de entrenamiento quieres crear?");
         System.out.println("  1- crear programa nuevo");
         System.out.println("  2- copiar programa existente");
-        String opcionCrear = MenuEjecucion.lector.nextLine();
+        String opcionCrear = MenuPrincipal.lector.nextLine();
 
         switch (opcionCrear) {
             case "1":

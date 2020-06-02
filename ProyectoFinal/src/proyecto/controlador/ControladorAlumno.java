@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import proyecto.modelo.Alumno;
 import proyecto.modelo.Entrenamiento;
 import proyecto.modelo.TipoEjercicio;
-import proyecto.principal.MenuEjecucion;
+import proyecto.vista.MenuPrincipal;
 
 public class ControladorAlumno extends ControladorUsuario{
     
@@ -21,14 +21,14 @@ public class ControladorAlumno extends ControladorUsuario{
         String userIban = "";
         do {
             System.out.println("  -IBAN para domiciliacion:");
-            userIban = MenuEjecucion.lector.nextLine().toUpperCase().trim();
+            userIban = MenuPrincipal.lector.nextLine().toUpperCase().trim();
         } while (!validarIban(userIban));
         alu.setIban(userIban);
         introducirNuevoAlumno(alu);
         System.out.println("¿Deseas establecer un tipo de entrenamiento solicitado para " + alu.getNombre()+ "?");
         System.out.println("  1- sí");
         System.out.println("  2- no");
-        String opcionUserPrograma = MenuEjecucion.lector.nextLine().trim();
+        String opcionUserPrograma = MenuPrincipal.lector.nextLine().trim();
         if (opcionUserPrograma.equals("1")) {
             ControladorEntrenamiento.solicitarEntrenamiento(alu.getDni());
         }
@@ -46,7 +46,7 @@ public class ControladorAlumno extends ControladorUsuario{
     public static Alumno generarAlumnoDesdeTabla(String id) throws SQLException {
         Alumno user = new Alumno();
         String queryUsuario = "SELECT * FROM usuario WHERE DNI = ?;";
-        PreparedStatement prepStat = MenuEjecucion.con.prepareStatement(queryUsuario);
+        PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(queryUsuario);
         prepStat.setString(1, id);
         ResultSet results = prepStat.executeQuery();
         results.next();
@@ -73,12 +73,12 @@ public class ControladorAlumno extends ControladorUsuario{
      * @throws SQLException 
      */
     public static void introducirNuevoAlumno(Alumno alu) throws SQLException {
-        boolean estadoAC = MenuEjecucion.con.getAutoCommit();
+        boolean estadoAC = MenuPrincipal.con.getAutoCommit();
         try {
-            MenuEjecucion.con.setAutoCommit(false);
+            MenuPrincipal.con.setAutoCommit(false);
             String query = "INSERT INTO usuario (DNI, password, discriminador, nombre, apellido1, apellido2, email, telefono, direccion, IBAN) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-            PreparedStatement prepStat = MenuEjecucion.con.prepareStatement(query);
+            PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(query);
             prepStat.setString(1, alu.getDni());
             prepStat.setString(2, alu.getPassword());
             prepStat.setString(3, "alumno");
@@ -90,15 +90,15 @@ public class ControladorAlumno extends ControladorUsuario{
             prepStat.setString(9, alu.getDireccion());
             prepStat.setString(10, alu.getIban());
             prepStat.execute();
-            MenuEjecucion.con.commit();
+            MenuPrincipal.con.commit();
             System.out.println("Nuevo alumno (" + alu.getNombre() + " " + alu.getApellido1() + ") introducido correctamente.");
             prepStat.close();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
             System.out.println("Error en la introducción del alumno.");
-            MenuEjecucion.con.rollback();
+            MenuPrincipal.con.rollback();
         } finally {
-            MenuEjecucion.con.setAutoCommit(estadoAC);
+            MenuPrincipal.con.setAutoCommit(estadoAC);
         }
     }
 

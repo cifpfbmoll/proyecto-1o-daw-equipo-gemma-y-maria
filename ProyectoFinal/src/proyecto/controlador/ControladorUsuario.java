@@ -3,7 +3,7 @@ package proyecto.controlador;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import proyecto.principal.MenuEjecucion;
+import proyecto.vista.MenuPrincipal;
 import proyecto.modelo.*;
 
 /**
@@ -20,7 +20,7 @@ public class ControladorUsuario {
      */
     public static ResultSet buscarUsuarioPorDni(String dni) throws SQLException {
         String query = "SELECT * FROM usuario WHERE DNI = ?;";
-        PreparedStatement prepStat = MenuEjecucion.con.prepareStatement(query);
+        PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(query);
         prepStat.setString(1, dni);
         ResultSet queryResult = prepStat.executeQuery();
         //Nota: queryResult no se debe cerrar aquí sino en el método que lo llama
@@ -37,7 +37,7 @@ public class ControladorUsuario {
     public static String comprobarUsuario(String texto) throws SQLException {
         String password = "error";
         String query = "SELECT password FROM USUARIO WHERE DNI = ?;";
-        PreparedStatement prepStat = MenuEjecucion.con.prepareStatement(query);
+        PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(query);
         prepStat.setString(1, texto);
         ResultSet queryResult = prepStat.executeQuery();
         //Nota: Como no tenemos método isEmpty, la solución es:
@@ -59,7 +59,7 @@ public class ControladorUsuario {
      */
     public static boolean comprobarTipoUsuario(String id) throws SQLException {
         String query = "SELECT discriminador FROM USUARIO WHERE DNI = ?;";
-        PreparedStatement prepStat = MenuEjecucion.con.prepareStatement(query);
+        PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(query);
         prepStat.setString(1, id);
         ResultSet queryResult = prepStat.executeQuery();
         if (queryResult.next()) {               //Comprobando que no me lo devuelva vacío.
@@ -79,30 +79,30 @@ public class ControladorUsuario {
         String userDni = "";
         do {
             System.out.println("  -dni:");
-            userDni = MenuEjecucion.lector.nextLine().toUpperCase().trim();
+            userDni = MenuPrincipal.lector.nextLine().toUpperCase().trim();
         } while (!validarDni(userDni));
         user.setDni(userDni);
         System.out.println("  -contraseña:");
-        String userPw = MenuEjecucion.lector.nextLine().toLowerCase().trim();
+        String userPw = MenuPrincipal.lector.nextLine().toLowerCase().trim();
         user.setPassword(userPw);
         //TODO: confirmarContraseña()
         System.out.println("  -nombre:");
-        String userNombre = MenuEjecucion.lector.nextLine();
+        String userNombre = MenuPrincipal.lector.nextLine();
         user.setNombre(userNombre);
         System.out.println("  -primer apellido:");
-        String userApellido1 = MenuEjecucion.lector.nextLine();
+        String userApellido1 = MenuPrincipal.lector.nextLine();
         user.setApellido1(userApellido1);
         System.out.println("  -segundo apellido:");
-        String userApellido2 = MenuEjecucion.lector.nextLine();
+        String userApellido2 = MenuPrincipal.lector.nextLine();
         user.setApellido2(userApellido2);
         System.out.println("  -e-mail:");
-        String userEmail = MenuEjecucion.lector.nextLine();
+        String userEmail = MenuPrincipal.lector.nextLine();
         user.setEmail(userEmail);
         System.out.println("  -telefono:");
-        int userPhone = Integer.parseInt(MenuEjecucion.lector.nextLine());
+        int userPhone = Integer.parseInt(MenuPrincipal.lector.nextLine());
         user.setTelefono(userPhone);
         System.out.println("  -direccion:");
-        String userAdress = MenuEjecucion.lector.nextLine();
+        String userAdress = MenuPrincipal.lector.nextLine();
         user.setDireccion(userAdress);
     }
 
@@ -159,7 +159,7 @@ public class ControladorUsuario {
      */ 
     public static TipoEjercicio obtenerSolicitudUsuario(String idAlumno) throws SQLException {
         String query = "SELECT tipo_prog_solicitado FROM usuario WHERE DNI = ?;";      //sé que el último que he creado es el mayor, por serial
-        PreparedStatement prepStat = MenuEjecucion.con.prepareStatement(query);
+        PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(query);
         prepStat.setString(1, idAlumno);
         ResultSet results = prepStat.executeQuery();
         results.next();

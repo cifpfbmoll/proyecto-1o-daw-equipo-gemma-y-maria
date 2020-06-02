@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import proyecto.modelo.Entrenador;
 import proyecto.modelo.TipoEjercicio;
-import proyecto.principal.MenuEjecucion;
+import proyecto.vista.MenuPrincipal;
 
 public class ControladorEntrenador extends ControladorUsuario{
     /**
@@ -16,7 +16,7 @@ public class ControladorEntrenador extends ControladorUsuario{
     public static Entrenador generarEntrenadorDesdeTabla(String id) throws SQLException{
         Entrenador user = new Entrenador();
         String queryUsuario = "SELECT * FROM usuario WHERE DNI = ?;";
-        PreparedStatement prepStat = MenuEjecucion.con.prepareStatement(queryUsuario);
+        PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(queryUsuario);
         prepStat.setString(1, id);
         ResultSet results = prepStat.executeQuery();
         results.next();
@@ -48,23 +48,23 @@ public class ControladorEntrenador extends ControladorUsuario{
     }
     
     public static void incrementarProgramaEnTabla(Entrenador entrenador) throws SQLException {
-        boolean estadoAC = MenuEjecucion.con.getAutoCommit();
+        boolean estadoAC = MenuPrincipal.con.getAutoCommit();
         try {
-            MenuEjecucion.con.setAutoCommit(false);
+            MenuPrincipal.con.setAutoCommit(false);
             String query = "UPDATE usuario SET num_prog_prep = ? where DNI = ?;";
-            PreparedStatement prepStat = MenuEjecucion.con.prepareStatement(query);
+            PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(query);
             prepStat.setInt(1, entrenador.getProgramasPreparados());
             prepStat.setString(2, entrenador.getDni());
             prepStat.executeUpdate();
-            MenuEjecucion.con.commit();
+            MenuPrincipal.con.commit();
             System.out.println("Entrenador: con este, has elaborado un total de " + entrenador.getProgramasPreparados() + " programas.");
             prepStat.close();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
             System.out.println("Error al incrementar el número de programas del entrenador.");
-            MenuEjecucion.con.rollback();
+            MenuPrincipal.con.rollback();
         } finally {
-            MenuEjecucion.con.setAutoCommit(estadoAC);
+            MenuPrincipal.con.setAutoCommit(estadoAC);
         }
     }
 }
