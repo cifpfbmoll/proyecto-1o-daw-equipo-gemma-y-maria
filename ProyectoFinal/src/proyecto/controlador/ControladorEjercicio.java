@@ -50,14 +50,16 @@ public class ControladorEjercicio {
      */
     public static void crearNuevoEjercicio() throws SQLException{
         Ejercicio nuevoEjercicio = new Ejercicio();
-        imprimirCodigosExistentes();
+        imprimirCodigosExistentes(null);
         String nuevoCodigo;
         do {
             System.out.println("Introduce el código del nuevo ejercicio:");
             nuevoCodigo = MenuPrincipal.lector.nextLine().toUpperCase();
-            //TODO: mejora validar que el código sólo tenga dos letras
+            if (nuevoCodigo.length() != 2) {
+                System.out.println("El código del ejercicio debe tener exactamente dos caracteres.");
+            }
             //todo añadir mensaje si error System.out.println("Error. El código introducido ya está en uso.");
-        } while (comprobarCodigoExistente(nuevoCodigo));
+        } while ((comprobarCodigoExistente(nuevoCodigo, null)) && (nuevoCodigo.length() != 2));
         nuevoEjercicio.setCodigo(nuevoCodigo);
         System.out.println("Introduce el título del nuevo ejercicio:");
         nuevoEjercicio.setNombre(MenuPrincipal.lector.nextLine());
@@ -141,17 +143,17 @@ public class ControladorEjercicio {
         return lista;
     }
     
-    public static boolean comprobarCodigoExistente(String codigo) throws SQLException{
-        ArrayList<String> listaCodigos = obtenerCodigosExistentes();
+    public static boolean comprobarCodigoExistente(String codigo, String tipoEj) throws SQLException{
+        ArrayList<String> listaCodigos = obtenerCodigosExistentes(tipoEj);
         if (listaCodigos.contains(codigo)) {
             return true;
         }
         return false;
     }
     
-    public static void imprimirCodigosExistentes() throws SQLException{
-        System.out.println("En estos momentos están en uso los siguientes códigos:");
-        ArrayList<String> listaCodigos = obtenerCodigosExistentes();
+    public static void imprimirCodigosExistentes(String tipoEj) throws SQLException{
+        System.out.println("En estos momentos están en uso los siguientes códigos de ejercicio:");
+        ArrayList<String> listaCodigos = obtenerCodigosExistentes(tipoEj);
         for (int i = 0; i < listaCodigos.size(); i++) {
             if (i != listaCodigos.size()-1) {
                 System.out.print(listaCodigos.get(i) + " - ");
@@ -161,13 +163,21 @@ public class ControladorEjercicio {
         }
     }
     
-    public static ArrayList<String> obtenerCodigosExistentes() throws SQLException{
+    public static ArrayList<String> obtenerCodigosExistentes(String tipoEj) throws SQLException{
         ArrayList<String> lista = new ArrayList<>();
-        String query = "SELECT ex_code FROM ejercicio;";
+        String query = "SELECT ej_code FROM tipo_ejercicio";
+        if (tipoEj != null) {
+            query += " WHERE tipo = ?;";
+        } else {
+            query += ";";
+        }
         PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(query);
+        if (tipoEj != null) {
+            prepStat.setString(1, tipoEj);
+        }
         ResultSet results = prepStat.executeQuery();
         while (results.next()) {
-            lista.add(results.getString("ex_code"));
+            lista.add(results.getString("ej_code"));
         }
         results.close();
         prepStat.close();

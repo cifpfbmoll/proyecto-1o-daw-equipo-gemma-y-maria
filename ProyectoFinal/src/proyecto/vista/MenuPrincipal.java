@@ -13,7 +13,6 @@ import java.util.logging.*;
  * @author Gemma Díez Cabeza & María Rabanales González
  * @version 20.05.18.am
  */
-//TODO decidir qué tratamiento damos a las excepciones
 public class MenuPrincipal {
 
     public static Scanner lector = new Scanner(System.in);
@@ -198,8 +197,5 @@ public class MenuPrincipal {
             }
         }
     }
-
-
-
     
 }

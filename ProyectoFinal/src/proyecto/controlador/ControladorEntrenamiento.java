@@ -38,9 +38,9 @@ public class ControladorEntrenamiento {
             System.out.println("¿Cuántos ejercicios diferentes tendrá este nuevo programa?");
             int numLineas = Integer.parseInt(MenuPrincipal.lector.nextLine());
             ArrayList<LineaEntrenamiento> listaLineas = new ArrayList<>();
-            //TODO falta que sólo se puedan añadir ejercicios del tipo solicitado por el usuario. IMPORTANTE.
+            //TODO falta que sólo se puedan añadir ejercicios del tipo solicitado por el usuario. IMPORTANTE. Y QUE LA LISTA SALGA BONITA
             for (int i = 0; i < numLineas; i++) {
-                listaLineas.add(crearLineaEntrenamiento());
+                listaLineas.add(crearLineaEntrenamiento(tipoPrograma.name()));
             }
             entreno.setListaEjercicios(listaLineas);
             insertarEntrenamientoEnTablaDesdeObjeto(entreno);
@@ -377,15 +377,18 @@ public class ControladorEntrenamiento {
     }
     
     //Los métodos a continuación afectan a las diferentes líneas de entrenamiento:
-    public static LineaEntrenamiento crearLineaEntrenamiento() throws SQLException{
+    public static LineaEntrenamiento crearLineaEntrenamiento(String tipoEntrenamiento) throws SQLException{
         LineaEntrenamiento linea = new LineaEntrenamiento();
-        ControladorEjercicio.imprimirCodigosExistentes();
+        ControladorEjercicio.imprimirCodigosExistentes(tipoEntrenamiento);
         String nuevoCodigo;
         do {
             System.out.println("Introduce el código del ejercicio que quieres añadir al programa:");
             nuevoCodigo = MenuPrincipal.lector.nextLine().toUpperCase();
-            //TODO: mejora validar que el código sólo tenga dos letras
-        } while (!ControladorEjercicio.comprobarCodigoExistente(nuevoCodigo));
+            //Así garantizamos que el nuevo código cumpla el requisito de sólo tener dos caracteres:
+            if (nuevoCodigo.length() != 2) {
+                System.out.println("El código del ejercicio debe tener exactamente dos caracteres.");
+            }
+        } while ((!ControladorEjercicio.comprobarCodigoExistente(nuevoCodigo, tipoEntrenamiento)) && (nuevoCodigo.length() != 2));
         linea.setEjercicio(ControladorEjercicio.generarEjercicioDesdeTabla(nuevoCodigo));
         boolean opcionCorrecta = false;
         while (!opcionCorrecta) {

@@ -49,14 +49,15 @@ public class Entrenamiento {
         for (int i = 0; i < this.getListaEjercicios().size(); i++) {
             System.out.println(i + 1 + ":");
             System.out.println("   " + this.getListaEjercicios().get(i).getEjercicio().getNombre() + " (código " + 
-                    this.getListaEjercicios().get(i).getEjercicio().getCodigo() + ")\n");
-            System.out.println("   " + this.getListaEjercicios().get(i).getEjercicio().getDescripcion() + "\n");
+                    this.getListaEjercicios().get(i).getEjercicio().getCodigo() + ")");
+            System.out.println("   " + this.getListaEjercicios().get(i).getEjercicio().getDescripcion());
             if (this.getListaEjercicios().get(i).getRepeticiones() != 0) {           //El tipo primitivo nunca puede ser nulo, es 0 por defecto
-                System.out.println("   Repeticiones: " + this.getListaEjercicios().get(i).getRepeticiones() + "\n");
+                System.out.println("   Repeticiones: " + this.getListaEjercicios().get(i).getRepeticiones());
             }
             if (this.getListaEjercicios().get(i).getMinMinutos() != 0) {
-                System.out.println("   Tiempo mínimo: " + this.getListaEjercicios().get(i).getMinMinutos() + "\n");
+                System.out.println("   Tiempo mínimo: " + this.getListaEjercicios().get(i).getMinMinutos());
             }
+            System.out.println("");
         }
     }
     

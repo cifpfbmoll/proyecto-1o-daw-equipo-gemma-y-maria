@@ -55,6 +55,9 @@ public class Utilidades {
      * @return string sin espacios y con la primera letra en mayúcula
      */
     public static String adaptarStringMayusMinus(String texto) {
+        if (texto == null) {
+            return null;            //Con esto controlo la recepción de valores nulos desde tabla.
+        }
         String textoAdaptado = texto.substring(0, 1).toUpperCase() + texto.substring(1);;   
         return textoAdaptado.trim();
     }

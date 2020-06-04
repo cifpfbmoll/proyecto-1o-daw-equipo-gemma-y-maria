@@ -3,7 +3,6 @@ package proyecto.controlador;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import proyecto.vista.MenuPrincipal;
 import proyecto.modelo.*;
 
@@ -180,7 +179,7 @@ public class ControladorUsuario {
      * @param idEntrenador
      * @return false si no tiene ningún ejercicio guardado.
      */
-    public static boolean comprobarNumEjUsuario(String idAlumno, String idEntrenador) throws SQLException{
+    public static boolean comprobarNumEjUsuario(String idEntrenador, String idAlumno) throws SQLException{
         boolean existenciaEjercicios = false;
         String query = "SELECT count(*) as cuenta FROM ENTRENAMIENTO ";
         PreparedStatement prepStat = null;
