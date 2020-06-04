@@ -1,5 +1,7 @@
 package proyecto.modelo;
 
+import proyecto.controlador.Utilidades;
+
 /**
  * Superclase abstracta con los atributos básicos de cualquier usuario (sea
  * entrenador o alumno) que se conecta a la aplicación.
@@ -25,9 +27,9 @@ public abstract class Usuario {
 
     public Usuario(String dni, String password, String nombre, String apellido1, String apellido2, String email, int telefono, String direccion, TipoEjercicio tipoEjercicio) {
         this.password = password;
-        this.nombre = nombre;
-        this.apellido1 = apellido1;
-        this.apellido2 = apellido2;
+        this.setNombre(nombre);
+        this.setApellido1(apellido1);
+        this.setApellido2(apellido2);
         this.dni = dni;
         this.email = email;
         this.telefono = telefono;
@@ -49,7 +51,7 @@ public abstract class Usuario {
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        this.nombre = Utilidades.adaptarStringMayusMinus(nombre);
     }
 
     public String getApellido1() {
@@ -57,7 +59,7 @@ public abstract class Usuario {
     }
 
     public void setApellido1(String apellido1) {
-        this.apellido1 = apellido1;
+        this.apellido1 = Utilidades.adaptarStringMayusMinus(apellido1);
     }
 
     public String getApellido2() {
@@ -65,7 +67,7 @@ public abstract class Usuario {
     }
 
     public void setApellido2(String apellido2) {
-        this.apellido2 = apellido2;
+        this.apellido2 = Utilidades.adaptarStringMayusMinus(apellido2);
     }
 
     public String getDni() {

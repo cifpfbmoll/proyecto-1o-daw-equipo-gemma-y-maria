@@ -3,6 +3,7 @@ package proyecto.vista;
 import proyecto.controlador.*;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.*;
 
@@ -15,10 +16,6 @@ import java.util.logging.*;
 //TODO decidir qué tratamiento damos a las excepciones
 public class MenuPrincipal {
 
-    //MarcoAplicacion marco = new MarcoAplicacion();
-
-    //marco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    //marco.setVisible(true);
     public static Scanner lector = new Scanner(System.in);
     public static Connection con;
     //Conexión es algo que querremos usar en prácticamente todos los métodos, lo que es la definición de una variable global
@@ -42,7 +39,12 @@ public class MenuPrincipal {
             String usuario = "";
             do {
                 usuario = menuLogIn();
-            } while (usuario.equals(""));
+                if (usuario.equals("")) {
+                    System.out.println("Usuario inexistente.");
+                } else if (usuario.equals("error")) {
+                    System.out.println("Contraseña incorrecta.");
+                }
+            } while ((usuario.equals("")) || (usuario.equals("error")));
             if (ControladorUsuario.comprobarTipoUsuario(usuario) == true) {
                 System.out.println("Bienvenido, entrenador. ");
                 menuEntrenador(usuario);
@@ -51,7 +53,9 @@ public class MenuPrincipal {
                 menuAlumno(usuario);
             }
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
+            String tituloError = "Error en el menú principal.";
+            Utilidades.logErrores(tituloError, Arrays.toString(sqle.getStackTrace()));
+            System.out.println(tituloError);
         }
     }
 
@@ -63,19 +67,15 @@ public class MenuPrincipal {
     public static String menuLogIn() throws SQLException {
         String usuario = "";
         String contrasena = "";
-        do {
-            System.out.println("Introduce DNI del usuario: ");
-            usuario = lector.nextLine();
-            contrasena = ControladorUsuario.comprobarUsuario(usuario);
-            if (contrasena.equals("error")) {
-                System.out.println("Este usuario no existe.");
-            }
-        } while (contrasena.equals("error"));
-        System.out.println("Introduce contraseña: ");
-        String password = lector.nextLine();
-        if (!password.equals(contrasena)) {
-            System.out.println("La contraseña no es válida para este usuario.");
+        System.out.println("Introduce DNI del usuario: ");
+        usuario = lector.nextLine();
+        if (!ControladorUsuario.comprobarUsuario(usuario)) {
             return "";
+        }
+        System.out.println("Introduce contraseña: ");
+        contrasena = lector.nextLine();
+        if (!ControladorUsuario.comprobarContrasena(usuario, contrasena)) {
+            return "error";
         }
         return usuario;
     }

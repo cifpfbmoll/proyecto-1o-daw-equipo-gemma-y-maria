@@ -3,6 +3,7 @@ package proyecto.controlador;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import proyecto.modelo.Entrenador;
 import proyecto.modelo.TipoEjercicio;
 import proyecto.vista.MenuPrincipal;
@@ -60,8 +61,9 @@ public class ControladorEntrenador extends ControladorUsuario{
             System.out.println("Entrenador: con este, has elaborado un total de " + entrenador.getProgramasPreparados() + " programas.");
             prepStat.close();
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            System.out.println("Error al incrementar el número de programas del entrenador.");
+            String tituloError = "Error al incrementar el número de programas creados por el entrenador.";
+            Utilidades.logErrores(tituloError, Arrays.toString(sqle.getStackTrace()));
+            System.out.println(tituloError);
             MenuPrincipal.con.rollback();
         } finally {
             MenuPrincipal.con.setAutoCommit(estadoAC);

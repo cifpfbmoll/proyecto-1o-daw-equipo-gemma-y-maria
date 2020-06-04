@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import proyecto.modelo.Ejercicio;
 import proyecto.modelo.TipoEjercicio;
 import proyecto.vista.MenuPrincipal;
@@ -67,6 +68,11 @@ public class ControladorEjercicio {
         guardarEjercicioEnTabla(nuevoEjercicio);
     }
     
+    /**
+     * Toma un objeto Ejercicio y lo guarda en la tabla
+     * @param ejercicio de clase Ejercicio
+     * @throws SQLException 
+     */
     public static void guardarEjercicioEnTabla(Ejercicio ejercicio) throws SQLException{
         boolean estadoAC = MenuPrincipal.con.getAutoCommit();
         try {
@@ -92,14 +98,20 @@ public class ControladorEjercicio {
             System.out.println("Ejercicio creado con éxito. Detalles:");
             ejercicio.mostrarDatosEjercicio();
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            System.out.println("Error en la introducción del ejercicio.");
+            String tituloError = "Error en la introducción del ejercicio.";
+            Utilidades.logErrores(tituloError, Arrays.toString(sqle.getStackTrace()));
+            System.out.println(tituloError);
             MenuPrincipal.con.rollback();
         } finally {
             MenuPrincipal.con.setAutoCommit(estadoAC);
         }
     }
     
+    /**
+     * Opera con los tipos de ejercicios.
+     * 
+     * @return ArrayList de enum TipoEjercicio
+     */
     public static ArrayList<TipoEjercicio> generarListaTipos() {
         System.out.println("Los tipos de ejercicio existentes son:");
         TipoEjercicio.imprimirTipo();

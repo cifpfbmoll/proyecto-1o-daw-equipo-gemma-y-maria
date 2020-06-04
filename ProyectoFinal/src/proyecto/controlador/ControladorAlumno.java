@@ -3,9 +3,8 @@ package proyecto.controlador;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import proyecto.modelo.Alumno;
-import proyecto.modelo.Entrenamiento;
-import proyecto.modelo.TipoEjercicio;
+import java.util.Arrays;
+import proyecto.modelo.*;
 import proyecto.vista.MenuPrincipal;
 
 public class ControladorAlumno extends ControladorUsuario{
@@ -62,6 +61,7 @@ public class ControladorAlumno extends ControladorUsuario{
         if (tipoDeEjercicio != null) {
             user.setTipoEjercicio(TipoEjercicio.valueOf(tipoDeEjercicio));
         }
+        //En estos momentos no empleamos el IBAN, de manera que por seguridad de los datos preferimos no llevarlo al objeto.
         results.close();
         prepStat.close();
         return user;
@@ -77,7 +77,7 @@ public class ControladorAlumno extends ControladorUsuario{
         try {
             MenuPrincipal.con.setAutoCommit(false);
             String query = "INSERT INTO usuario (DNI, password, discriminador, nombre, apellido1, apellido2, email, telefono, direccion, IBAN) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                    + "VALUES (?, SHA2(?, 256), ?, ?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(query);
             prepStat.setString(1, alu.getDni());
             prepStat.setString(2, alu.getPassword());
@@ -94,8 +94,9 @@ public class ControladorAlumno extends ControladorUsuario{
             System.out.println("Nuevo alumno (" + alu.getNombre() + " " + alu.getApellido1() + ") introducido correctamente.");
             prepStat.close();
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            System.out.println("Error en la introducción del alumno.");
+            String tituloError = "Error en la introducción del alumno.";
+            Utilidades.logErrores(tituloError, Arrays.toString(sqle.getStackTrace()));
+            System.out.println(tituloError);
             MenuPrincipal.con.rollback();
         } finally {
             MenuPrincipal.con.setAutoCommit(estadoAC);
@@ -122,5 +123,30 @@ public class ControladorAlumno extends ControladorUsuario{
         alumno.setIban("IBAN");
         lineaAlumno.close();
         return alumno;
+    }
+    
+        /**
+     * Recibe un posible IBAN y comprueba su validez
+     * 
+     * @param iban que se quiere validar
+     * @return true si es válido
+     */
+    public static boolean validarIban (String iban){
+        boolean ibanValido = true;
+        if (iban.length() != 22 || !Character.isLetter(iban.charAt(0)) || !Character.isLetter(iban.charAt(1))) {
+            ibanValido = false;
+        } else {
+            for (int i = 2; i < iban.length() ; i++) {
+                int numAscii = iban.codePointAt(i);
+                boolean numValido = (numAscii > 47 && numAscii < 58);
+                if (!numValido) {
+                    ibanValido = false;
+                }
+            }
+        }
+        if (!ibanValido) {
+            System.out.println("Este IBAN no cumple los requisitos.");
+        }
+        return ibanValido;
     }
 }

@@ -3,6 +3,7 @@ package proyecto.controlador;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import proyecto.vista.MenuPrincipal;
 import proyecto.modelo.*;
 
@@ -10,7 +11,6 @@ import proyecto.modelo.*;
  * Incluye los métodos que trabajan con objetos y procesos relacionados con la clase modelo.Usuario
  */
 public class ControladorUsuario {
-//Métodos:
     /**
      * Permite encontrar un usuario en base a su DNI.
      *
@@ -31,24 +31,45 @@ public class ControladorUsuario {
     /**
      * Comprueba si el valor que se pasa existe en tablas.
      *
-     * @param texto cuya validez y/o existencia en tablas se desea comprobar
+     * @param id cuya validez y/o existencia en tablas se desea comprobar
      * @return verdadero si está en tablas
      */
-    public static String comprobarUsuario(String texto) throws SQLException {
-        String password = "error";
-        String query = "SELECT password FROM USUARIO WHERE DNI = ?;";
+    public static boolean comprobarUsuario(String id) throws SQLException {
+        boolean usuarioExistente = false;
+        String query = "SELECT count(*) as cuenta FROM USUARIO WHERE DNI = ?;";
         PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(query);
-        prepStat.setString(1, texto);
+        prepStat.setString(1, id);
         ResultSet queryResult = prepStat.executeQuery();
-        //Nota: Como no tenemos método isEmpty, la solución es:
-        if (queryResult.next() != false) {
-            password = queryResult.getString("password");
+        queryResult.next();
+        if (queryResult.getInt("cuenta") > 0) {
+            usuarioExistente = true;
         }
-        //lógica de esto: si existe un resultado de esta búsqueda, entonces existe la entrada: es válida
         queryResult.close();
         prepStat.close();
-        //aprovecho para obtener la contraseña y así no tengo que hacer la búsqueda mil veces
-        return password;
+        return usuarioExistente;
+    }
+    
+    /**
+     * Comprueba si la contraseña es la de el usuario que se pasa.
+     *
+     * @param id cuya validez y/o existencia en tablas se desea comprobar
+     * @param pw contraseña propuesta para el usuario
+     * @return verdadero si está en tablas
+     */
+    public static boolean comprobarContrasena(String id, String pw) throws SQLException {
+        boolean pwUsuario = false;
+        String query = "SELECT count(*) as cuenta FROM USUARIO WHERE DNI = ? AND password = SHA2(?, 256);";
+        PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(query);
+        prepStat.setString(1, id);
+        prepStat.setString(2, pw);
+        ResultSet queryResult = prepStat.executeQuery();
+        queryResult.next();
+        if (queryResult.getInt("cuenta") > 0) {
+            pwUsuario = true;
+        }
+        queryResult.close();
+        prepStat.close();
+        return pwUsuario;
     }
     
     /**
@@ -85,7 +106,6 @@ public class ControladorUsuario {
         System.out.println("  -contraseña:");
         String userPw = MenuPrincipal.lector.nextLine().toLowerCase().trim();
         user.setPassword(userPw);
-        //TODO: confirmarContraseña()
         System.out.println("  -nombre:");
         String userNombre = MenuPrincipal.lector.nextLine();
         user.setNombre(userNombre);
@@ -121,33 +141,15 @@ public class ControladorUsuario {
             for (int i = 0; i < dni.length() - 1; i++) {
                 int numAscii = dni.codePointAt(i);
                 boolean numValido = (numAscii > 47 && numAscii < 58);
-                if (numValido == false) {
+                if (!numValido) {
                     dniValido = false;
                 }
             }
         }
-        if (dniValido == false) {
+        if (!dniValido) {
             System.out.println("Este DNI no cumple los requisitos.");
         }
         return dniValido;
-    }
-    public static boolean validarIban (String iban){
-        boolean ibanvalido = true;
-        if (iban.length() != 24 || Character.isLetter(iban.charAt(2))) {
-            ibanvalido = false;
-        } else {
-            for (int i = 2; i < iban.length() ; i++) {
-                int numAscii = iban.codePointAt(i);
-                boolean numValido = (numAscii > 47 && numAscii < 58);
-                if (numValido == false) {
-                    ibanvalido = false;
-                }
-            }
-        }
-        if (ibanvalido == false) {
-            System.out.println("Este IBAN no cumple los requisitos.");
-        }
-        return ibanvalido;
     }
     
     /**
@@ -172,8 +174,33 @@ public class ControladorUsuario {
         return null;
     }
     
-    public static boolean validarPassword(String pw){
-        //TODO
-        return false;
+    /**
+     * Para un usuario, comprueba si ha creado o tiene solicitado algun ejercicio.
+     * @param idAlumno
+     * @param idEntrenador
+     * @return false si no tiene ningún ejercicio guardado.
+     */
+    public static boolean comprobarNumEjUsuario(String idAlumno, String idEntrenador) throws SQLException{
+        boolean existenciaEjercicios = false;
+        String query = "SELECT count(*) as cuenta FROM ENTRENAMIENTO ";
+        PreparedStatement prepStat = null;
+        if (idAlumno == null) {
+            query += "WHERE dni_entrenador = ?;";
+            prepStat = MenuPrincipal.con.prepareStatement(query);
+            prepStat.setString(1, idEntrenador);
+        } else if (idEntrenador == null) {
+            query += "WHERE dni_alumno = ?;";
+            prepStat = MenuPrincipal.con.prepareStatement(query);
+            prepStat.setString(1, idAlumno);
+        }
+        ResultSet queryResult = prepStat.executeQuery();
+        queryResult.next();
+        if (queryResult.getInt("cuenta") > 0) {
+            existenciaEjercicios = true;
+        }
+        queryResult.close();
+        prepStat.close();
+        return existenciaEjercicios;
     }
+    
 }

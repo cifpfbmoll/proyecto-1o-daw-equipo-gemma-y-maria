@@ -4,7 +4,7 @@ USE programacion;
 DROP TABLE IF EXISTS USUARIO;
 CREATE TABLE USUARIO (
   DNI varchar(9) NOT NULL,
-  password varchar(30) NOT NULL,
+  password varchar(64) NOT NULL,
   discriminador varchar(10) NOT NULL CHECK (discriminador = 'entrenador' or discriminador = 'alumno'),
   nombre varchar(30) DEFAULT NULL,
   apellido1 varchar(30) DEFAULT NULL,
@@ -92,26 +92,26 @@ INSERT INTO TIPO (tipo_code, nombre) VALUES
 ('CD', 'CARDIO');
 
 INSERT INTO USUARIO (DNI, password, discriminador, nombre, apellido1, apellido2, email, telefono, direccion, IBAN, num_prog_prep, tipo_prog_solicitado) VALUES
-('11111111A', 'usuario001', 'entrenador', 'Oswald', 'Cobblepot', 'Penguin', 'oswaldc@gmail.com', 600000001, 'Pingu Ave. 66 Gotham City  KT13 8XQ', null, 10, null ),
-('22222222B', 'usuario002', 'entrenador', 'Harley', 'Queen', 'Joker', 'harleyqk@gmail.com', 600000002, 'Madness St. 24 Kansas  KT13 8XL', null, 10, null ),
-('33333333C', 'usuario003', 'entrenador', 'Edward', 'Nygma', 'Enigma', 'edwardnygma@gmail.com', 600000003, 'The Riddler St. 48 Gotham City  KH13 8XQ', null, 10, null ),
-('44444444D', 'usuario004', 'entrenador', 'Alexander', 'Luthor', null, 'lexluthor@gmail.com', 600000004, 'Kryptonite Road 67 Metropolis  KT13 9XQ', null, 10, 'WF' ),
-('55555555E', 'usuario005', 'entrenador', 'Alice', 'Kane', 'Beth', 'alicekane@gmail.com', 600000005, 'Mansion Wayne Road s/n Gotham City  KT13 8PQ', null, 10, null ),
-('66666666F', 'usuario006', 'alumno', 'Selina', 'Kyle', 'Catwoman', 'catwoman@gmail.com', 600000006, 'The little Rabbit St. 44 Gotham City  KH13 8XQ', 'US22050204050607019675', 10, 'YG'),
-('77777777G', 'usuario007', 'alumno', 'Bruce', 'Wayne', 'Batman', 'brucewayne@gmail.com', 600000007, 'Mansion Wayne Road s/n Gotham City  KT13 8XQ', 'US22050204050607019680', null, 'RH' ),
-('88888888H', 'usuario008', 'alumno', 'Clark', 'Kent', 'Superman', 'clarkkent@gmail.com', 600000008, 'Long Field St. 24 Kansas  KT13 8XL', 'US22050204050607019685', null, null ),
-('99999999I', 'usuario009', 'alumno', 'Kara', 'Danvers', 'Supergirl', 'karadanvers@gmail.com', 600000009, 'The CatCo s/n Central City  KT00 8XQ', 'US22050204060607019685', null, 'WF' ),
-('00000000J', 'usuario010', 'alumno', 'Barry', 'Allen', 'Flash', 'barryallen@gmail.com', 600000010, 'Running Home St. 99 Star City  KT13 5XQ', 'US22050204050557019685', null, 'HT' ),
-('11111111K', 'usuario011', 'alumno', 'Oliver', 'Queen', 'Arrow', 'oliverqueen@gmail.com', 600000011, 'Mansion Queen Road s/n Starling City  KT13 8IQ', 'US22050204050607019633',  null, 'RT' ),
-('22222222L', 'usuario012', 'alumno', 'Sara', 'Lance', 'Canary', 'saralance@gmail.com', 600000012, 'Time Ship Road 33 s/n Time City  KA13 8XQ', 'US22050644050607019685', null, null ),
-('33333333M', 'usuario013', 'alumno', 'Kate', 'Kane', 'Batwoman', 'katekane@gmail.com', 600000013, 'Wayne Enterprises Ave. s/n Gotham City  KM13 80Q', 'US22050204050606719685', null, null ),
-('44444444N', 'usuario014', 'alumno', 'Helena', 'Bertinelli', 'Huntress', 'helenaberti@gmail.com', 600000014, 'Mansion Bertinelli Road s/n Starling City  KT33 8XQ', 'US22050204050607019573', null, 'GM' ),
-('55555555O', 'usuario015', 'alumno', 'Diana', 'Prince', 'Wonder', 'dianaprince@gmail.com', 600000015, 'The Sea s/n Water City  KT10 8UY', 'US22050204050600719685', null, 'CD' ),
-('66666666P', 'usuario016', 'alumno', 'Arthur', 'Curry', 'Aquaman', 'arthurcurry@gmail.com', 600000016, 'Mansion Wayne Road s/n Gotham City  KT13 7YY', 'US22050444050607019681', null, 'YG' ),
-('77777777Q', 'usuario017', 'alumno', 'Alfred', 'Pennyworth', 'Butler', 'alfredpenny@gmail.com', 600000017, 'Mansion Wayne Road s/n Gotham City  KT13 8PPQ', 'US22050204050607019687', null, 'HT' ), 
-('88888888R', 'usuario018', 'alumno', 'Victor', 'Stone', 'Cyborg', 'victorstone@gmail.com', 600000018, 'Technology Ave. s/n Gotham City  KK13 8XQ', 'US22050874070607019685', null, null ),
-('99999999S', 'usuario019', 'alumno', 'John', 'Constantine', 'Witcher', 'johnconstantine@gmail.com', 600000019, 'Hellskitchen 23 Starling City  IT13 8XQ', 'US22050204050607019323', null, 'RT' ),
-('00000000T', 'usuario020', 'alumno', 'Rachel', 'Roth', 'Raven', 'rachelroth@gmail.com', 600000020, 'The darkest avenur 99 Chicago City  KT00 8XQ', 'US22050204050607819681', null, 'YG' );
+('11111111A', SHA2('usuario001', 256), 'entrenador', 'Oswald', 'Cobblepot', 'Penguin', 'oswaldc@gmail.com', 600000001, 'Pingu Ave. 66 Gotham City  KT13 8XQ', null, 10, null ),
+('22222222B', SHA2('usuario001', 256), 'entrenador', 'Harley', 'Queen', 'Joker', 'harleyqk@gmail.com', 600000002, 'Madness St. 24 Kansas  KT13 8XL', null, 10, null ),
+('33333333C', SHA2('usuario003', 256), 'entrenador', 'Edward', 'Nygma', 'Enigma', 'edwardnygma@gmail.com', 600000003, 'The Riddler St. 48 Gotham City  KH13 8XQ', null, 10, null ),
+('44444444D', SHA2('usuario004', 256), 'entrenador', 'Alexander', 'Luthor', null, 'lexluthor@gmail.com', 600000004, 'Kryptonite Road 67 Metropolis  KT13 9XQ', null, 10, 'WF' ),
+('55555555E', SHA2('usuario005', 256), 'entrenador', 'Alice', 'Kane', 'Beth', 'alicekane@gmail.com', 600000005, 'Mansion Wayne Road s/n Gotham City  KT13 8PQ', null, 10, null ),
+('66666666F', SHA2('usuario006', 256), 'alumno', 'Selina', 'Kyle', 'Catwoman', 'catwoman@gmail.com', 600000006, 'The little Rabbit St. 44 Gotham City  KH13 8XQ', 'US22050204050607019675', 10, 'YG'),
+('77777777G', SHA2('usuario007', 256), 'alumno', 'Bruce', 'Wayne', 'Batman', 'brucewayne@gmail.com', 600000007, 'Mansion Wayne Road s/n Gotham City  KT13 8XQ', 'US22050204050607019680', null, 'RH' ),
+('88888888H', SHA2('usuario008', 256), 'alumno', 'Clark', 'Kent', 'Superman', 'clarkkent@gmail.com', 600000008, 'Long Field St. 24 Kansas  KT13 8XL', 'US22050204050607019685', null, null ),
+('99999999I', SHA2('usuario009', 256), 'alumno', 'Kara', 'Danvers', 'Supergirl', 'karadanvers@gmail.com', 600000009, 'The CatCo s/n Central City  KT00 8XQ', 'US22050204060607019685', null, 'WF' ),
+('00000000J', SHA2('usuario010', 256), 'alumno', 'Barry', 'Allen', 'Flash', 'barryallen@gmail.com', 600000010, 'Running Home St. 99 Star City  KT13 5XQ', 'US22050204050557019685', null, 'HT' ),
+('11111111K', SHA2('usuario011', 256), 'alumno', 'Oliver', 'Queen', 'Arrow', 'oliverqueen@gmail.com', 600000011, 'Mansion Queen Road s/n Starling City  KT13 8IQ', 'US22050204050607019633',  null, 'RT' ),
+('22222222L', SHA2('usuario012', 256), 'alumno', 'Sara', 'Lance', 'Canary', 'saralance@gmail.com', 600000012, 'Time Ship Road 33 s/n Time City  KA13 8XQ', 'US22050644050607019685', null, null ),
+('33333333M', SHA2('usuario013', 256), 'alumno', 'Kate', 'Kane', 'Batwoman', 'katekane@gmail.com', 600000013, 'Wayne Enterprises Ave. s/n Gotham City  KM13 80Q', 'US22050204050606719685', null, null ),
+('44444444N', SHA2('usuario014', 256), 'alumno', 'Helena', 'Bertinelli', 'Huntress', 'helenaberti@gmail.com', 600000014, 'Mansion Bertinelli Road s/n Starling City  KT33 8XQ', 'US22050204050607019573', null, 'GM' ),
+('55555555O', SHA2('usuario015', 256), 'alumno', 'Diana', 'Prince', 'Wonder', 'dianaprince@gmail.com', 600000015, 'The Sea s/n Water City  KT10 8UY', 'US22050204050600719685', null, 'CD' ),
+('66666666P', SHA2('usuario016', 256), 'alumno', 'Arthur', 'Curry', 'Aquaman', 'arthurcurry@gmail.com', 600000016, 'Mansion Wayne Road s/n Gotham City  KT13 7YY', 'US22050444050607019681', null, 'YG' ),
+('77777777Q', SHA2('usuario017', 256), 'alumno', 'Alfred', 'Pennyworth', 'Butler', 'alfredpenny@gmail.com', 600000017, 'Mansion Wayne Road s/n Gotham City  KT13 8PPQ', 'US22050204050607019687', null, 'HT' ), 
+('88888888R', SHA2('usuario018', 256), 'alumno', 'Victor', 'Stone', 'Cyborg', 'victorstone@gmail.com', 600000018, 'Technology Ave. s/n Gotham City  KK13 8XQ', 'US22050874070607019685', null, null ),
+('99999999S', SHA2('usuario019', 256), 'alumno', 'John', 'Constantine', 'Witcher', 'johnconstantine@gmail.com', 600000019, 'Hellskitchen 23 Starling City  IT13 8XQ', 'US22050204050607019323', null, 'RT' ),
+('00000000T', SHA2('usuario020', 256), 'alumno', 'Rachel', 'Roth', 'Raven', 'rachelroth@gmail.com', 600000020, 'The darkest avenur 99 Chicago City  KT00 8XQ', 'US22050204050607819681', null, 'YG' );
 
 INSERT INTO EJERCICIO (ex_code, nombre, descripcion) VALUES
 ('DL', 'DEAD LIFT', 'Peso muerto con la barra olímpica desde el suelo'),

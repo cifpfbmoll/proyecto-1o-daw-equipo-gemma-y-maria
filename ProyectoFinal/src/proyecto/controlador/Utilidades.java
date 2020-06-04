@@ -31,37 +31,32 @@ public class Utilidades {
 
     /**
      * Guarda los errores encontrados en un archivo en el proyecto.
+     * @param titulo String con el texto que titula el error
+     * @param traza String con printStackTrace()
      */
-    public static void logErrores() {
+    public static void logErrores(String titulo, String traza) {
         try (BufferedWriter writerMejorado = new BufferedWriter(new FileWriter("errores.txt", true))) {
-            writerMejorado.write("\n__________________________________________________________________________________\n");
-            writerMejorado.write(obtenerFechaHora());
+            writerMejorado.write("___________________________________ NUEVO ERROR ___________________________________\n");
+            writerMejorado.write(titulo + "\n");
+            writerMejorado.write(obtenerFechaHora() + "\n\n");
+            writerMejorado.write(traza + "\n");
+            writerMejorado.write("\n__________________________________________________________________________________\n\n");
             //TODO completar el logger de errores y adaptar los catches
-            System.out.println("Error guardado en el archivo errores.txt");
+            System.out.println("Error guardado en el archivo 'errores.txt'.");
         } catch (IOException eio) {
             System.out.println("IOException. Error al leer el logger de errores.");
         }
     }
     
     /**
+     * Modifica un string de manera que la primera letra sea siempre en mayúsculas y no tenga espacios al principio ni al final.
      * 
-     * 
-     * @param str
+     * @param texto String para adaptar
      * @return string sin espacios y con la primera letra en mayúcula
      */
-
-    public static String modificarString(String str) {
-        String strsinespacios = "";
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) != ' ') {
-                strsinespacios += str.charAt(i);
-            }
-        }
-        if (strsinespacios == null || strsinespacios.isEmpty()) {
-            return strsinespacios;
-        } else {
-            return strsinespacios.substring(0, 1).toUpperCase() + strsinespacios.substring(1);
-        }
+    public static String adaptarStringMayusMinus(String texto) {
+        String textoAdaptado = texto.substring(0, 1).toUpperCase() + texto.substring(1);;   
+        return textoAdaptado.trim();
     }
 
 }

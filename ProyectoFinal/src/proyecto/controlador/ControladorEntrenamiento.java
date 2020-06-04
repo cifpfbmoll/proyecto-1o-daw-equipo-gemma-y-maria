@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import proyecto.modelo.*;
 import proyecto.vista.MenuPrincipal;
@@ -46,7 +47,6 @@ public class ControladorEntrenamiento {
             System.out.println("Nuevo entrenamiento creado con éxito.");
             ControladorEntrenador.incrementarPrograma(entreno.getEntrenador());
             eliminarSolicitudEntrenamiento(idAlumno);
-            //TODO mejora devolver el código de entrenamiento
         }
     }
     
@@ -66,8 +66,9 @@ public class ControladorEntrenamiento {
             System.out.println("Se ha desmarcado la solicitud de entrenamiento completada.");
             prepStat.close();
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            System.out.println("Error en la eliminación de la solicitud de entrenamiento completada.");
+            String tituloError = "Error en la eliminación de la solicitud de entrenamiento completada.";
+            Utilidades.logErrores(tituloError, Arrays.toString(sqle.getStackTrace()));
+            System.out.println(tituloError);
             MenuPrincipal.con.rollback();
         } finally {
             MenuPrincipal.con.setAutoCommit(estadoAC);
@@ -81,15 +82,12 @@ public class ControladorEntrenamiento {
         Entrenamiento entreno = generarEntrenamientoDesdeTabla(codigoBase);
         System.out.println("Introduce el DNI del alumno para que el quieres copiar el programa de entrenamiento:");
         String idAlumno = MenuPrincipal.lector.nextLine();
-        //TODO: confirmar que existe ese DNI para alumnos
         entreno.setAlumno(ControladorAlumno.generarAlumnoDesdeTabla(idAlumno));
         System.out.println("La tabla de ejercicios que se copiará en el nuevo programa es:");
         entreno.mostrarListaEjercicios();
-        //TODO mejora: añadir otros ejercicios en la tabla
         insertarEntrenamientoEnTablaDesdeObjeto(entreno);
         System.out.println("Copia realizada con éxito.");
         ControladorEntrenador.incrementarPrograma(entreno.getEntrenador());
-        //TODO mejora devolver el nuevo código de entrenamiento
     }
     
     public static void insertarEntrenamientoEnTablaDesdeObjeto(Entrenamiento entreno) throws SQLException {
@@ -127,8 +125,9 @@ public class ControladorEntrenamiento {
             System.out.println("Tabla 'entrenamiento' modificada correctamente.");
             System.out.println("Tabla 'linea_entrenamiento' modificada correctamente.");    //traza
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            System.out.println("Error en la introducción del alumno.");
+            String tituloError = "Error en la introducción de un entrenamiento en la tabla.";
+            Utilidades.logErrores(tituloError, Arrays.toString(sqle.getStackTrace()));
+            System.out.println(tituloError);
             MenuPrincipal.con.rollback();
         } finally {
             MenuPrincipal.con.setAutoCommit(estadoAC);
@@ -138,11 +137,19 @@ public class ControladorEntrenamiento {
     //El método de consultas tiene dos parámetros; paso como null, valor imposible en id, el que NO quiero usar como base
     //Para facilitar la lectura y las llamadas es más apropiado separarlo así.
     public static void consultarEntrenamientoPorEntrenador(String id) throws SQLException {
-        mostrarEntrenamientoDesdeTabla(id, null);
+        if (!ControladorUsuario.comprobarNumEjUsuario(id, null)) {
+            System.out.println("No tiene ningún entrenamiento disponible como entrenador.");
+        } else {
+            mostrarEntrenamientoDesdeTabla(id, null);
+        }
     }
 
     public static void consultarEntrenamientoPorAlumno(String id) throws SQLException {
-        mostrarEntrenamientoDesdeTabla(null, id);
+        if (!ControladorUsuario.comprobarNumEjUsuario(null, id)) {
+            System.out.println("No tiene ningún entrenamiento disponible como alumno.");
+        } else {
+            mostrarEntrenamientoDesdeTabla(null, id);
+        }
     }
 
     /**
@@ -166,12 +173,13 @@ public class ControladorEntrenamiento {
         try {
             TimeUnit.SECONDS.sleep(6);             //Para pausar la ejecución del código 6 segundos.
         } catch (InterruptedException IE) {
-            System.out.println("InterruptedException. Error al pausar la ejecución del código.");
+            String tituloError = "Error al pausar la ejecución del código.";
+            Utilidades.logErrores(tituloError, Arrays.toString(IE.getStackTrace()));
+            System.out.println(tituloError);
         }
     }
     
     public static int consultarCodigoEntrenamiento(String idEntrenador, String idAlumno) throws SQLException {
-        int codigo = 0;             //TODO: si hago el bucle nunca devolverá esto
         String query = "SELECT train_code, fecha_creacion FROM ENTRENAMIENTO ";
         PreparedStatement prepStat = null;
         if (idAlumno == null) {
@@ -190,18 +198,18 @@ public class ControladorEntrenamiento {
             codigosEncontrados.add(queryResult.getInt("train_code"));
             System.out.println("  código " + queryResult.getInt("train_code") + "; fecha de creación: " + queryResult.getString("fecha_creacion"));
         }
-        if (queryResult != null) {
-            queryResult.close();
-        }
+        queryResult.close();
         prepStat.close();
-        System.out.println("Introduce el código del programa de entrenamiento que te interesa:");
-        int opcionCodigo = Integer.parseInt(MenuPrincipal.lector.nextLine());
-        if (codigosEncontrados.contains(opcionCodigo)) {
-            return opcionCodigo;
-        } else {
-            System.out.println("La opción introducida no existe.");
-        }
-        //TODO: replantear lo anterior para convertirlo en un bucle   
+        int codigo = 0;             //nunca podrá tener este valor: el serial de códigos de entrenamiento empieza en 1
+        do {
+            System.out.println("Introduce el código del programa de entrenamiento que te interesa:");
+            int opcionCodigo = Integer.parseInt(MenuPrincipal.lector.nextLine());
+            if (codigosEncontrados.contains(opcionCodigo)) {
+                codigo = opcionCodigo;
+            } else {
+                System.out.println("La opción introducida no existe.");
+            }
+        } while (codigo == 0);
         return codigo;
     }
 
@@ -242,7 +250,9 @@ public class ControladorEntrenamiento {
             writerMejorado.write("__________________________________________________________________________________\n\n");
             System.out.println("Impresión realizada. Consultar archivo.");
         } catch (IOException eio) {
-            System.out.println("IOException. Error al leer el archivo de destino.");
+            String tituloError = "Error al leer el archivo de destino.";
+            Utilidades.logErrores(tituloError, Arrays.toString(eio.getStackTrace()));
+            System.out.println(tituloError);
         }
     }
 
@@ -280,11 +290,19 @@ public class ControladorEntrenamiento {
     }
 
     public static void imprimirEntrenamientoDesdeTablaPorEntrenador(String id) throws SQLException {
-        imprimirEntrenamientoDesdeTabla(id, null);
+        if (!ControladorUsuario.comprobarNumEjUsuario(id, null)) {
+            System.out.println("No tiene ningún entrenamiento disponible como entrenador.");
+        } else {
+            imprimirEntrenamientoDesdeTabla(id, null);
+        }
     }
 
     public static void imprimirEntrenamientoDesdeTablaPorAlumno(String id) throws SQLException {
-        imprimirEntrenamientoDesdeTabla(null, id);
+        if (!ControladorUsuario.comprobarNumEjUsuario(null, id)) {
+            System.out.println("No tiene ningún entrenamiento disponible como alumno.");
+        } else {
+            imprimirEntrenamientoDesdeTabla(null, id);
+        }
     }
     
     /**
@@ -320,8 +338,9 @@ public class ControladorEntrenamiento {
             System.out.println("Solicitud de programa de entrenamiento realizada.");
             prepStat.close();
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            System.out.println("Error en la solicitud.");
+            String tituloError = "Error en la solicitud de entrenamiento.";
+            Utilidades.logErrores(tituloError, Arrays.toString(sqle.getStackTrace()));
+            System.out.println(tituloError);
             MenuPrincipal.con.rollback();
         } finally {
             MenuPrincipal.con.setAutoCommit(estadoAC);
