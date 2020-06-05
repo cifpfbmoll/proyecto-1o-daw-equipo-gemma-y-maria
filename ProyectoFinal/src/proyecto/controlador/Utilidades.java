@@ -41,7 +41,6 @@ public class Utilidades {
             writerMejorado.write(obtenerFechaHora() + "\n\n");
             writerMejorado.write(traza + "\n");
             writerMejorado.write("\n__________________________________________________________________________________\n\n");
-            //TODO completar el logger de errores y adaptar los catches
             System.out.println("Error guardado en el archivo 'errores.txt'.");
         } catch (IOException eio) {
             System.out.println("IOException. Error al leer el logger de errores.");

@@ -52,14 +52,18 @@ public class ControladorEjercicio {
         Ejercicio nuevoEjercicio = new Ejercicio();
         imprimirCodigosExistentes(null);
         String nuevoCodigo;
+        boolean codigoYaExiste = true;
         do {
             System.out.println("Introduce el código del nuevo ejercicio:");
             nuevoCodigo = MenuPrincipal.lector.nextLine().toUpperCase();
             if (nuevoCodigo.length() != 2) {
-                System.out.println("El código del ejercicio debe tener exactamente dos caracteres.");
+                System.out.println("Error: el código del ejercicio debe tener exactamente dos caracteres.");
             }
-            //todo añadir mensaje si error System.out.println("Error. El código introducido ya está en uso.");
-        } while ((comprobarCodigoExistente(nuevoCodigo, null)) && (nuevoCodigo.length() != 2));
+            codigoYaExiste = comprobarCodigoExistente(nuevoCodigo, null);
+            if (codigoYaExiste) {
+                System.out.println("Error: el código introducido ya está en uso.");
+            }
+        } while ((codigoYaExiste) && (nuevoCodigo.length() != 2));
         nuevoEjercicio.setCodigo(nuevoCodigo);
         System.out.println("Introduce el título del nuevo ejercicio:");
         nuevoEjercicio.setNombre(MenuPrincipal.lector.nextLine());
@@ -118,8 +122,15 @@ public class ControladorEjercicio {
         System.out.println("Los tipos de ejercicio existentes son:");
         TipoEjercicio.imprimirTipo();
         System.out.println("¿En cuántos de estos tipos se puede clasificar el nuevo ejercicio?\nIntroduce número:");
-        int numTipos = Integer.parseInt(MenuPrincipal.lector.nextLine());
-        //TODO convertir if en bucle
+        int numTipos;
+        do {
+            numTipos = Integer.parseInt(MenuPrincipal.lector.nextLine());
+            if (numTipos <= 0) {
+                System.out.println("Error: tiene que haber al menos un ejercicio.");
+            } else if (numTipos > 50) {
+                System.out.println("Error: un programa no debiera tener más de 10 ejercicios.");
+            }
+        } while ((numTipos < 1) || (numTipos > 10));
         if (numTipos > TipoEjercicio.values().length + 1) {
             System.out.println(numTipos + " es mayor a la cantidad de tipos posibles (" + TipoEjercicio.values().length + 1 + ")");
             System.out.println("Introduce nuevo número de tipos:");
