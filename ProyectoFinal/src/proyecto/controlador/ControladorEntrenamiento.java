@@ -38,7 +38,6 @@ public class ControladorEntrenamiento {
             System.out.println("¿Cuántos ejercicios diferentes tendrá este nuevo programa?");
             int numLineas = Integer.parseInt(MenuPrincipal.lector.nextLine());
             ArrayList<LineaEntrenamiento> listaLineas = new ArrayList<>();
-            //TODO falta que sólo se puedan añadir ejercicios del tipo solicitado por el usuario. IMPORTANTE. Y QUE LA LISTA SALGA BONITA
             for (int i = 0; i < numLineas; i++) {
                 listaLineas.add(crearLineaEntrenamiento(tipoPrograma.name()));
             }

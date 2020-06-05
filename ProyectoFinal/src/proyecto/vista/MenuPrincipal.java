@@ -62,10 +62,11 @@ public class MenuPrincipal {
      * Pide usuario y contraseña y los confirma.
      *
      * @return identificador del usuario
+     * @throws java.sql.SQLException
      */
     public static String menuLogIn() throws SQLException {
-        String usuario = "";
-        String contrasena = "";
+        String usuario;
+        String contrasena;
         System.out.println("Introduce DNI del usuario: ");
         usuario = lector.nextLine();
         if (!ControladorUsuario.comprobarUsuario(usuario)) {
@@ -84,6 +85,7 @@ public class MenuPrincipal {
      * Los entrenadores pueden elegir ciertas opciones de alumno (gratuitamente, como pago por sus servicios).
      *
      * @param id identificador de usuario
+     * @throws java.sql.SQLException
      */
     public static void menuEntrenador(String id) throws SQLException {
         boolean salir = false;
@@ -137,10 +139,11 @@ public class MenuPrincipal {
         }
     }
 
-        /**
+    /**
      * Menú de creación de entrenamientos.
      *
      * @param id identificador del entrenador que crea el programa
+     * @throws java.sql.SQLException
      */
     public static void menuCrearEntrenamiento(String id) throws SQLException {
         System.out.println("");
@@ -165,6 +168,7 @@ public class MenuPrincipal {
      * Opciones de menú específicas para alumnos.
      *
      * @param id identificador de usuario
+     * @throws java.sql.SQLException
      */
     public static void menuAlumno(String id) throws SQLException {
         boolean salir = false;

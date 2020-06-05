@@ -6,3 +6,11 @@ Error en el menú principal.
 
 __________________________________________________________________________________
 
+___________________________________ NUEVO ERROR ___________________________________
+Error en el menú principal.
+2020-06-05 18:09:09
+
+[sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method), sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62), sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45), java.lang.reflect.Constructor.newInstance(Constructor.java:423), com.mysql.jdbc.Util.handleNewInstance(Util.java:425), com.mysql.jdbc.SQLError.createCommunicationsException(SQLError.java:990), com.mysql.jdbc.MysqlIO.<init>(MysqlIO.java:335), com.mysql.jdbc.ConnectionImpl.coreConnect(ConnectionImpl.java:2187), com.mysql.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:2220), com.mysql.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:2015), com.mysql.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:768), com.mysql.jdbc.JDBC4Connection.<init>(JDBC4Connection.java:47), sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method), sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62), sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45), java.lang.reflect.Constructor.newInstance(Constructor.java:423), com.mysql.jdbc.Util.handleNewInstance(Util.java:425), com.mysql.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:385), com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:323), java.sql.DriverManager.getConnection(DriverManager.java:664), java.sql.DriverManager.getConnection(DriverManager.java:247), proyecto.controlador.Conexion.obtenerConexion(Conexion.java:19), proyecto.vista.MenuPrincipal.main(MenuPrincipal.java:36)]
+
+__________________________________________________________________________________
+

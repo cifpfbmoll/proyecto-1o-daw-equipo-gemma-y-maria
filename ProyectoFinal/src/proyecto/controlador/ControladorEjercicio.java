@@ -166,12 +166,22 @@ public class ControladorEjercicio {
         System.out.println("En estos momentos están en uso los siguientes códigos de ejercicio:");
         ArrayList<String> listaCodigos = obtenerCodigosExistentes(tipoEj);
         for (int i = 0; i < listaCodigos.size(); i++) {
-            if (i != listaCodigos.size()-1) {
-                System.out.print(listaCodigos.get(i) + " - ");
-            } else {
-                System.out.println(listaCodigos.get(i));
-            }
+            String codigoEj = listaCodigos.get(i);
+            System.out.print("  " + codigoEj + " - " + imprimirNombreDesdeCodigo(codigoEj) + "\n");
         }
+    }
+    
+    public static String imprimirNombreDesdeCodigo(String codigoEj) throws SQLException {
+        String nombre = "";
+        String query = "SELECT nombre FROM ejercicio WHERE ex_code = ?;";
+        PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(query);
+        prepStat.setString(1, codigoEj);
+        ResultSet results = prepStat.executeQuery();
+        results.next();
+        nombre = results.getString("nombre");
+        results.close();
+        prepStat.close();
+        return nombre;
     }
     
     public static ArrayList<String> obtenerCodigosExistentes(String tipoEj) throws SQLException{
