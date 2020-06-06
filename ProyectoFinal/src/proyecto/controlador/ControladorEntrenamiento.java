@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import proyecto.modelo.*;
-import proyecto.vista.MenuPrincipal;
+import proyecto.vista.*;
 
 /**
  * Incluye los métodos que trabajan con objetos y procesos relacionados con las clases Entrenamiento y LineaEntrenamiento.
@@ -448,6 +448,22 @@ public class ControladorEntrenamiento {
         results.close();
         prepStat.close();
         return listaLineas;
+    }
+    
+    /**
+     * Llama a la vista de mostrar interfaz entrenamiento por alumno.
+     * 
+     * @param id identificador del alumno
+     * @throws SQLException 
+     */
+    public static void mostrarInterfazEntrenamientoPorAlumno(String id) throws SQLException{
+        if (!ControladorUsuario.comprobarNumEjUsuario(null, id)) {
+            System.out.println("No tiene ningún entrenamiento disponible como alumno.");
+        } else {
+            int codigo = consultarCodigoEntrenamiento(null, id);
+            Entrenamiento entreno = generarEntrenamientoDesdeTabla(codigo);
+            InterfazEntrenamiento.mostrarInterfaz(entreno);
+        }
     }
     
 }

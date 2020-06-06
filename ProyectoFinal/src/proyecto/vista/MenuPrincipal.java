@@ -68,7 +68,7 @@ public class MenuPrincipal {
         String usuario;
         String contrasena;
         System.out.println("Introduce DNI del usuario: ");
-        usuario = lector.nextLine();
+        usuario = lector.nextLine().toUpperCase();
         if (!ControladorUsuario.comprobarUsuario(usuario)) {
             return "";
         }
@@ -175,22 +175,26 @@ public class MenuPrincipal {
         while (salir == false) {
             System.out.println("");
             System.out.println("¿Qué quieres hacer?");
-            System.out.println("  1- consultar un programa de entrenamiento existente");
-            System.out.println("  2- solicitar un nuevo programa de entrenamiento");
+            System.out.println("  1- solicitar un nuevo programa de entrenamiento");
+            System.out.println("  2- consultar por consola un programa de entrenamiento existente");
             System.out.println("  3- imprimir un programa de entrenamiento personal existente");
+            System.out.println("  4- ver interfaz de programa de entrenamiento existente");
             System.out.println("  0- salir");
             System.out.println("Introduce el número de tu selección:");
             String opcion = lector.nextLine();
 
             switch (opcion) {
                 case "1":
-                    ControladorEntrenamiento.consultarEntrenamientoPorAlumno(id);
+                    ControladorEntrenamiento.solicitarEntrenamiento(id);
                     break;
                 case "2":
-                    ControladorEntrenamiento.solicitarEntrenamiento(id);
+                    ControladorEntrenamiento.consultarEntrenamientoPorAlumno(id);
                     break;
                 case "3":
                     ControladorEntrenamiento.imprimirEntrenamientoDesdeTablaPorAlumno(id);
+                    break;
+                case "4":
+                    ControladorEntrenamiento.mostrarInterfazEntrenamientoPorAlumno(id);
                     break;
                 case "0":
                     salir = true;
