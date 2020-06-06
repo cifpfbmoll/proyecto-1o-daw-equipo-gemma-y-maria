@@ -11,7 +11,7 @@ public class ControladorAlumno extends ControladorUsuario{
     
     /**
      * Solicita datos para crear un nuevo alumno.
-     * @throws SQLException 
+     * @throws SQLException excepción SQL por la conexión a la base de datos
      */
     public static void crearNuevoAlumno() throws SQLException{
         Alumno alu = new Alumno();
@@ -35,12 +35,11 @@ public class ControladorAlumno extends ControladorUsuario{
     }
     
     /**
-     * Crea un objeto tipo Alumno desde valores obtenidos en tablas.<br> Se
-     * utiliza para varias funciones.
+     * Crea un objeto tipo Alumno desde valores obtenidos en tablas.<br> Se utiliza para varias funciones.
      *
      * @param id DNI del alumno
      * @return objeto tipo Alumno
-     * @throws SQLException
+     * @throws SQLException excepción SQL por la conexión a la base de datos
      */
     public static Alumno generarAlumnoDesdeTabla(String id) throws SQLException {
         Alumno user = new Alumno();
@@ -69,8 +68,9 @@ public class ControladorAlumno extends ControladorUsuario{
 
     //Al ser un insert, por transacción. Sólo hago sin transacción las meras consultas.
     /**
-     * Pasa un objeto Alumno a la tabla
-     * @throws SQLException 
+     * Pasa un objeto Alumno a la tabla.
+     * @param alu objeto tipo Alumno que se quiere guardar en tablas
+     * @throws SQLException excepción SQL por la conexión a la base de datos
      */
     public static void introducirNuevoAlumno(Alumno alu) throws SQLException {
         boolean estadoAC = MenuPrincipal.con.getAutoCommit();
@@ -108,6 +108,7 @@ public class ControladorAlumno extends ControladorUsuario{
      *
      * @param dni identificador del usuario tipo alumno
      * @return Alumno objeto tipo alumno
+     * @throws java.sql.SQLException excepción SQL por la conexión a la base de datos
      */
     public static Alumno crearObjetoAlumno(String dni) throws SQLException {
         Alumno alumno = new Alumno();
@@ -125,9 +126,8 @@ public class ControladorAlumno extends ControladorUsuario{
         return alumno;
     }
     
-        /**
+    /**
      * Recibe un posible IBAN y comprueba su validez
-     * 
      * @param iban que se quiere validar
      * @return true si es válido
      */

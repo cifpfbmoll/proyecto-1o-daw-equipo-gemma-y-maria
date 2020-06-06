@@ -4,6 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 import proyecto.modelo.Entrenamiento;
 
+/**
+ * Clase para el mostrar el trabajo realizado en interfaces.<br>
+ * Imprime un programa de entrenamiento por una aplicación nueva.
+ *
+ * @author Gemma Díez Cabeza y María Rabanales González
+ * @version 20.06.06.am
+ */
 public class InterfazEntrenamiento {
     //Variables y métodos de clase básicos para operar:
     static Toolkit pantalla = Toolkit.getDefaultToolkit();     //para obtener la resolucion de cada pantalla

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Clase que refleja cada ejercicio posible.
- * @author Gemma Díez Cabeza & María Rabanales González
+ * @author Gemma Díez Cabeza y María Rabanales González
  * @version 20.05.10.am
  */
 public class Ejercicio {

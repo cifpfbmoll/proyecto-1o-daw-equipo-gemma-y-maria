@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Recoge cada entrenamiento elaborado por un entrenador para un alumno.<br>
  * La lista de ejercicios se tomará de la tabla linea_entrenamiento en base al código del entrenamiento.
  *
- * @author Gemma Díez Cabeza & María Rabanales González
+ * @author Gemma Díez Cabeza y María Rabanales González
  * @version 20.05.10.am
  */
 public class Entrenamiento {
@@ -28,12 +28,12 @@ public class Entrenamiento {
 
     /**
      * Constructor completo
-     * @param codigo
-     * @param entrenador
-     * @param alumno
-     * @param fecha
-     * @param tipo
-     * @param listaEjercicios 
+     * @param codigo identificador del entrenamiento
+     * @param entrenador objeto tipo Entrenador
+     * @param alumno objeto tipo Alumno
+     * @param fecha fecha de creación del entrenamiento en formato determinado por método de Utilidades
+     * @param tipo según lista de enumerador
+     * @param listaEjercicios conjunto de ejercicios de un entrenamiento
      */
     public Entrenamiento(int codigo, Entrenador entrenador, Alumno alumno, String fecha, TipoEjercicio tipo, ArrayList<LineaEntrenamiento> listaEjercicios) {
         this.codigo = codigo;

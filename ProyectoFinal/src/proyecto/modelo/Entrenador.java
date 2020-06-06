@@ -2,7 +2,7 @@ package proyecto.modelo;
 
 /**
  * Subclase de Usuario para los usuarios tipo 'entrenador'
- * @author Gemma Díez Cabeza & María Rabanales González
+ * @author Gemma Díez Cabeza y María Rabanales González
  * @version 20.05.10.am
  */
 public class Entrenador extends Usuario {

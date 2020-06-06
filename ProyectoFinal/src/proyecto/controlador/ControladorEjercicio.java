@@ -12,10 +12,9 @@ import proyecto.vista.MenuPrincipal;
 public class ControladorEjercicio {
     /**
      * Genera un objeto de tipo Ejercicio desde datos obtenidos en la tabla.
-     * 
      * @param codigo identificador del ejercicio para buscar en tabla
      * @return objeto Ejercicio
-     * @throws SQLException 
+     * @throws SQLException excepción SQL por la conexión a la base de datos
      */
     public static Ejercicio generarEjercicioDesdeTabla(String codigo) throws SQLException{
         Ejercicio ej = new Ejercicio();
@@ -46,7 +45,7 @@ public class ControladorEjercicio {
     
     /**
      * Crea objeto ejercicio y lo rellena con datos pedidos por consola.
-     * @throws SQLException 
+     * @throws SQLException excepción SQL por la conexión a la base de datos
      */
     public static void crearNuevoEjercicio() throws SQLException{
         Ejercicio nuevoEjercicio = new Ejercicio();
@@ -77,7 +76,7 @@ public class ControladorEjercicio {
     /**
      * Toma un objeto Ejercicio y lo guarda en la tabla
      * @param ejercicio de clase Ejercicio
-     * @throws SQLException 
+     * @throws SQLException excepción SQL por la conexión a la base de datos
      */
     public static void guardarEjercicioEnTabla(Ejercicio ejercicio) throws SQLException{
         boolean estadoAC = MenuPrincipal.con.getAutoCommit();
@@ -115,8 +114,7 @@ public class ControladorEjercicio {
     
     /**
      * Opera con los tipos de ejercicios.
-     * 
-     * @return ArrayList de enum TipoEjercicio
+     * @return lista en ArrayList de enum TipoEjercicio
      */
     public static ArrayList<TipoEjercicio> generarListaTipos() {
         System.out.println("Los tipos de ejercicio existentes son:");
@@ -141,7 +139,7 @@ public class ControladorEjercicio {
             boolean tipoExistente = false;
             while (!tipoExistente) {
                 System.out.println("Introduce las siglas del código del tipo de ejercicio:");
-                String tipo = MenuPrincipal.lector.nextLine();
+                String tipo = MenuPrincipal.lector.nextLine().toUpperCase().trim();
                 tipoExistente = TipoEjercicio.comprobarTipo(tipo);
                 if (!tipoExistente) {
                     System.out.println("Error. Código inexistente.\nLos tipos de ejercicio existentes son:");
@@ -154,6 +152,13 @@ public class ControladorEjercicio {
         return lista;
     }
     
+    /**
+     * Comprueba si un código concreto existe ya.
+     * @param codigo tipo de ejercicio String para comprobar
+     * @param tipoEj tipo de programa para crear la lista en que comprobar
+     * @return true si existe, false si no existe
+     * @throws SQLException  excepción SQL por la conexión a la base de datos
+     */
     public static boolean comprobarCodigoExistente(String codigo, String tipoEj) throws SQLException{
         ArrayList<String> listaCodigos = obtenerCodigosExistentes(tipoEj);
         if (listaCodigos.contains(codigo)) {
@@ -162,6 +167,11 @@ public class ControladorEjercicio {
         return false;
     }
     
+    /**
+     * Muestra por pantalla los códigos existentes para un tipo de ejercicio concreto.
+     * @param tipoEj String para comprobar si existe.
+     * @throws SQLException excepción SQL por la conexión a la base de datos
+     */
     public static void imprimirCodigosExistentes(String tipoEj) throws SQLException{
         System.out.println("En estos momentos están en uso los siguientes códigos de ejercicio:");
         ArrayList<String> listaCodigos = obtenerCodigosExistentes(tipoEj);
@@ -171,6 +181,12 @@ public class ControladorEjercicio {
         }
     }
     
+    /**
+     * Muestra por pantalla el nombre de un ejercicio a partir de su código.
+     * @param codigoEj String con el código del ejercicio
+     * @return nombre String con el nombre del ejercicio
+     * @throws SQLException excepción SQL por la conexión a la base de datos
+     */
     public static String imprimirNombreDesdeCodigo(String codigoEj) throws SQLException {
         String nombre = "";
         String query = "SELECT nombre FROM ejercicio WHERE ex_code = ?;";
@@ -184,9 +200,15 @@ public class ControladorEjercicio {
         return nombre;
     }
     
+    /**
+     * Obtiene desde tablas una lista con todos los códigos existentes para un tipo de ejercicio concreto.
+     * @param tipoEj String con el tipo de ejercicio
+     * @return lista tipo ArrayList
+     * @throws SQLException excepción SQL por la conexión a la base de datos
+     */
     public static ArrayList<String> obtenerCodigosExistentes(String tipoEj) throws SQLException{
         ArrayList<String> lista = new ArrayList<>();
-        String query = "SELECT ej_code FROM tipo_ejercicio";
+        String query = "SELECT DISTINCT ej_code FROM tipo_ejercicio";
         if (tipoEj != null) {
             query += " WHERE tipo = ?;";
         } else {

@@ -6,7 +6,7 @@ import java.util.EnumSet;
  * Enumerador con los posibles tipos de ejercicios.<br>
  * Los métodos propios se mantienen aquí y no pasan al controlador: son métodos muy específicos de la clase.
  *
- * @author Gemma Díez Cabeza & María Rabanales González
+ * @author Gemma Díez Cabeza y María Rabanales González
  * @version 20.05.10.am
  */
 public enum TipoEjercicio {

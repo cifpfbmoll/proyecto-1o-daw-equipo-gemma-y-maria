@@ -15,10 +15,10 @@ Error en el menú principal.
 __________________________________________________________________________________
 
 ___________________________________ NUEVO ERROR ___________________________________
-Error en el menú principal.
-2020-06-06 09:03:40
+Error en la introducción del ejercicio.
+2020-06-06 11:52:55
 
-[com.mysql.jdbc.SQLError.createSQLException(SQLError.java:965), com.mysql.jdbc.SQLError.createSQLException(SQLError.java:898), com.mysql.jdbc.SQLError.createSQLException(SQLError.java:887), com.mysql.jdbc.SQLError.createSQLException(SQLError.java:861), com.mysql.jdbc.ResultSetImpl.checkRowPos(ResultSetImpl.java:780), com.mysql.jdbc.ResultSetImpl.getStringInternal(ResultSetImpl.java:5204), com.mysql.jdbc.ResultSetImpl.getString(ResultSetImpl.java:5127), com.mysql.jdbc.ResultSetImpl.getString(ResultSetImpl.java:5166), proyecto.controlador.ControladorEjercicio.generarEjercicioDesdeTabla(ControladorEjercicio.java:28), proyecto.controlador.ControladorEntrenamiento.crearLineaEntrenamiento(ControladorEntrenamiento.java:391), proyecto.controlador.ControladorEntrenamiento.crearNuevoEntrenamiento(ControladorEntrenamiento.java:42), proyecto.vista.MenuPrincipal.menuCrearEntrenamiento(MenuPrincipal.java:157), proyecto.vista.MenuPrincipal.menuEntrenador(MenuPrincipal.java:109), proyecto.vista.MenuPrincipal.main(MenuPrincipal.java:49)]
+[com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:3931), com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:3869), com.mysql.jdbc.MysqlIO.sendCommand(MysqlIO.java:2524), com.mysql.jdbc.MysqlIO.sqlQueryDirect(MysqlIO.java:2675), com.mysql.jdbc.ConnectionImpl.execSQL(ConnectionImpl.java:2465), com.mysql.jdbc.PreparedStatement.executeInternal(PreparedStatement.java:1912), com.mysql.jdbc.PreparedStatement.execute(PreparedStatement.java:1251), proyecto.controlador.ControladorEjercicio.guardarEjercicioEnTabla(ControladorEjercicio.java:91), proyecto.controlador.ControladorEjercicio.crearNuevoEjercicio(ControladorEjercicio.java:74), proyecto.vista.MenuPrincipal.menuEntrenador(MenuPrincipal.java:130), proyecto.vista.MenuPrincipal.main(MenuPrincipal.java:49)]
 
 __________________________________________________________________________________
 

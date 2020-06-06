@@ -20,7 +20,7 @@ public class ControladorEntrenamiento {
     /**
      * Crea un objeto entrenamiento
      * @param idEntrenador identificador del entrenador que crea el programa de entrenamiento
-     * @throws SQLException 
+     * @throws SQLException excepción SQL por la conexión a la base de datos
      */
     public static void crearNuevoEntrenamiento(String idEntrenador) throws SQLException {
         Entrenamiento entreno = new Entrenamiento();
@@ -51,6 +51,8 @@ public class ControladorEntrenamiento {
     
     /**
      * Enlazando con crearNuevoEntrenamiento(), cuando se ha completado un programa se elimina la solicitud.
+     * @param idAlumno identificador del alumno
+     * @throws java.sql.SQLException excepción SQL por la conexión a la base de datos
      */
     public static void eliminarSolicitudEntrenamiento(String idAlumno) throws SQLException{
         boolean estadoAC = MenuPrincipal.con.getAutoCommit();
@@ -89,6 +91,11 @@ public class ControladorEntrenamiento {
         ControladorEntrenador.incrementarPrograma(entreno.getEntrenador());
     }
     
+    /**
+     * Inserta un entrenamiento en tablas desde un objeto de tipo Entrenamiento
+     * @param entreno tipo Entrenamiento a insertar
+     * @throws SQLException excepción SQL por la conexión a la base de datos
+     */
     public static void insertarEntrenamientoEnTablaDesdeObjeto(Entrenamiento entreno) throws SQLException {
         boolean estadoAC = MenuPrincipal.con.getAutoCommit();
         try {
@@ -153,9 +160,9 @@ public class ControladorEntrenamiento {
 
     /**
      * Toma un entrenamiento de tablas y lo muestra por consola.
-     * 
      * @param idEntrenador DNI del entrenador
      * @param idAlumno DNI del alumno
+     * @throws java.sql.SQLException excepción SQL por la conexión a la base de datos
      */
     public static void mostrarEntrenamientoDesdeTabla(String idEntrenador, String idAlumno) throws SQLException {
         int codigo = consultarCodigoEntrenamiento(idEntrenador, idAlumno);
@@ -178,6 +185,13 @@ public class ControladorEntrenamiento {
         }
     }
     
+    /**
+     * Consulta el código de un entrenamiento (o varios) a partir de su entrenador o su alumno.
+     * @param idEntrenador identificador del entrenador
+     * @param idAlumno identificador del alumno
+     * @return int con código del nuevo entrenamiento
+     * @throws SQLException excepción SQL por la conexión a la base de datos
+     */
     public static int consultarCodigoEntrenamiento(String idEntrenador, String idAlumno) throws SQLException {
         String query = "SELECT train_code, fecha_creacion FROM ENTRENAMIENTO ";
         PreparedStatement prepStat = null;
@@ -214,9 +228,9 @@ public class ControladorEntrenamiento {
 
     /**
      * Toma un entrenamiento de tablas y lo guarda en un archivo de texto personalizado para cada programa.
-     * 
      * @param idEntrenador DNI del entrenador
      * @param idAlumno DNI del alumno
+     * @throws java.sql.SQLException excepción SQL por la conexión a la base de datos
      */
     public static void imprimirEntrenamientoDesdeTabla(String idEntrenador, String idAlumno) throws SQLException {
         int codigo = consultarCodigoEntrenamiento(idEntrenador, idAlumno);
@@ -257,7 +271,6 @@ public class ControladorEntrenamiento {
 
     /**
      * Genera un nombre único para cada programa de entrenamiento partiendo de su código (PK)
-     *
      * @param codigo identificador del programa de entrenamiento que se archivará
      * @return nombre del archivo en que se guarda
      */
@@ -268,6 +281,12 @@ public class ControladorEntrenamiento {
         return archivo;
     }
 
+    /**
+     * Genera un objeto de tipo Entrenamiento a partir de los datos de tabla.
+     * @param codigo identificador del entrenamiento
+     * @return Entrenamiento (objeto)
+     * @throws SQLException excepción SQL por la conexión a la base de datos
+     */
     public static Entrenamiento generarEntrenamientoDesdeTabla(int codigo) throws SQLException {
         Entrenamiento objetoEntrenamiento = new Entrenamiento();
         String queryEntrenamiento = "SELECT * FROM entrenamiento WHERE train_code = ?;";
@@ -306,6 +325,8 @@ public class ControladorEntrenamiento {
     
     /**
      * Menús de solicitud y búsqueda de entrenamientos.
+     * @param id identificador del usuario para el que solicitar entrenamiento.
+     * @throws java.sql.SQLException excepción SQL por la conexión a la base de datos
      */
     public static void solicitarEntrenamiento(String id) throws SQLException {
         if (!comprobarExistenciaSolicitudEntrenamiento(id)) {
@@ -324,6 +345,12 @@ public class ControladorEntrenamiento {
         }
     }
 
+    /**
+     * Actualiza en tabla la solicitud de entrenamiento por un usuario.
+     * @param id identificador del usuario
+     * @param tipo tipo de programa de entrenamiento que quiere solicitar
+     * @throws SQLException excepción SQL por la conexión a la base de datos
+     */
     public static void guardarSolicitudEntrenamiento(String id, String tipo) throws SQLException {
         boolean estadoAC = MenuPrincipal.con.getAutoCommit();
         try {
@@ -346,6 +373,12 @@ public class ControladorEntrenamiento {
         }
     }
 
+    /**
+     * Confirma que haya una solicitud de entrenamiento para un usuario concreto.
+     * @param id identificador del usuario
+     * @return true si existe una solicitud, falso si el usuario no tiene ningún programa pendiente en estos momentos
+     * @throws SQLException excepción SQL por la conexión a la base de datos
+     */
     public static boolean comprobarExistenciaSolicitudEntrenamiento(String id) throws SQLException {
         String query = "SELECT tipo_prog_solicitado FROM usuario WHERE DNI = ?;";
         PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(query);
@@ -360,6 +393,10 @@ public class ControladorEntrenamiento {
         return false;
     }
 
+    /**
+     * Imprime las diferentes solicitudes de entrenamiento guardadas por los usuarios.
+     * @throws SQLException excepción SQL por la conexión a la base de datos
+     */
     public static void verSolicitudesEntrenamiento() throws SQLException {
         String query = "SELECT DNI, nombre, apellido1, apellido2, tipo_prog_solicitado FROM usuario WHERE tipo_prog_solicitado is not NULL;";
         PreparedStatement prepStat = MenuPrincipal.con.prepareStatement(query);
@@ -376,6 +413,12 @@ public class ControladorEntrenamiento {
     }
     
     //Los métodos a continuación afectan a las diferentes líneas de entrenamiento:
+    /**
+     * Crea una línea de entrenamiento válida para un programa.
+     * @param tipoEntrenamiento Enum convertido en string
+     * @return objeto tipo LineaEntrenamiento
+     * @throws SQLException excepción SQL por la conexión a la base de datos
+     */
     public static LineaEntrenamiento crearLineaEntrenamiento(String tipoEntrenamiento) throws SQLException{
         LineaEntrenamiento linea = new LineaEntrenamiento();
         ControladorEjercicio.imprimirCodigosExistentes(tipoEntrenamiento);
@@ -431,6 +474,12 @@ public class ControladorEntrenamiento {
         return linea;
     }
     
+    /**
+     * Obtiene la lista de líneas de un programa de entrenamiento a partir de su código.
+     * @param programa identificador del programa de entrenamiento
+     * @return listaLineas tipo ArrayList con las líneas del programa
+     * @throws SQLException excepción SQL por la conexión a la base de datos
+     */
     
     public static ArrayList<LineaEntrenamiento> generarLineasDesdeTabla(int programa) throws SQLException{
         ArrayList<LineaEntrenamiento> listaLineas = new ArrayList<>();
@@ -452,9 +501,8 @@ public class ControladorEntrenamiento {
     
     /**
      * Llama a la vista de mostrar interfaz entrenamiento por alumno.
-     * 
      * @param id identificador del alumno
-     * @throws SQLException 
+     * @throws SQLException excepción SQL por la conexión a la base de datos
      */
     public static void mostrarInterfazEntrenamientoPorAlumno(String id) throws SQLException{
         if (!ControladorUsuario.comprobarNumEjUsuario(null, id)) {

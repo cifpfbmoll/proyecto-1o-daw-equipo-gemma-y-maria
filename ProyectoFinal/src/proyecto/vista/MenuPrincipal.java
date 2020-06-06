@@ -10,8 +10,8 @@ import java.util.logging.*;
 /**
  * Clase para el menú y desarrollo principal de la aplicación con método main.
  *
- * @author Gemma Díez Cabeza & María Rabanales González
- * @version 20.05.18.am
+ * @author Gemma Díez Cabeza y María Rabanales González
+ * @version 20.06.06.pm
  */
 public class MenuPrincipal {
 
@@ -20,9 +20,7 @@ public class MenuPrincipal {
     //Conexión es algo que querremos usar en prácticamente todos los métodos, lo que es la definición de una variable global
 
     /**
-     * Método main: inicia la conexión con la base de datos y llama al menú
-     * principal
-     *
+     * Método main: inicia la conexión con la base de datos y llama al menú principal
      * @param args para main
      */
     public static void main(String[] args) {
@@ -60,9 +58,8 @@ public class MenuPrincipal {
 
     /**
      * Pide usuario y contraseña y los confirma.
-     *
      * @return identificador del usuario
-     * @throws java.sql.SQLException
+     * @throws java.sql.SQLException excepción SQL por la conexión a la base de datos
      */
     public static String menuLogIn() throws SQLException {
         String usuario;
@@ -83,9 +80,8 @@ public class MenuPrincipal {
     /**
      * Opciones de menú específicas para entrenadores.<br>
      * Los entrenadores pueden elegir ciertas opciones de alumno (gratuitamente, como pago por sus servicios).
-     *
      * @param id identificador de usuario
-     * @throws java.sql.SQLException
+     * @throws java.sql.SQLException excepción SQL por la conexión a la base de datos
      */
     public static void menuEntrenador(String id) throws SQLException {
         boolean salir = false;
@@ -141,9 +137,8 @@ public class MenuPrincipal {
 
     /**
      * Menú de creación de entrenamientos.
-     *
      * @param id identificador del entrenador que crea el programa
-     * @throws java.sql.SQLException
+     * @throws java.sql.SQLException excepción SQL por la conexión a la base de datos
      */
     public static void menuCrearEntrenamiento(String id) throws SQLException {
         System.out.println("");
@@ -166,9 +161,8 @@ public class MenuPrincipal {
     
     /**
      * Opciones de menú específicas para alumnos.
-     *
-     * @param id identificador de usuario
-     * @throws java.sql.SQLException
+     * @param id identificador de usuario tipo alumno
+     * @throws java.sql.SQLException excepción SQL por la conexión a la base de datos
      */
     public static void menuAlumno(String id) throws SQLException {
         boolean salir = false;

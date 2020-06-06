@@ -12,10 +12,9 @@ import proyecto.modelo.*;
 public class ControladorUsuario {
     /**
      * Permite encontrar un usuario en base a su DNI.
-     *
-     * @param dni
+     * @param dni String con el dni que identifica al usuario.
      * @return queryResult (tipoResultSet)
-     * @throws SQLException
+     * @throws SQLException excepción SQL por la conexión a la base de datos
      */
     public static ResultSet buscarUsuarioPorDni(String dni) throws SQLException {
         String query = "SELECT * FROM usuario WHERE DNI = ?;";
@@ -29,9 +28,9 @@ public class ControladorUsuario {
 
     /**
      * Comprueba si el valor que se pasa existe en tablas.
-     *
      * @param id cuya validez y/o existencia en tablas se desea comprobar
      * @return verdadero si está en tablas
+     * @throws java.sql.SQLException excepción SQL por la conexión a la base de datos
      */
     public static boolean comprobarUsuario(String id) throws SQLException {
         boolean usuarioExistente = false;
@@ -50,10 +49,10 @@ public class ControladorUsuario {
     
     /**
      * Comprueba si la contraseña es la de el usuario que se pasa.
-     *
      * @param id cuya validez y/o existencia en tablas se desea comprobar
      * @param pw contraseña propuesta para el usuario
      * @return verdadero si está en tablas
+     * @throws java.sql.SQLException excepción SQL por la conexión a la base de datos
      */
     public static boolean comprobarContrasena(String id, String pw) throws SQLException {
         boolean pwUsuario = false;
@@ -73,9 +72,9 @@ public class ControladorUsuario {
     
     /**
      * Comprueba qué tipo de usuario es, y devuelve true si es entrenador.
-     *
      * @param id identificador de usuario
      * @return true si es entrenador, false si es alumno
+     * @throws java.sql.SQLException excepción SQL por la conexión a la base de datos
      */
     public static boolean comprobarTipoUsuario(String id) throws SQLException {
         String query = "SELECT discriminador FROM USUARIO WHERE DNI = ?;";
@@ -94,6 +93,7 @@ public class ControladorUsuario {
     
     /**
      * Pide los datos del nuevo usuario por consola y los setea en el objeto que devuelve.
+     * @param user objeto con Usuario
      */
     public static void crearNuevoUsuario(Usuario user) {
         String userDni = "";
@@ -129,7 +129,7 @@ public class ControladorUsuario {
      * Es una validación básica, no buscamos que la letra coincida porque los datos preintroducidos son inventados.<br>
      * Dos comprobaciones: que los ocho primeros caracteres sean números (ascii entre 48 y 57) y que el último sea letra.
      * Sólo consideramos DNI, no NIE ni pasaportes.
-     * @param dni
+     * @param dni identificador de usuario
      * @return true si cumple los requisitos de validez
      */
     public static boolean validarDni(String dni){
@@ -153,10 +153,9 @@ public class ControladorUsuario {
     
     /**
      * Obtiene el tipo de programa que ha solicitado un alumno concreto
-     * 
      * @param idAlumno identificador del alumno
      * @return tipo de programa solicitado (objeto TipoEjercicio)
-     * @throws SQLException 
+     * @throws SQLException excepción SQL por la conexión a la base de datos
      */ 
     public static TipoEjercicio obtenerSolicitudUsuario(String idAlumno) throws SQLException {
         String query = "SELECT tipo_prog_solicitado FROM usuario WHERE DNI = ?;";      //sé que el último que he creado es el mayor, por serial
@@ -175,9 +174,10 @@ public class ControladorUsuario {
     
     /**
      * Para un usuario, comprueba si ha creado o tiene solicitado algun ejercicio.
-     * @param idAlumno
-     * @param idEntrenador
+     * @param idAlumno identificador del alumno
+     * @param idEntrenador identificador del entrenador
      * @return false si no tiene ningún ejercicio guardado.
+     * @throws java.sql.SQLException excepción SQL por la conexión a la base de datos
      */
     public static boolean comprobarNumEjUsuario(String idEntrenador, String idAlumno) throws SQLException{
         boolean existenciaEjercicios = false;

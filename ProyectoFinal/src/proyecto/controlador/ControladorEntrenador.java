@@ -13,6 +13,7 @@ public class ControladorEntrenador extends ControladorUsuario{
      * Crea un objeto de tipo entrenador a partir de su id
      * @param id identificador del usuario tipo entrenador
      * @return Entrenador objeto tipo entrenador
+     * @throws java.sql.SQLException excepción SQL por la conexión a la base de datos
      */
     public static Entrenador generarEntrenadorDesdeTabla(String id) throws SQLException{
         Entrenador user = new Entrenador();
@@ -41,13 +42,19 @@ public class ControladorEntrenador extends ControladorUsuario{
     
     /**
      * Aumenta en 1 el atributo que refleja el número de programas creados por cada entrenador.
-     * @throws SQLException 
+     * @param entrenador objeto tipo Entrenador
+     * @throws SQLException excepción SQL por la conexión a la base de datos
      */
     public static void incrementarPrograma(Entrenador entrenador) throws SQLException {
         entrenador.setProgramasPreparados(entrenador.getProgramasPreparados() + 1);
         incrementarProgramaEnTabla(entrenador);
     }
     
+    /**
+     * Modifica el número de programas creados por un entrenador en tablas.
+     * @param entrenador objeto tipo Entrenador
+     * @throws SQLException excepción SQL por la conexión a la base de datos
+     */
     public static void incrementarProgramaEnTabla(Entrenador entrenador) throws SQLException {
         boolean estadoAC = MenuPrincipal.con.getAutoCommit();
         try {
