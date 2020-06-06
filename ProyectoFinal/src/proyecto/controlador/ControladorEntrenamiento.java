@@ -36,7 +36,7 @@ public class ControladorEntrenamiento {
             entreno.setTipo(tipoPrograma);
             entreno.setAlumno(ControladorAlumno.generarAlumnoDesdeTabla(idAlumno));
             System.out.println("¿Cuántos ejercicios diferentes tendrá este nuevo programa?");
-            int numLineas = Integer.parseInt(MenuPrincipal.lector.nextLine());
+            int numLineas = Utilidades.recibirNumero();
             ArrayList<LineaEntrenamiento> listaLineas = new ArrayList<>();
             for (int i = 0; i < numLineas; i++) {
                 listaLineas.add(crearLineaEntrenamiento(tipoPrograma.name()));
@@ -202,7 +202,7 @@ public class ControladorEntrenamiento {
         int codigo = 0;             //nunca podrá tener este valor: el serial de códigos de entrenamiento empieza en 1
         do {
             System.out.println("Introduce el código del programa de entrenamiento que te interesa:");
-            int opcionCodigo = Integer.parseInt(MenuPrincipal.lector.nextLine());
+            int opcionCodigo = Utilidades.recibirNumero();
             if (codigosEncontrados.contains(opcionCodigo)) {
                 codigo = opcionCodigo;
             } else {
@@ -380,14 +380,19 @@ public class ControladorEntrenamiento {
         LineaEntrenamiento linea = new LineaEntrenamiento();
         ControladorEjercicio.imprimirCodigosExistentes(tipoEntrenamiento);
         String nuevoCodigo;
+        boolean codigoEnLista;
         do {
             System.out.println("Introduce el código del ejercicio que quieres añadir al programa:");
             nuevoCodigo = MenuPrincipal.lector.nextLine().toUpperCase();
+            codigoEnLista = !ControladorEjercicio.comprobarCodigoExistente(nuevoCodigo, tipoEntrenamiento);
+            if (!codigoEnLista) {
+                System.out.println("Error: este código no existe.");
+            }
             //Así garantizamos que el nuevo código cumpla el requisito de sólo tener dos caracteres:
             if (nuevoCodigo.length() != 2) {
-                System.out.println("El código del ejercicio debe tener exactamente dos caracteres.");
+                System.out.println("Error: el código del ejercicio debe tener exactamente dos caracteres.");
             }
-        } while ((!ControladorEjercicio.comprobarCodigoExistente(nuevoCodigo, tipoEntrenamiento)) && (nuevoCodigo.length() != 2));
+        } while ((!codigoEnLista) || (nuevoCodigo.length() != 2));
         linea.setEjercicio(ControladorEjercicio.generarEjercicioDesdeTabla(nuevoCodigo));
         boolean opcionCorrecta = false;
         while (!opcionCorrecta) {
@@ -400,22 +405,22 @@ public class ControladorEntrenamiento {
             switch(opcionLinea){
                 case "1":
                     System.out.println("Inserta el número de repeticiones de este ejercicio:");
-                    int repeticiones = Integer.parseInt(MenuPrincipal.lector.nextLine());
+                    int repeticiones = Utilidades.recibirNumero();
                     linea.setRepeticiones(repeticiones);
                     opcionCorrecta = true;
                     break;
                 case "2":
                     System.out.println("Inserta el tiempo de ejecución de este ejercicio (en minutos):");
-                    int minutos = Integer.parseInt(MenuPrincipal.lector.nextLine());
+                    int minutos = Utilidades.recibirNumero();
                     linea.setMinMinutos(minutos);
                     opcionCorrecta = true;
                     break;
                 case "3":
                     System.out.println("Inserta el número de repeticiones de este ejercicio:");
-                    int nuevasRepeticiones = Integer.parseInt(MenuPrincipal.lector.nextLine());
+                    int nuevasRepeticiones = Utilidades.recibirNumero();
                     linea.setRepeticiones(nuevasRepeticiones);
                     System.out.println("Inserta el tiempo de ejecución de este ejercicio (en minutos):");
-                    int nuevosMinutos = Integer.parseInt(MenuPrincipal.lector.nextLine());
+                    int nuevosMinutos = Utilidades.recibirNumero();
                     linea.setMinMinutos(nuevosMinutos);
                     opcionCorrecta = true;
                     break;

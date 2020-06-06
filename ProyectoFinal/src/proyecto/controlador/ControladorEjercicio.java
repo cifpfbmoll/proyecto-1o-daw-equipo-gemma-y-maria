@@ -124,7 +124,7 @@ public class ControladorEjercicio {
         System.out.println("¿En cuántos de estos tipos se puede clasificar el nuevo ejercicio?\nIntroduce número:");
         int numTipos;
         do {
-            numTipos = Integer.parseInt(MenuPrincipal.lector.nextLine());
+            numTipos = Utilidades.recibirNumero();
             if (numTipos <= 0) {
                 System.out.println("Error: tiene que haber al menos un ejercicio.");
             } else if (numTipos > 50) {
@@ -134,7 +134,7 @@ public class ControladorEjercicio {
         if (numTipos > TipoEjercicio.values().length + 1) {
             System.out.println(numTipos + " es mayor a la cantidad de tipos posibles (" + TipoEjercicio.values().length + 1 + ")");
             System.out.println("Introduce nuevo número de tipos:");
-            numTipos = Integer.parseInt(MenuPrincipal.lector.nextLine());
+            numTipos = Utilidades.recibirNumero();
         }
         ArrayList<TipoEjercicio> lista = new ArrayList<>();
         for (int i = 0; i < numTipos; i++) {

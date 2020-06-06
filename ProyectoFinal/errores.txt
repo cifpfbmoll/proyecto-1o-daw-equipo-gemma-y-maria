@@ -14,3 +14,11 @@ Error en el menú principal.
 
 __________________________________________________________________________________
 
+___________________________________ NUEVO ERROR ___________________________________
+Error en el menú principal.
+2020-06-06 09:03:40
+
+[com.mysql.jdbc.SQLError.createSQLException(SQLError.java:965), com.mysql.jdbc.SQLError.createSQLException(SQLError.java:898), com.mysql.jdbc.SQLError.createSQLException(SQLError.java:887), com.mysql.jdbc.SQLError.createSQLException(SQLError.java:861), com.mysql.jdbc.ResultSetImpl.checkRowPos(ResultSetImpl.java:780), com.mysql.jdbc.ResultSetImpl.getStringInternal(ResultSetImpl.java:5204), com.mysql.jdbc.ResultSetImpl.getString(ResultSetImpl.java:5127), com.mysql.jdbc.ResultSetImpl.getString(ResultSetImpl.java:5166), proyecto.controlador.ControladorEjercicio.generarEjercicioDesdeTabla(ControladorEjercicio.java:28), proyecto.controlador.ControladorEntrenamiento.crearLineaEntrenamiento(ControladorEntrenamiento.java:391), proyecto.controlador.ControladorEntrenamiento.crearNuevoEntrenamiento(ControladorEntrenamiento.java:42), proyecto.vista.MenuPrincipal.menuCrearEntrenamiento(MenuPrincipal.java:157), proyecto.vista.MenuPrincipal.menuEntrenador(MenuPrincipal.java:109), proyecto.vista.MenuPrincipal.main(MenuPrincipal.java:49)]
+
+__________________________________________________________________________________
+

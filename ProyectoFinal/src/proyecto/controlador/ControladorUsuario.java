@@ -118,7 +118,7 @@ public class ControladorUsuario {
         String userEmail = MenuPrincipal.lector.nextLine();
         user.setEmail(userEmail);
         System.out.println("  -telefono:");
-        int userPhone = Integer.parseInt(MenuPrincipal.lector.nextLine());
+        int userPhone = Utilidades.recibirNumero();
         user.setTelefono(userPhone);
         System.out.println("  -direccion:");
         String userAdress = MenuPrincipal.lector.nextLine();

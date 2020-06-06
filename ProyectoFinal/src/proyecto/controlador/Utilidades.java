@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import proyecto.vista.MenuPrincipal;
 
 /**
  * Incluye métodos con utilidades genéricas.
@@ -61,4 +62,34 @@ public class Utilidades {
         return textoAdaptado.trim();
     }
 
+    /**
+     * Evita la recepción de valores no numéricos en las llamadas al lector que lo requieran, anulando la posibilidad de errores al emplear Integer.parseInt()
+     * 
+     * @return valor numérico (tipo int) solicitado al usuario
+     */
+    public static int recibirNumero() {
+        int num;
+        String posibleNum = MenuPrincipal.lector.nextLine();
+        while (!esNumerico(posibleNum)) {
+            System.out.println("Error. Se solicita un número:");
+            posibleNum = MenuPrincipal.lector.nextLine();
+        }
+        num = Integer.parseInt(posibleNum);   
+        return num;
+    }
+    
+    /**
+     * Comprueba si un valor es un integersin tener que recurrir a librerías externas, como por ejemplo para el método alternativo StringUtils.isNumeric()
+     * 
+     * @param num valor tipo String que se desea comprobar
+     * @return true si el valor es integer
+     */
+    private static boolean esNumerico(String num) {
+        try {
+            Integer.parseInt(num);
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
 }
