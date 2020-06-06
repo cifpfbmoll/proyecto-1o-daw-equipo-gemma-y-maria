@@ -427,7 +427,7 @@ public class ControladorEntrenamiento {
         do {
             System.out.println("Introduce el código del ejercicio que quieres añadir al programa:");
             nuevoCodigo = MenuPrincipal.lector.nextLine().toUpperCase();
-            codigoEnLista = !ControladorEjercicio.comprobarCodigoExistente(nuevoCodigo, tipoEntrenamiento);
+            codigoEnLista = ControladorEjercicio.comprobarCodigoExistente(nuevoCodigo, tipoEntrenamiento);
             if (!codigoEnLista) {
                 System.out.println("Error: este código no existe.");
             }
